@@ -1,0 +1,14 @@
+Package: rtapas
+Title: TAPAS: A thresholding approach for probability map
+    automatic segmentation
+Version: 0.0.1
+Authors@R: c(person(given = "Alessandra",family = "Valcarcel",email = "alval@pennmedicine.com",role = c("aut","cre"))
+Maintainer: Alessandra Valcarcel <alval@pennmedicine.com>
+Description: Trains and makes predictions using the TAPAS
+    method.
+License: GPL-2
+ByteCompile: true
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    covr
