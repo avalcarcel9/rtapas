@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/avalcarcel9/rtapas.svg?branch=master)](https://travis-ci.org/avalcarcel9/avalcarcel9/rtapas)
+[![Build Status](https://travis-ci.org/avalcarcel9/rtapas.svg?branch=master)](https://travis-ci.org/avalcarcel9/rtapas)
 
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/avalcarcel9/rtapas?branch=master&svg=true)](https://ci.appveyor.com/project/avalcarcel9/rtapas)
 
