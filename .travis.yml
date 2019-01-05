@@ -3,3 +3,6 @@
 language: R
 sudo: false
 cache: packages
+
+before_install:
+  - gh_binary_install stnava/ITKR
