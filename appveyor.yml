@@ -16,10 +16,11 @@ environment:
     USE_RTOOLS: true
     R_CHECK_INSTALL_ARGS: "--install-args=--build --no-multiarch "
   matrix:
-    - R_VERSION: 3.4.9
+    - R_VERSION: stable
 
 install:
   ps: Bootstrap
+
 cache:
   - C:\RLibrary
 
