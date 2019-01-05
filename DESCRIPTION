@@ -14,7 +14,7 @@ LazyData: true
 Imports: 
     extrantsr (>= 3.9.6), 
     neurobase (>= 1.13.2),
-    tibble (>= 2.0.0), 
+    tibble (>= 1.7.0), 
     aliviateR (>= 0.0.1)
 Suggests: 
     covr,
