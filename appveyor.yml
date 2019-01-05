@@ -15,8 +15,7 @@ environment:
     USE_RTOOLS: true
     R_CHECK_INSTALL_ARGS: "--install-args=--build --no-multiarch "
   matrix:
-    - R_VERSION: release
-      R_VER: 3.5
+    - R_VERSION: 3.5.0
 
 install:
   ps: Bootstrap
