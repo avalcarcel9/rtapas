@@ -43,3 +43,9 @@ artifacts:
 
   - path: '\*_*.zip'
     name: Bits
+
+# Added this because appveyor was failing with tibble.
+# Probably temporary because CRAN doesn't have binary package
+# https://github.com/r-lib/ps/issues/52
+environment:
+  USE_RTOOLS: true
