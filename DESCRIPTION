@@ -21,7 +21,8 @@ Suggests:
     knitr
 Remotes:
     muschellij2/extrantsr,
-    avalcarcel9/aliviateR
+    avalcarcel9/aliviateR,
+    stnava/ITKR
 VignetteBuilder: knitr
 ByteCompile: true
 RoxygenNote: 6.1.1
