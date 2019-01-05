@@ -20,7 +20,7 @@ Suggests:
     covr,
     knitr
 Remotes:
-    muschellij2/extrantsr
+    muschellij2/extrantsr,
     avalcarcel9/aliviateR
 VignetteBuilder: knitr
 ByteCompile: true
