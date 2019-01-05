@@ -17,6 +17,9 @@ cache:
 
 build_script:
   - travis-tool.sh install_deps
+  - ps: Invoke-WebRequest https://github.com/stnava/ITKR/releases/download/v0.4.17.5.1/ITKR_0.4.17.5_R3.5.zip -OutFile ".\ITKR.zip"
+  - Rscript -e "install.packages('ITKR.zip', repos = NULL)"
+  - rm ITKR.zip
 
 test_script:
   - travis-tool.sh run_tests
