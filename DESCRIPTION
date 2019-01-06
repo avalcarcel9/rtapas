@@ -18,7 +18,7 @@ Imports:
     gtools (>= 3.8.1),
     neurobase (>= 1.13.2),
     magrittr (>= 1.5.0),
-    mgcv (>= 1.8-26),
+    mgcv (>= 1.8-24),
     tibble (>= 1.7.0)
 Suggests: 
     covr,
