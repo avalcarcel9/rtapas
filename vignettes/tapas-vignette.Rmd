@@ -20,20 +20,22 @@ knitr::opts_chunk$set(
 
 ## Functions
 
+### gen_tapas_data
+
 ```{r, eval = FALSE}
-thresholds = seq(from = 0, to = 1, by = 0.01)
-pmap = '/Users/alval/Desktop/pmaps/new_probability_map_2620101_iter_72.nii.gz'
-gold_standard = '/Users/alval/Desktop/gstandard/2620101_mod.nii.gz'
-mask = '/Users/alval/Desktop/2620101.nii.gz'
-k = 8
 
-# Correct function
-gen_thresh_data(thresholds = seq(from = 0, to = 1, by = 0.01), pmap = '/Users/alval/Desktop/pmaps/new_probability_map_2620101_iter_72.nii.gz', gold_standard = '/Users/alval/Desktop/gstandard/2620101_mod.nii.gz', mask = '/Users/alval/Desktop/2620101.nii.gz', k = 8)
-# Make the threshold less than 0
-gen_thresh_data(thresholds = seq(from = 0, to = 1, by = 0.01), pmap = '/Users/alval/Desktop/pmaps/new_probability_map_2620101_iter_72.nii.gz', gold_standard = '/Users/alval/Desktop/gstandard/2620101_mod.nii.gz', mask = '/Users/alval/Desktop/2620101.nii.gz', k = 8)
+```
 
-# Make the threshold greater than 1
-gen_thresh_data(thresholds = seq(from = 0, to = 1, by = 0.01), pmap = '/Users/alval/Desktop/pmaps/new_probability_map_2620101_iter_72.nii.gz', gold_standard = '/Users/alval/Desktop/gstandard/2620101_mod.nii.gz', mask = '/Users/alval/Desktop/2620101.nii.gz', k = 8)
+### train_tapas
+
+```{r}
+
+```
+
+
+### All usage
+
+```{r}
 
 ```
 
