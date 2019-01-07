@@ -11,7 +11,7 @@
 #' subject-specific threshold prediction rather than the true model predicted threshold to avoid extrapolation
 #' when the naive volume estimate falls in the tails of the model. If \code{FALSE} then even if a subject falls
 #' in the tail the true GAM predicted threshold will be returned.
-#' @param k Minimum number of voxels for a cluster/component. Passed to \code{\link{extrantsr::label_mask}}.
+#' @param k Minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
 #' @param verbose is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data
 #' function. \code{FALSE} will silence comment returns.
 #' @export

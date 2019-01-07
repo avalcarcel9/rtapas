@@ -12,7 +12,7 @@
 #' image with using Sørensen's–Dice coefficient.
 #' @param mask A file path to a \code{nifti} brain mask corresponding with the probability map provided
 #' or the name of a mask that has been locally loaded.
-#' @param k Minimum number of voxels for a cluster/component. Passed to \code{\link{extrantsr::label_mask}}.
+#' @param k Minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
 #' @param subject_id is \code{NULL} by default. Must be a \code{character} \code{vector} with the unique subject ID for
 #' which the threshold data is being generated.
 #' @param verbose is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data function.
