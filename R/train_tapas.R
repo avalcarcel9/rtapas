@@ -2,12 +2,14 @@
 #' @description  This function trains the TAPAS model as a \code{tibble} or \code{data.frame}
 #' produced by an element from the output of the function \code{\link{gen_tapas_data}}.
 #' @param data Data resulting from \code{\link{gen_tapas_data}}. May be in a binded
-#' \code{tibble} or \code{data.frame} form from all subjects to include for
+#' \code{tibble} or \code{data.frame} from all subjects to include for
 #' training or a \code{list} with all subject data in unique elements.
-#' @param dsc_cutoff is 0.03 by default. Must be a single value between 0 and 1. This is the DSC value that will be used as a cutoff.
-#' Only subjects with DSC greater than or equal to dsc_cutoff will be included in training the TAPAS model..
-#' @param verbose is TRUE by default. TRUE returns messages throughout the generating data function.
-#' FALSE will silence comment returns.
+#' @param dsc_cutoff is \code{0.03} by default. Must be a single value between 0 and 1.
+#' This is the Sørensen's–Dice coefficient (DSC) value that will be used as a cutoff.
+#' Only subjects with Sørensen's–Dice coefficient (DSC) greater than or equal to \code{dsc_cutoff}
+#' will be included in training the TAPAS model.
+#' @param verbose is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data
+#' function. \code{FALSE} will silence comment returns.
 #' @export
 #' @importFrom dplyr bind_rows filter group_by inner_join ungroup mutate select slice summarize
 #' @importFrom gtools inv.logit logit
@@ -15,8 +17,8 @@
 #' @importFrom mgcv gam predict.gam
 #' @importFrom stats quantile
 #' @importFrom tibble tibble is_tibble
-#' @return A \code{list} with the TAPAS model (tapas_model) in the first element of the list of class \code{gam} and the
-#' second element is a \code{tibble} with the clamp volume and threshold information (clamp_data).
+#' @return A \code{list} with the TAPAS model (\code{tapas_model}) in the first element of the list of class \code{gam} and the
+#' second element is a \code{tibble} with the clamp volume and threshold information (\code{clamp_data}).
 #' @examples \dontrun{
 #' # Put gen_tapas_data function here first then run train_tapas. Fix later.
 #' train_tapas(data = data, dsc_cutoff = 0.03, verbose = TRUE)
@@ -113,10 +115,10 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   # Based on the training data obtain the volume associated with the 10th and 90th percentile
   # Use these volumes to predict a threshold
   clamp_data = tibble::tibble(volume = c(stats::quantile(data$volume, .1), stats::quantile(data$volume, .9))) %>%
-    dplyr::mutate(pred_threshold = gtools::inv.logit(mgcv::predict.gam(tapas_model, .)),
+    dplyr::mutate(pred_threshold = gtools::inv.logit(mgcv::predict.gam(tapas_model, ., type = "response")),
                   bound = c('lower', 'upper')) %>%
     dplyr::select(bound, volume, pred_threshold)
 
-  return(list(tapas_model = tapas_model, clamp_data = clamp_data))
+  return(list(tapas_model = tapas_model, group_threshold = group_threshold$threshold, clamp_data = clamp_data))
 
 }

@@ -8,18 +8,20 @@ train_tapas(data, dsc_cutoff = 0.03, verbose = TRUE)
 }
 \arguments{
 \item{data}{Data resulting from \code{\link{gen_tapas_data}}. May be in a binded
-\code{tibble} or \code{data.frame} form from all subjects to include for
+\code{tibble} or \code{data.frame} from all subjects to include for
 training or a \code{list} with all subject data in unique elements.}
 
-\item{dsc_cutoff}{is 0.03 by default. Must be a single value between 0 and 1. This is the DSC value that will be used as a cutoff.
-Only subjects with DSC greater than or equal to dsc_cutoff will be included in training the TAPAS model..}
+\item{dsc_cutoff}{is \code{0.03} by default. Must be a single value between 0 and 1.
+This is the Sørensen's–Dice coefficient (DSC) value that will be used as a cutoff.
+Only subjects with Sørensen's–Dice coefficient (DSC) greater than or equal to \code{dsc_cutoff}
+will be included in training the TAPAS model.}
 
-\item{verbose}{is TRUE by default. TRUE returns messages throughout the generating data function.
-FALSE will silence comment returns.}
+\item{verbose}{is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data
+function. \code{FALSE} will silence comment returns.}
 }
 \value{
-A \code{list} with the TAPAS model (tapas_model) in the first element of the list of class \code{gam} and the
-second element is a \code{tibble} with the clamp volume and threshold information (clamp_data).
+A \code{list} with the TAPAS model (\code{tapas_model}) in the first element of the list of class \code{gam} and the
+second element is a \code{tibble} with the clamp volume and threshold information (\code{clamp_data}).
 }
 \description{
 This function trains the TAPAS model as a \code{tibble} or \code{data.frame}

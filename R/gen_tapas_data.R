@@ -1,22 +1,22 @@
 #' @title Calculate Threshold Grid
 #' @description Calculates Sørensen's–Dice coefficient and automatic volume
 #'  estimation for a grid of thresholds.
-#' @param thresholds A \code{vector} of thresholds to use for calculation of Sørensen's–Dice coefficient
+#' @param thresholds A \code{vector} of thresholds to use for calculation of Sørensen's–Dice coefficient (DSC)
 #' and automatic volume. The default and grid applied in the published work is 0 to 1. Threshold
 #' values must be between 0 and 1.
-#' @param pmap A file path to a \code{NIFTI} probability map generated from an automatic segmentation
+#' @param pmap A file path to a \code{nifti} probability map generated from an automatic segmentation
 #' approach or the name of a probability map locally available
-#' @param gold_standard A file path to the \code{NIFTI} gold standard segmentation approach corresponding
+#' @param gold_standard A file path to the \code{nifti} gold standard segmentation approach corresponding
 #' with the probability map provided or the name of the gold standard segmentation that has been
 #' locally loaded. The gold standard segmentation is used to compare the thresholded probability map
 #' image with using Sørensen's–Dice coefficient.
-#' @param mask A file path to a \code{NIFTI} brain mask corresponding with the probability map provided
+#' @param mask A file path to a \code{nifti} brain mask corresponding with the probability map provided
 #' or the name of a mask that has been locally loaded.
-#' @param k Minimum number of voxels for a cluster/component. Passed to \code{extransr::label_mask()}.
-#' @param subject_id is NULL by default. Must be a \code{character} vector with the unique subject ID for
+#' @param k Minimum number of voxels for a cluster/component. Passed to \code{\link{extrantsr::label_mask}}.
+#' @param subject_id is \code{NULL} by default. Must be a \code{character} \code{vector} with the unique subject ID for
 #' which the threshold data is being generated.
-#' @param verbose is TRUE by default. TRUE returns messages throughout the generating data function.
-#' FALSE will silence comment returns.
+#' @param verbose is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data function.
+#' \code{FALSE} will silence comment returns.
 #' @export
 #' @importFrom aliviateR dsc
 #' @importFrom dplyr bind_rows
@@ -24,7 +24,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom neurobase check_nifti
 #' @importFrom tibble tibble
-#' @return A tibble with threshold, dsc, and volume columns
+#' @return A tibble with threshold, Sørensen's–Dice coefficient (dsc), and volume
 #' @examples \dontrun{
 #' gen_tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
 #' pmap = 'probability_map_subject_1.nii.gz',
