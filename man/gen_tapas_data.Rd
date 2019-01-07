@@ -35,8 +35,10 @@ which the threshold data is being generated.}
 A tibble with threshold, Sørensen's–Dice coefficient (dsc), and volume
 }
 \description{
-Calculates Sørensen's–Dice coefficient and automatic volume
- estimation for a grid of thresholds.
+This function creates the training data from a single probability map generated using an
+automatic segmentation method in order generate data necessary to train the TAPAS model.
+For a grid of threhsolds provided it calculates Sørensen's–Dice coefficient and automatic volume
+estimation for a grid of thresholds.
 }
 \examples{
 \dontrun{

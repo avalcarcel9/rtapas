@@ -1,6 +1,8 @@
 #' @title Calculate Threshold Grid
-#' @description Calculates Sørensen's–Dice coefficient and automatic volume
-#'  estimation for a grid of thresholds.
+#' @description This function creates the training data from a single probability map generated using an
+#' automatic segmentation method in order generate data necessary to train the TAPAS model.
+#' For a grid of threhsolds provided it calculates Sørensen's–Dice coefficient and automatic volume
+#' estimation for a grid of thresholds.
 #' @param thresholds A \code{vector} of thresholds to use for calculation of Sørensen's–Dice coefficient (DSC)
 #' and automatic volume. The default and grid applied in the published work is 0 to 1. Threshold
 #' values must be between 0 and 1.

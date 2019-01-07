@@ -13,12 +13,15 @@ BugReports: https://github.com/avalcarcel9/rtapas/issues
 LazyData: true
 Imports: 
     aliviateR (>= 0.0.1),
+    doParallel (>= 1.0.14),
     dplyr (>= 0.7.5.9000),
     extrantsr (>= 3.9.6),
+    foreach(>= 1.4.4),
     gtools (>= 3.8.1),
-    neurobase (>= 1.13.2),
     magrittr (>= 1.5.0),
     mgcv (>= 1.8-24),
+    neurobase (>= 1.13.2),
+    parallel (>= 3.5.0),
     rlang (>= 0.3.0.1),
     tibble (>= 1.7.0)
 Suggests: 
