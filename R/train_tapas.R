@@ -15,6 +15,7 @@
 #' @importFrom gtools inv.logit logit
 #' @importFrom magrittr "%>%"
 #' @importFrom mgcv gam predict.gam
+#' @importFrom rlang .data
 #' @importFrom stats quantile
 #' @importFrom tibble tibble is_tibble
 #' @return A \code{list} with the TAPAS model (\code{tapas_model}) in the first element of the list of class \code{gam} and the
@@ -54,31 +55,31 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
   # Calculate subject level threshold that produces maximum DSC
   subject_thresholds = data %>%
-    dplyr::group_by(subject_id) %>%
+    dplyr::group_by(.data$subject_id) %>%
     dplyr::slice(which.max(dsc)) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-volume)
+    dplyr::select(-.data$volume)
 
   # Calculate the threshold that maximizes group level average DSC
   group_threshold = data %>%
-    dplyr::group_by(threshold) %>%
+    dplyr::group_by(.data$threshold) %>%
     dplyr::summarize(mean_dsc = mean(dsc)) %>%
-    dplyr::slice(which.max(mean_dsc)) %>%
-    dplyr::select(threshold)
+    dplyr::slice(which.max(.data$mean_dsc)) %>%
+    dplyr::select(.data$threshold)
 
   # Obtain the group level volume from using the group_threshold
   group_volumes = data %>%
-    dplyr::group_by(subject_id) %>%
-    dplyr::filter(threshold == group_threshold$threshold) %>%
+    dplyr::group_by(.data$subject_id) %>%
+    dplyr::filter(.data$threshold == group_threshold$threshold) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-dsc, -threshold)
+    dplyr::select(-dsc, -.data$threshold)
 
   # Merge the group volume with the best thresholds
   ## This contains the subject specific threshold that maximized DSC
   ## The dsc value produced using the subject specific threshold
   ## The volume produced using the group threshold
   ## The unique subject_id
-  data = dplyr::inner_join(x = subject_thresholds, y = group_volumes, by = c("subject_id" = "subject_id"))
+  data = dplyr::inner_join(x = subject_thresholds, y = group_volumes, by = c(".data$subject_id" = ".data$subject_id"))
 
   # Check for subjects with DSC less than the dsc_cutoff
   if(any(data$dsc < dsc_cutoff)){
@@ -96,8 +97,8 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   # e^(-16) or  0.999999999 so logit will not error
   if(any(data$threshold == 0) | any(data$threshold == 1)){
     data = data %>%
-      dplyr::mutate(threshold = replace(threshold, threshold == 0, exp(-16)),
-                    threshold = replace(threshold, threshold == 1, 0.999999999))
+      dplyr::mutate(threshold = replace(.data$threshold, .data$threshold == 0, exp(-16)),
+                    threshold = replace(.data$threshold, .data$threshold == 1, 0.999999999))
   }
 
   if(verbose == TRUE){
@@ -115,9 +116,9 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   # Based on the training data obtain the volume associated with the 10th and 90th percentile
   # Use these volumes to predict a threshold
   clamp_data = tibble::tibble(volume = c(stats::quantile(data$volume, .1), stats::quantile(data$volume, .9))) %>%
-    dplyr::mutate(pred_threshold = gtools::inv.logit(mgcv::predict.gam(tapas_model, ., type = "response")),
+    dplyr::mutate(pred_threshold = gtools::inv.logit(mgcv::predict.gam(tapas_model, .data$., type = "response")),
                   bound = c('lower', 'upper')) %>%
-    dplyr::select(bound, volume, pred_threshold)
+    dplyr::select(.data$bound, .data$volume, .data$pred_threshold)
 
   return(list(tapas_model = tapas_model, group_threshold = group_threshold$threshold, clamp_data = clamp_data))
 

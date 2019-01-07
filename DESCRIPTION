@@ -19,6 +19,7 @@ Imports:
     neurobase (>= 1.13.2),
     magrittr (>= 1.5.0),
     mgcv (>= 1.8-24),
+    rlang (>= 0.3.0.1),
     tibble (>= 1.7.0)
 Suggests: 
     covr,

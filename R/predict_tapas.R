@@ -20,6 +20,7 @@
 #' @importFrom gtools inv.logit
 #' @importFrom mgcv predict.gam
 #' @importFrom neurobase check_nifti
+#' @importFrom rlang .data
 #' @importFrom tibble tibble
 #' @return A list containing the predicted subject-specific threshold \code{subject_threshold}, the lesion segmentation mask obtained
 #' using the predicted subject-specific threshold \code{tapas_binary_mask}, the lesion segmentation mask obtained using the
@@ -68,25 +69,25 @@ predict_tapas <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
     message('# Estimating subject-specific threshold.')
   }
 
-  if(naive_volume$volume < dplyr::filter(model$clamp_data, bound == 'lower')$volume & clamp == TRUE){
+  if(naive_volume$volume < dplyr::filter(model$clamp_data, .data$bound == 'lower')$volume & clamp == TRUE){
     # Use lower bound threshold prediction
     if(verbose == TRUE){
       message('# Subject is below clamp volume. Using the threshold associated with the volume at the 10th precentile.')
     }
     # Make threshold object
-    subject_threshold = dplyr::filter(model$clamp_data, bound == 'lower')$pred_threshold
-  } else if (naive_volume$volume > dplyr::filter(model$clamp_data, bound == 'upper')$volume & clamp == TRUE){
+    subject_threshold = dplyr::filter(model$clamp_data, .data$bound == 'lower')$pred_threshold
+  } else if (naive_volume$volume > dplyr::filter(model$clamp_data, .data$bound == 'upper')$volume & clamp == TRUE){
     # Use upper bound threshold prediction
     if(verbose == TRUE){
       message('# Subject is above clamp volume. Using the threshold associated with the 10th precentile volume estimate.')
     }
     # Make threshold object
-    subject_threshold = dplyr::filter(model$clamp_data, bound == 'upper')$pred_threshold
-  } else if (naive_volume$volume >= dplyr::filter(model$clamp_data, bound == 'lower')$volume &
-             naive_volume$volume <= dplyr::filter(model$clamp_data, bound == 'upper')$volume | clamp == FALSE){
+    subject_threshold = dplyr::filter(model$clamp_data, .data$bound == 'upper')$pred_threshold
+  } else if (naive_volume$volume >= dplyr::filter(model$clamp_data, .data$bound == 'lower')$volume &
+             naive_volume$volume <= dplyr::filter(model$clamp_data, .data$bound == 'upper')$volume | clamp == FALSE){
     # Subject fell outside clamp bounds but clamp == FALSE
-    if(naive_volume$volume < dplyr::filter(model$clamp_data, bound == 'lower')$volume |
-       naive_volume$volume > dplyr::filter(model$clamp_data, bound == 'upper')$volume){
+    if(naive_volume$volume < dplyr::filter(model$clamp_data, .data$bound == 'lower')$volume |
+       naive_volume$volume > dplyr::filter(model$clamp_data, .data$bound == 'upper')$volume){
       message('# Subject is above clamp volume. Using the threshold associated with the 90th precentile volume estimate.')
     }
     # Use the subject-specific threshold fit from the TAPAS model
