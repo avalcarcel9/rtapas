@@ -34,23 +34,23 @@
 predict_tapas <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
-  if(is.logical(verbose) == FALSE){
-    stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+  if(base::is.logical(verbose) == FALSE){
+    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
   # Check clamp is TRUE or FALSE
-  if(is.logical(clamp) == FALSE){
-    stop('# clamp must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+  if(base::is.logical(clamp) == FALSE){
+    base::stop('# clamp must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   if(verbose == TRUE){
-    message('# Validating parameter inputs.')
+    base::message('# Validating parameter inputs.')
   }
 
   # Verify inputs
   pmap = neurobase::check_nifti(pmap)
 
   if(verbose == TRUE){
-    message('# Estimating naive volume estimate.')
+    base::message('# Estimating naive volume estimate.')
   }
 
   # Threshold pmap at the group threshold to obtain a naive volume estimate
@@ -63,23 +63,23 @@ predict_tapas <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
   group_binary_mask[group_binary_mask > 0] = 1
 
   # Obtain a naive estimate of the volume using the group thresholded binary mask
-  naive_volume = tibble::tibble(volume = sum(group_binary_mask))
+  naive_volume = tibble::tibble(volume = base::sum(group_binary_mask))
 
   if(verbose == TRUE){
-    message('# Estimating subject-specific threshold.')
+    base::message('# Estimating subject-specific threshold.')
   }
 
   if(naive_volume$volume < dplyr::filter(model$clamp_data, .data$bound == 'lower')$volume & clamp == TRUE){
     # Use lower bound threshold prediction
     if(verbose == TRUE){
-      message('# Subject is below clamp volume. Using the threshold associated with the volume at the 10th precentile.')
+      base::message('# Subject is below clamp volume. Using the threshold associated with the volume at the 10th precentile.')
     }
     # Make threshold object
     subject_threshold = dplyr::filter(model$clamp_data, .data$bound == 'lower')$pred_threshold
   } else if (naive_volume$volume > dplyr::filter(model$clamp_data, .data$bound == 'upper')$volume & clamp == TRUE){
     # Use upper bound threshold prediction
     if(verbose == TRUE){
-      message('# Subject is above clamp volume. Using the threshold associated with the 10th precentile volume estimate.')
+      base::message('# Subject is above clamp volume. Using the threshold associated with the 10th precentile volume estimate.')
     }
     # Make threshold object
     subject_threshold = dplyr::filter(model$clamp_data, .data$bound == 'upper')$pred_threshold
@@ -88,10 +88,10 @@ predict_tapas <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
     # Subject fell outside clamp bounds but clamp == FALSE
     if(naive_volume$volume < dplyr::filter(model$clamp_data, .data$bound == 'lower')$volume |
        naive_volume$volume > dplyr::filter(model$clamp_data, .data$bound == 'upper')$volume){
-      message('# Subject is above clamp volume. Using the threshold associated with the 90th precentile volume estimate.')
+      base::message('# Subject is above clamp volume. Using the threshold associated with the 90th precentile volume estimate.')
     }
     # Use the subject-specific threshold fit from the TAPAS model
-    subject_threshold = unname(gtools::inv.logit(mgcv::predict.gam(model$tapas_model, naive_volume, type = "response")))
+    subject_threshold = base::unname(gtools::inv.logit(mgcv::predict.gam(model$tapas_model, naive_volume, type = "response")))
   }
 
   # Update the binary mask using the subject-specific threshold
@@ -101,10 +101,10 @@ predict_tapas <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
 
   # Remove connected components less than k then return mask to binary 0/1 after counted components
   tapas_binary_mask = extrantsr::label_mask(tapas_binary_mask, k = k)
-  tapas_binary_mask[group_binary_mask > 0] = 1
+  tapas_binary_mask[tapas_binary_mask > 0] = 1
 
   # Return subject-specific threshold, tapas lesion mask, group lesion mask
-  return(list(subject_threshold = subject_threshold,
-              tapas_binary_mask = tapas_binary_mask,
-              group_binary_mask = group_binary_mask))
+  base::return(base::list(subject_threshold = subject_threshold,
+                          tapas_binary_mask = tapas_binary_mask,
+                          group_binary_mask = group_binary_mask))
 }

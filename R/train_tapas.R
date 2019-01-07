@@ -14,7 +14,7 @@
 #' @importFrom dplyr bind_rows filter group_by inner_join ungroup mutate select slice summarize
 #' @importFrom gtools inv.logit logit
 #' @importFrom magrittr "%>%"
-#' @importFrom mgcv gam predict.gam
+#' @importFrom mgcv gam predict.gam s
 #' @importFrom rlang .data
 #' @importFrom stats quantile
 #' @importFrom tibble tibble is_tibble
@@ -29,28 +29,28 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(is.logical(verbose) == FALSE){
-    stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   # Check that dsc_cutoff is between 0 and 1
   if(dsc_cutoff < 0 | dsc_cutoff > 1){
-    stop('# dsc_cutoff must be a single value between 0 and 1.')
+    base::stop('# dsc_cutoff must be a single value between 0 and 1.')
   }
 
   if(verbose == TRUE){
-    message('# Validating data input.')
+    base::message('# Validating data input.')
   }
 
   # Create full subject tibble by binding the list rows or verify the data provided is a data.frame or tibble
-  if(is.list(data) == TRUE){
+  if(base::is.list(data) == TRUE){
     data = dplyr::bind_rows(data)
-  } else if (is.data.frame(data) == FALSE & tibble::is_tibble(data) == FALSE){
-    stop('# data must be a list, data.frame, or tibble of stacked subject data objects from rtapas::gen_tapas_data(). \n
+  } else if (base::is.data.frame(data) == FALSE & tibble::is_tibble(data) == FALSE){
+    base::stop('# data must be a list, data.frame, or tibble of stacked subject data objects from rtapas::gen_tapas_data(). \n
           # The rtapas::gen_tapas_data() function returns a tibble by default.')
   }
 
   if(verbose == TRUE){
-    message('# Calculating group and subject-specific threshold and volume values.')
+    base::message('# Calculating group and subject-specific threshold and volume values.')
   }
 
   # Calculate subject level threshold that produces maximum DSC
@@ -64,7 +64,7 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   group_threshold = data %>%
     dplyr::group_by(.data$threshold) %>%
     dplyr::summarize(mean_dsc = mean(dsc)) %>%
-    dplyr::slice(which.max(.data$mean_dsc)) %>%
+    dplyr::slice(base::which.max(.data$mean_dsc)) %>%
     dplyr::select(.data$threshold)
 
   # Obtain the group level volume from using the group_threshold
@@ -79,13 +79,14 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   ## The dsc value produced using the subject specific threshold
   ## The volume produced using the group threshold
   ## The unique subject_id
-  data = dplyr::inner_join(x = subject_thresholds, y = group_volumes, by = c(".data$subject_id" = ".data$subject_id"))
+  data = dplyr::inner_join(x = subject_thresholds, y = group_volumes,
+                           by = c(".data$subject_id" = ".data$subject_id"))
 
   # Check for subjects with DSC less than the dsc_cutoff
-  if(any(data$dsc < dsc_cutoff)){
+  if(base::any(data$dsc < dsc_cutoff)){
 
     if(verbose == TRUE){
-      message('# Poor DSC detected excluding subject(s) from training the TAPAS model.')
+      base::message('# Poor DSC detected excluding subject(s) from training the TAPAS model.')
     }
 
     # Remove subjects from training with poor DSC
@@ -95,22 +96,22 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
   # logit transformation cannot handle 0 or 1 exact values so add a check to make these values
   # e^(-16) or  0.999999999 so logit will not error
-  if(any(data$threshold == 0) | any(data$threshold == 1)){
+  if(base::any(data$threshold == 0) | base::any(data$threshold == 1)){
     data = data %>%
-      dplyr::mutate(threshold = replace(.data$threshold, .data$threshold == 0, exp(-16)),
-                    threshold = replace(.data$threshold, .data$threshold == 1, 0.999999999))
+      dplyr::mutate(threshold = base::replace(.data$threshold, .data$threshold == 0, exp(-16)),
+                    threshold = base::replace(.data$threshold, .data$threshold == 1, 0.999999999))
   }
 
   if(verbose == TRUE){
-    message('# Fitting the TAPAS model.')
+    base::message('# Fitting the TAPAS model.')
   }
 
   # Fit the TAPAS model
-  tapas_model = mgcv::gam(formula = gtools::logit(threshold) ~ s(volume),
+  tapas_model = mgcv::gam(formula = gtools::logit(threshold) ~ mgcv::s(volume),
                           data = data)
 
   if(verbose == TRUE){
-    message('# Calculating lower and upper bound clamps.')
+    base::message('# Calculating lower and upper bound clamps.')
   }
 
   # Based on the training data obtain the volume associated with the 10th and 90th percentile
@@ -120,6 +121,6 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
                   bound = c('lower', 'upper')) %>%
     dplyr::select(.data$bound, .data$volume, .data$pred_threshold)
 
-  return(list(tapas_model = tapas_model, group_threshold = group_threshold$threshold, clamp_data = clamp_data))
+  base::return(base::list(tapas_model = tapas_model, group_threshold = group_threshold$threshold, clamp_data = clamp_data))
 
 }
