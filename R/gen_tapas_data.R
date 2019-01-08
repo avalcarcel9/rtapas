@@ -1,32 +1,33 @@
-#' @title Calculate Threshold Grid
-#' @description This function creates the training data from a single probability map generated using an
-#' automatic segmentation method in order generate data necessary to train the TAPAS model.
-#' For a grid of threhsolds provided it calculates Sørensen's–Dice coefficient and automatic volume
-#' estimation for a grid of thresholds.
-#' @param thresholds A \code{vector} of thresholds to use for calculation of Sørensen's–Dice coefficient (DSC)
-#' and automatic volume. The default and grid applied in the published work is 0 to 1. Threshold
-#' values must be between 0 and 1.
-#' @param pmap A file path to a \code{nifti} probability map generated from an automatic segmentation
-#' approach or the name of a probability map locally available
-#' @param gold_standard A file path to the \code{nifti} gold standard segmentation approach corresponding
-#' with the probability map provided or the name of the gold standard segmentation that has been
-#' locally loaded. The gold standard segmentation is used to compare the thresholded probability map
-#' image with using Sørensen's–Dice coefficient.
-#' @param mask A file path to a \code{nifti} brain mask corresponding with the probability map provided
-#' or the name of a mask that has been locally loaded.
-#' @param k Minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-#' @param subject_id is \code{NULL} by default. Must be a \code{character} \code{vector} with the unique subject ID for
-#' which the threshold data is being generated.
-#' @param verbose is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data function.
-#' \code{FALSE} will silence comment returns.
+#' @title Generates the TAPAS Training Data
+#' @description This function creates the training vectors for a single subject from a probability map,
+#' a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided
+#' and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic
+#' volume and the gold standard volume. The function also calculates the automatic volume associated with thresholding
+#' at each respective threshold.
+#' @param thresholds A \code{vector} of thresholds to apply to the probability map. The default
+#' \code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be
+#' between 0 and 1.
+#' @param pmap A \code{character} file path to probability map images or an object of
+#' class \code{nifti}.
+#' @param gold_standard A \code{character} file path to a gold standard image (normally a manual
+#' segmentation) or an object of class \code{nifti}. The gold standard segmentation is used to compare the
+#' thresholded probability map image using Sørensen's–Dice coefficient (DSC).
+#' @param mask A \code{character} file path to a brain mask image or an object of class \code{nifti}.
+#' @param k The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
+#' Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+#' Sørensen's–Dice coefficient (DSC) calculation.
+#' @param subject_id A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
+#' provide an ID.
+#' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
 #' @importFrom aliviateR dsc
 #' @importFrom dplyr bind_rows
 #' @importFrom extrantsr label_mask
 #' @importFrom magrittr "%>%"
-#' @importFrom neurobase check_nifti
+#' @importFrom neurobase check_nifti check_mask
 #' @importFrom tibble tibble
-#' @return A tibble with threshold, Sørensen's–Dice coefficient (dsc), and volume
+#' @return A \code{tibble} containing the training data. The data contains columns \code{threshold},
+#' Sørensen's–Dice coefficient (\code{dsc}), and \code{volume}.
 #' @examples \dontrun{
 #' gen_tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
 #' pmap = 'probability_map_subject_1.nii.gz',
@@ -36,7 +37,13 @@
 #' subject_id = 'subject_1')
 #' }
 
-gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01), pmap, gold_standard, mask, k = 8, subject_id = NULL, verbose = TRUE){
+gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
+                           pmap,
+                           gold_standard,
+                           mask,
+                           k = 8,
+                           subject_id = NULL,
+                           verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){
@@ -48,8 +55,8 @@ gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01), pmap, 
   }
   # Verify inputs are NIFTI objects
   pmap = neurobase::check_nifti(pmap)
-  gold_standard = neurobase::check_nifti(gold_standard)
-  mask = neurobase::check_nifti(mask)
+  gold_standard = neurobase::check_mask(gold_standard)
+  mask = neurobase::check_mask(mask)
 
   # Check that grid is a vector from 0 to 1
   if(base::is.numeric(thresholds) == FALSE | base::any(thresholds < 0) == TRUE | base::any(thresholds > 1) == TRUE){

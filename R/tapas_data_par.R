@@ -1,31 +1,33 @@
-#' @title Generate TAPAS Data in Parallel
-#' @description This function wraps the \code{\link{gen_tapas_data}} to run in parallel and create the
-#' training data from probability maps generated using an automatic segmentation method in order generate
-#' data necessary to train the TAPAS model. For a grid of threhsolds provided it calculates Sørensen's–Dice coefficient and automatic volume
-#' estimation for a grid of thresholds.
-#' @param thresholds A \code{vector} of thresholds to use for calculation of Sørensen's–Dice coefficient (DSC)
-#' and automatic volume. The default and grid applied in the published work is 0 to 1. Threshold
-#' values must be between 0 and 1.
-#' @param cores The number of cores to use, i.e. at most how many child processes will be run
-#' simultaneously. Default is set to 1.
-#' @param pmap A file path to a \code{nifti} probability map generated from an automatic segmentation
-#' approach or the name of a list of probability map locallys available.
-#' @param gold_standard A vector of file paths to the \code{nifti} gold standard segmentation approach corresponding
-#' with the probability map provided or the name of a list of gold standard segmentations that has been
-#' locally loaded. The gold standard segmentation is used to compare the thresholded probability map
-#' image with using Sørensen's–Dice coefficient.
-#' @param mask A vector file paths to a \code{nifti} brain mask corresponding with the probability map provided
-#' or the name of a list of masks that has been locally loaded.
-#' @param k Minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-#' @param subject_id is \code{NULL} by default. Must be a \code{vector} of \code{character} strings unique subject IDs for
-#' which the threshold data is being generated.
-#' @param verbose is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data function.
-#' \code{FALSE} will silence comment returns.
+#' @title Generates The TAPAS Training Data in Parallel
+#' @description This function wraps the \code{\link{gen_tapas_data}} to run in parallel. We create the
+#' training vectors for subjects from a probability map, gold standard mask (normally
+#' manual segmentation), and brain mask. For a grid of thresholds provided and applied to the
+#' probability map it calculates Sørensen's–Dice coefficient between the automatic volume and the
+#' gold standard volume as well as the automatic volume estimation for each threshold.
+#' @param thresholds A \code{vector} of thresholds to apply to the probability maps. The default
+#' \code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be
+#' between 0 and 1.
+#' @param cores The number of cores to use. This argument controls at most how many child processes will
+#' be run simultaneously. The default is set to 1.
+#' @param pmap A \code{vector} of \code{character} file paths to probability map images or a
+#' \code{list} object with elements of class \code{nifti}.
+#' @param gold_standard A \code{vector} of \code{character} file paths to gold standard images (normally
+#' a manual segmentation) or a \code{list} object with elements of class \code{nifti}. The gold
+#' standard segmentation is used to compare the thresholded probability map image using Sørensen's–Dice
+#' coefficient (DSC).
+#' @param mask A \code{vector} of \code{character} file paths to brain mask images or a \code{list} object
+#' with elements of class \code{nifti}.
+#' @param k The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
+#' Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+#' Sørensen's–Dice coefficient (DSC) calculation.
+#' @param subject_id A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
+#' provide an ID.
+#' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach
 #' @importFrom parallel makeCluster mclapply
-#' @return A list of the \code{tibble}s returned from \code{\link{gen_tapas_data}} for each subject.
+#' @return A list of the \code{tibble} object returned from \code{\link{gen_tapas_data}} for each subject.
 #' @examples \dontrun{
 #' tapas_data_par(cores = 1,
 #' thresholds = seq(from = 0, to = 1, by = 0.01),
@@ -36,7 +38,20 @@
 #' verbose = TRUE)
 #' }
 
-tapas_data_par <- function(cores = 1, thresholds = seq(from = 0, to = 1, by = 0.01), pmap, gold_standard, mask, k = 8, subject_id = NULL, verbose = TRUE){
+### ADD A PARAMETER FOR FILEPATHS TO SAVE
+### ADD A PARAMETER TO RETURN OBJECTS OR NOT
+
+# outfile = NULL,
+# retimg = TRUE,
+
+tapas_data_par <- function(cores = 1,
+                           thresholds = seq(from = 0, to = 1, by = 0.01),
+                           pmap,
+                           gold_standard,
+                           mask,
+                           k = 8,
+                           subject_id = NULL,
+                           verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){

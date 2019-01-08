@@ -2,43 +2,44 @@
 % Please edit documentation in R/gen_tapas_data.R
 \name{gen_tapas_data}
 \alias{gen_tapas_data}
-\title{Calculate Threshold Grid}
+\title{Generates the TAPAS Training Data}
 \usage{
 gen_tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01), pmap,
   gold_standard, mask, k = 8, subject_id = NULL, verbose = TRUE)
 }
 \arguments{
-\item{thresholds}{A \code{vector} of thresholds to use for calculation of Sørensen's–Dice coefficient (DSC)
-and automatic volume. The default and grid applied in the published work is 0 to 1. Threshold
-values must be between 0 and 1.}
+\item{thresholds}{A \code{vector} of thresholds to apply to the probability map. The default
+\code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be
+between 0 and 1.}
 
-\item{pmap}{A file path to a \code{nifti} probability map generated from an automatic segmentation
-approach or the name of a probability map locally available}
+\item{pmap}{A \code{character} file path to probability map images or an object of
+class \code{nifti}.}
 
-\item{gold_standard}{A file path to the \code{nifti} gold standard segmentation approach corresponding
-with the probability map provided or the name of the gold standard segmentation that has been
-locally loaded. The gold standard segmentation is used to compare the thresholded probability map
-image with using Sørensen's–Dice coefficient.}
+\item{gold_standard}{A \code{character} file path to a gold standard image (normally a manual
+segmentation) or an object of class \code{nifti}. The gold standard segmentation is used to compare the
+thresholded probability map image using Sørensen's–Dice coefficient (DSC).}
 
-\item{mask}{A file path to a \code{nifti} brain mask corresponding with the probability map provided
-or the name of a mask that has been locally loaded.}
+\item{mask}{A \code{character} file path to a brain mask image or an object of class \code{nifti}.}
 
-\item{k}{Minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.}
+\item{k}{The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
+Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+Sørensen's–Dice coefficient (DSC) calculation.}
 
-\item{subject_id}{is \code{NULL} by default. Must be a \code{character} \code{vector} with the unique subject ID for
-which the threshold data is being generated.}
+\item{subject_id}{A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
+provide an ID.}
 
-\item{verbose}{is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data function.
-\code{FALSE} will silence comment returns.}
+\item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
 \value{
-A tibble with threshold, Sørensen's–Dice coefficient (dsc), and volume
+A \code{tibble} containing the training data. The data contains columns \code{threshold},
+Sørensen's–Dice coefficient (\code{dsc}), and \code{volume}.
 }
 \description{
-This function creates the training data from a single probability map generated using an
-automatic segmentation method in order generate data necessary to train the TAPAS model.
-For a grid of threhsolds provided it calculates Sørensen's–Dice coefficient and automatic volume
-estimation for a grid of thresholds.
+This function creates the training vectors for a single subject from a probability map,
+a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided
+and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic
+volume and the gold standard volume. The function also calculates the automatic volume associated with thresholding
+at each respective threshold.
 }
 \examples{
 \dontrun{

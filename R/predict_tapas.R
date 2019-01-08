@@ -1,19 +1,24 @@
 #' @title TAPAS Prediction
 #' @description This function takes a probability map for a single subject and predicts the subject
-#' specific threshold to apply. The function will return a list of object including the TAPAS
-#' predicted subject-specific threshold, the lesion mask produced from using this threshold, and the lesion mask
+#' specific threshold to apply based on the TAPAS model generated from \code{\link{train_tapas}}.
+#' The function will return a list of objects including the TAPAS predicted subject-specific threshold,
+#' the lesion mask produced from applying this threshold, as well as the lesion mask
 #' produced from using the group threshold.
-#' @param pmap A file path to a \code{nifti} probability map generated from an automatic segmentation
-#' approach or the name of a probability map locally available
-#' @param model an object of class \code{gam} used to make the
-#' TAPAS predictions
-#' @param clamp is \code{TRUE} by default. Uses the clamped (10th or 90th percentile)
-#' subject-specific threshold prediction rather than the true model predicted threshold to avoid extrapolation
-#' when the naive volume estimate falls in the tails of the model. If \code{FALSE} then even if a subject falls
-#' in the tail the true GAM predicted threshold will be returned.
-#' @param k Minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-#' @param verbose is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data
-#' function. \code{FALSE} will silence comment returns.
+#' @param pmap A \code{character} file path to probability map images or an object of
+#' class \code{nifti}.
+#' @param model The TAPAS model fit from \code{\link{train_tapas}} of class \code{gam}. This model will be
+#' used to make subject-specific threshold predictions.
+#' @param clamp A \code{logical} object that is \code{TRUE} by default. This setting uses the clamped
+#' subject-specific threshold prediction rather than the prediction fit by the
+#' TAPAS \code{model}. This only applied to volumes exceeding those at the 10th and 90th percentile
+#' calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate
+#' falls in the tails of the TAPAS model. If \code{FALSE} then the the TAPAS \code{model} predicted threshold
+#' will be used for segmentation rather than the clamped threshold. The clamping method was
+#' used in published work.
+#' @param k The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
+#' Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+#' Sørensen's–Dice coefficient (DSC) calculation.
+#' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
 #' @importFrom dplyr filter
 #' @importFrom extrantsr label_mask
@@ -22,9 +27,9 @@
 #' @importFrom neurobase check_nifti
 #' @importFrom rlang .data
 #' @importFrom tibble tibble
-#' @return A list containing the predicted subject-specific threshold \code{subject_threshold}, the lesion segmentation mask obtained
-#' using the predicted subject-specific threshold \code{tapas_binary_mask}, the lesion segmentation mask obtained using the
-#' group threshold \code{group_binary_mask}.
+#' @return A \code{list} containing the TAPAS predicted subject-specific threshold (\code{subject_threshold}), the lesion
+#' segmentation mask obtained using the TAPAS predicted subject-specific threshold (\code{tapas_binary_mask}), and the
+#' lesion segmentation mask obtained using the group threshold (\code{group_binary_mask}).
 #' @examples \dontrun{
 #' # Put the code from other examples in here
 #' predict_tapas(pmap, model, clamp = TRUE, k = 8, verbose = TRUE)

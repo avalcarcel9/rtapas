@@ -7,25 +7,28 @@
 train_tapas(data, dsc_cutoff = 0.03, verbose = TRUE)
 }
 \arguments{
-\item{data}{Data resulting from \code{\link{gen_tapas_data}}. May be in a binded
-\code{tibble} or \code{data.frame} from all subjects to include for
-training or a \code{list} with all subject data in unique elements.}
+\item{data}{Data resulting from \code{\link{gen_tapas_data}}. The \code{data} should be a \code{tibble} or
+\code{data.frame} containing binded subject data or a \code{list} object with all subject data. Data from these
+subjects will be used for model training.}
 
-\item{dsc_cutoff}{is \code{0.03} by default. Must be a single value between 0 and 1.
-This is the Sørensen's–Dice coefficient (DSC) value that will be used as a cutoff.
-Only subjects with Sørensen's–Dice coefficient (DSC) greater than or equal to \code{dsc_cutoff}
+\item{dsc_cutoff}{The Sørensen's–Dice coefficient (DSC) value to use as a cutoff for training inclusion.
+By default 0.03 is used. This must be a single value between 0 and 1. Only training subjects with a subject-specific
+threshold estimate resulting in Sørensen's–Dice coefficient (DSC) greater than or equal to the \code{dsc_cutoff}
 will be included in training the TAPAS model.}
 
-\item{verbose}{is \code{TRUE} by default. \code{TRUE} returns messages throughout the generating data
-function. \code{FALSE} will silence comment returns.}
+\item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
 \value{
-A \code{list} with the TAPAS model (\code{tapas_model}) in the first element of the list of class \code{gam} and the
-second element is a \code{tibble} with the clamp volume and threshold information (\code{clamp_data}).
+A \code{list} with the TAPAS model (\code{tapas_model}) of class \code{gam} and the
+a \code{tibble} with the clamp information (\code{clamp_data}). The clamp information contains the
+TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the
+10th and 90th percentile.
 }
 \description{
-This function trains the TAPAS model as a \code{tibble} or \code{data.frame}
-produced by an element from the output of the function \code{\link{gen_tapas_data}}.
+This function trains the TAPAS model from a \code{tibble} or \code{data.frame}
+produced from the \code{\link{gen_tapas_data}} function. The TAPAS model is fit and clamp data
+is calculated. The clamp data contains the predicted threshold when using the 10th and 90th percentile volume
+from training data.
 }
 \examples{
 \dontrun{
