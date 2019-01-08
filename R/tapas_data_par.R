@@ -39,34 +39,34 @@
 tapas_data_par <- function(cores = 1, thresholds = seq(from = 0, to = 1, by = 0.01), pmap, gold_standard, mask, k = 8, subject_id = NULL, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
-  if(is.logical(verbose) == FALSE){
-    stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+  if(base::is.logical(verbose) == FALSE){
+    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   # Check that files exists for pmap
-  if(is.list(pmap) == FALSE){
-    if(any(file.exists(pmap)) == FALSE){
-      stop('# At least one pmap file path does not exist.')
+  if(base::is.list(pmap) == FALSE){
+    if(base::any(base::file.exists(pmap)) == FALSE){
+      base::stop('# At least one pmap file path does not exist.')
     }
   }
 
   # Check that files exists for gold_standard
-  if(is.list(gold_standard) == FALSE){
-    if(any(file.exists(gold_standard)) == FALSE){
-      stop('# At least one gold_standard file path does not exist.')
+  if(base::is.list(gold_standard) == FALSE){
+    if(base::any(base::file.exists(gold_standard)) == FALSE){
+      base::stop('# At least one gold_standard file path does not exist.')
     }
   }
 
   # Check that files exists for mask
-  if(is.list(mask) == FALSE){
-    if(any(file.exists(mask)) == FALSE){
-      stop('# At least one mask file path does not exist.')
+  if(base::is.list(mask) == FALSE){
+    if(base::any(base::file.exists(mask)) == FALSE){
+      base::stop('# At least one mask file path does not exist.')
     }
   }
 
   # Check that pmap, gold_standard, mask, and subject_id are all the same length
-  if(length(pmap) != length(gold_standard) | length(pmap) == length(mask) | length(pmap) == length(subject_id)){
-    stop("# pmap, gold_standard, mask, or subject_id are not of equal lengths.")
+  if(base::length(pmap) != base::length(gold_standard) | base::length(pmap) == base::length(mask) | base::length(pmap) == base::length(subject_id)){
+    base::stop("# pmap, gold_standard, mask, or subject_id are not of equal lengths.")
   }
 
   tapas_parallel <- function(i){
@@ -77,7 +77,7 @@ tapas_data_par <- function(cores = 1, thresholds = seq(from = 0, to = 1, by = 0.
                                   k = 8,
                                   subject_id = subject_id[[i]],
                                   verbose = TRUE)
-    return(subject_data)
+    base::return(subject_data)
   }
 
   if(Sys.info()["sysname"] == "Windows"){

@@ -39,12 +39,12 @@
 gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01), pmap, gold_standard, mask, k = 8, subject_id = NULL, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
-  if(is.logical(verbose) == FALSE){
-    stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+  if(base::is.logical(verbose) == FALSE){
+    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   if(verbose == TRUE){
-    message('# Validating parameter inputs.')
+    base::message('# Validating parameter inputs.')
   }
   # Verify inputs are NIFTI objects
   pmap = neurobase::check_nifti(pmap)
@@ -52,7 +52,7 @@ gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01), pmap, 
   mask = neurobase::check_nifti(mask)
 
   # Check that grid is a vector from 0 to 1
-  if(is.numeric(thresholds) == FALSE | any(thresholds < 0) == TRUE | any(thresholds > 1) == TRUE){
+  if(base::is.numeric(thresholds) == FALSE | base::any(thresholds < 0) == TRUE | base::any(thresholds > 1) == TRUE){
     stop('# thresholds must be a vector between 0 and 1.')
   }
 
@@ -60,13 +60,16 @@ gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01), pmap, 
   pmap = c(pmap[mask == 1])
 
   # Obtain a matrix of 0/1 after threhsolding at each threshold value
-  pred_lesion = sapply(thresholds, function(x) {ifelse(pmap > x, 1, 0)})
+  pred_lesion = base::sapply(thresholds, function(x) {base::ifelse(pmap > x, 1, 0)})
 
   # initialize a results tibble
-  results = tibble::tibble(threshold = thresholds, dsc = thresholds, volume =  thresholds, subject_id = subject_id)
+  results = tibble::tibble(threshold = thresholds,
+                           dsc = thresholds,
+                           volume =  thresholds,
+                           subject_id = subject_id)
 
   if(verbose == TRUE){
-    message('# Obtaining threshold level information.')
+    base::message('# Obtaining threshold level information.')
   }
 
   # function to calculate the volume and DSC at each threshold
@@ -74,7 +77,7 @@ gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01), pmap, 
     # Fill in the predicted lesion values from threshold j to a temporary mask
     temp_lmask[mask == 1] = pred_lesion[,j]
 
-    if(sum(temp_lmask) != 0){
+    if(base::sum(temp_lmask) != 0){
       # Label the lesion connected components
       # Remove any lesion smaller than k connected components
       temp_lmask = extrantsr::label_mask(temp_lmask, k = k)
@@ -89,8 +92,8 @@ gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01), pmap, 
 
   }
 
-  results = lapply(1:length(thresholds), calc_dv, temp_lmask = mask, subject_id = subject_id) %>%
+  results = base::lapply(1:length(thresholds), calc_dv, temp_lmask = mask, subject_id = subject_id) %>%
     dplyr::bind_rows()
 
-  return(results)
+  base::return(results)
 }
