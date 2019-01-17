@@ -2,6 +2,7 @@
 
 export(gen_tapas_data)
 export(predict_tapas)
+export(predict_tapas_par)
 export(tapas_data_par)
 export(train_tapas)
 importFrom(aliviateR,dsc)

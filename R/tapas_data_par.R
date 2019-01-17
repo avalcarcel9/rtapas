@@ -1,14 +1,14 @@
 #' @title Generates The TAPAS Training Data in Parallel
-#' @description This function wraps the \code{\link{gen_tapas_data}} to run in parallel. We create the
+#' @description This function wraps \code{\link{gen_tapas_data}} to run in parallel. We create the
 #' training vectors for subjects from a probability map, gold standard mask (normally
 #' manual segmentation), and brain mask. For a grid of thresholds provided and applied to the
 #' probability map it calculates Sørensen's–Dice coefficient between the automatic volume and the
 #' gold standard volume as well as the automatic volume estimation for each threshold.
+#' @param cores The number of cores to use. This argument controls at most how many child processes will
+#' be run simultaneously. The default is set to 1.
 #' @param thresholds A \code{vector} of thresholds to apply to the probability maps. The default
 #' \code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be
 #' between 0 and 1.
-#' @param cores The number of cores to use. This argument controls at most how many child processes will
-#' be run simultaneously. The default is set to 1.
 #' @param pmap A \code{vector} of \code{character} file paths to probability map images or a
 #' \code{list} object with elements of class \code{nifti}.
 #' @param gold_standard A \code{vector} of \code{character} file paths to gold standard images (normally
@@ -23,7 +23,7 @@
 #' @param subject_id A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
 #' provide an ID.
 #' @param ret A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the
-#' function as a list in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
+#' function as a \code{list} in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
 #' saved.
 #' @param outfile Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
 #' in the local R environment. To save each subject-level \code{tibble} as an R object
@@ -97,14 +97,14 @@ tapas_data_par <- function(cores = 1,
     base::stop("# pmap, gold_standard, mask, or subject_id are not of equal lengths.")
   }
 
-  tapas_parallel <- function(i){
+  data_parallel <- function(i){
     subject_data = gen_tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
                                   pmap = pmap[[i]],
                                   gold_standard = gold_standard[[i]],
                                   mask = mask[[i]],
-                                  k = 8,
+                                  k = k,
                                   subject_id = subject_id[[i]],
-                                  verbose = TRUE)
+                                  verbose = verbose)
     # Return the tibble and do not save outfile
     if(ret == TRUE & base::is.null(outfile) == FALSE){
       base::return(subject_data)
@@ -136,10 +136,10 @@ tapas_data_par <- function(cores = 1,
   if(Sys.info()["sysname"] == "Windows"){
     cl = parallel::makeCluster(cores)
     doParallel::registerDoParallel(cl)
-    results = foreach::foreach(i = 1:length(pmap)) %dopar% tapas_parallel(i)
+    results = foreach::foreach(i = 1:length(pmap)) %dopar% data_parallel(i)
     stopCluster(cl)
   } else if (Sys.info()["sysname"] != "Windows"){
-    results = parallel::mclapply(1:length(pmap), tapas_parallel, mc.cores = cores)
+    results = parallel::mclapply(1:length(pmap), data_parallel, mc.cores = cores)
   }
 
   if(ret == TRUE){

@@ -35,7 +35,7 @@ Sørensen's–Dice coefficient (DSC) calculation.}
 provide an ID.}
 
 \item{ret}{A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the
-function as a list in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
+function as a \code{list} in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
 saved.}
 
 \item{outfile}{Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
@@ -48,7 +48,7 @@ specify a \code{list} or \code{vector} of file paths to save with either .rds or
 A list of the \code{tibble} object returned from \code{\link{gen_tapas_data}} for each subject.
 }
 \description{
-This function wraps the \code{\link{gen_tapas_data}} to run in parallel. We create the
+This function wraps \code{\link{gen_tapas_data}} to run in parallel. We create the
 training vectors for subjects from a probability map, gold standard mask (normally
 manual segmentation), and brain mask. For a grid of thresholds provided and applied to the
 probability map it calculates Sørensen's–Dice coefficient between the automatic volume and the
