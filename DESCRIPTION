@@ -23,6 +23,7 @@ Imports:
     neurobase (>= 1.13.2),
     parallel (>= 3.5.0),
     rlang (>= 0.3.0.1),
+    stringr (>= 1.3.0),
     tibble (>= 1.7.0)
 Suggests: 
     covr,

@@ -22,11 +22,18 @@
 #' Sørensen's–Dice coefficient (DSC) calculation.
 #' @param subject_id A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
 #' provide an ID.
+#' @param ret A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the
+#' function as a list in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
+#' saved.
+#' @param outfile Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
+#' in the local R environment. To save each subject-level \code{tibble} as an R object
+#' specify a \code{list} or \code{vector} of file paths to save with either .rds or .RData exentions included.
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach
 #' @importFrom parallel makeCluster mclapply
+#' @importFrom stringr str_detect
 #' @return A list of the \code{tibble} object returned from \code{\link{gen_tapas_data}} for each subject.
 #' @examples \dontrun{
 #' tapas_data_par(cores = 1,
@@ -38,12 +45,6 @@
 #' verbose = TRUE)
 #' }
 
-### ADD A PARAMETER FOR FILEPATHS TO SAVE
-### ADD A PARAMETER TO RETURN OBJECTS OR NOT
-
-# outfile = NULL,
-# retimg = TRUE,
-
 tapas_data_par <- function(cores = 1,
                            thresholds = seq(from = 0, to = 1, by = 0.01),
                            pmap,
@@ -51,11 +52,18 @@ tapas_data_par <- function(cores = 1,
                            mask,
                            k = 8,
                            subject_id = NULL,
+                           ret = FALSE,
+                           outfile = NULL,
                            verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){
     base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+  }
+
+  # Check that ret is TRUE or FALSE
+  if(base::is.logical(ret) == FALSE){
+    base::stop('# ret must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   # Check that files exists for pmap
@@ -79,6 +87,11 @@ tapas_data_par <- function(cores = 1,
     }
   }
 
+  # Check that outfile is character
+  if(base::any(base::is.character(outfile)) == FALSE){
+    base::stop('# At least one outfile is not character. Must be character or NULL.')
+  }
+
   # Check that pmap, gold_standard, mask, and subject_id are all the same length
   if(base::length(pmap) != base::length(gold_standard) | base::length(pmap) == base::length(mask) | base::length(pmap) == base::length(subject_id)){
     base::stop("# pmap, gold_standard, mask, or subject_id are not of equal lengths.")
@@ -92,7 +105,32 @@ tapas_data_par <- function(cores = 1,
                                   k = 8,
                                   subject_id = subject_id[[i]],
                                   verbose = TRUE)
-    base::return(subject_data)
+    # Return the tibble and do not save outfile
+    if(ret == TRUE & base::is.null(outfile) == FALSE){
+      base::return(subject_data)
+    }
+    # Return the tibble and save to the outfile
+    if(ret == TRUE & base::is.null(outfile) == FALSE){
+      base::return(subject_data)
+      if(stringr::str_detect(outfile[[i]], '.rds') == TRUE){
+        base::saveRDS(subject_data, file = outfile[[i]])
+      } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
+        base::save(subject_data, file = outfile[[i]])
+      } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
+        base::stop('# outfile must have .rds or .RData extension.')
+      }
+    }
+    # Don't return the tibble and just save to the outfile
+    if(ret == FALSE & base::is.null(outfile) == FALSE){
+      if(stringr::str_detect(outfile[[i]], '.rds') == TRUE){
+        base::saveRDS(subject_data, file = outfile[[i]])
+      } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
+        base::save(subject_data, file = outfile[[i]])
+      } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
+        base::stop('# outfile must have .rds or .RData extension.')
+      }
+    }
+
   }
 
   if(Sys.info()["sysname"] == "Windows"){
@@ -104,5 +142,7 @@ tapas_data_par <- function(cores = 1,
     results = parallel::mclapply(1:length(pmap), tapas_parallel, mc.cores = cores)
   }
 
-  return(results)
+  if(ret == TRUE){
+    return(results)
+  }
 }

@@ -6,7 +6,7 @@
 \usage{
 tapas_data_par(cores = 1, thresholds = seq(from = 0, to = 1, by =
   0.01), pmap, gold_standard, mask, k = 8, subject_id = NULL,
-  verbose = TRUE)
+  ret = FALSE, outfile = NULL, verbose = TRUE)
 }
 \arguments{
 \item{cores}{The number of cores to use. This argument controls at most how many child processes will
@@ -33,6 +33,14 @@ Sørensen's–Dice coefficient (DSC) calculation.}
 
 \item{subject_id}{A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
 provide an ID.}
+
+\item{ret}{A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the
+function as a list in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
+saved.}
+
+\item{outfile}{Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
+in the local R environment. To save each subject-level \code{tibble} as an R object
+specify a \code{list} or \code{vector} of file paths to save with either .rds or .RData exentions included.}
 
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
