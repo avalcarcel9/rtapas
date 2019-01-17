@@ -1,9 +1,9 @@
 #' @title TAPAS Model Training
 #' @description  This function trains the TAPAS model from a \code{tibble} or \code{data.frame}
-#' produced from the \code{\link{gen_tapas_data}} function. The TAPAS model is fit and clamp data
+#' produced from the \code{\link{tapas_data}} function. The TAPAS model is fit and clamp data
 #' is calculated. The clamp data contains the predicted threshold when using the 10th and 90th percentile volume
 #' from training data.
-#' @param data Data resulting from \code{\link{gen_tapas_data}}. The \code{data} should be a \code{tibble} or
+#' @param data Data resulting from \code{\link{tapas_data}}. The \code{data} should be a \code{tibble} or
 #' \code{data.frame} containing binded subject data or a \code{list} object with all subject data. Data from these
 #' subjects will be used for model training.
 #' @param dsc_cutoff The Sørensen's–Dice coefficient (DSC) value to use as a cutoff for training inclusion.
@@ -24,11 +24,11 @@
 #' TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the
 #' 10th and 90th percentile.
 #' @examples \dontrun{
-#' # Put gen_tapas_data function here first then run train_tapas. Fix later.
-#' train_tapas(data = data, dsc_cutoff = 0.03, verbose = TRUE)
+#' # Put tapas_data function here first then run tapas_train. Fix later.
+#' tapas_train(data = data, dsc_cutoff = 0.03, verbose = TRUE)
 #' }
 
-train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
+tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(is.logical(verbose) == FALSE){
@@ -48,8 +48,8 @@ train_tapas <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   if(base::is.list(data) == TRUE){
     data = dplyr::bind_rows(data)
   } else if (base::is.data.frame(data) == FALSE & tibble::is_tibble(data) == FALSE){
-    base::stop('# data must be a list, data.frame, or tibble of stacked subject data objects from rtapas::gen_tapas_data(). \n
-          # The rtapas::gen_tapas_data() function returns a tibble by default.')
+    base::stop('# data must be a list, data.frame, or tibble of stacked subject data objects from rtapas::tapas_data(). \n
+          # The rtapas::tapas_data() function returns a tibble by default.')
   }
 
   if(verbose == TRUE){

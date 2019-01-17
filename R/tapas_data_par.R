@@ -1,5 +1,5 @@
 #' @title Generates The TAPAS Training Data in Parallel
-#' @description This function wraps \code{\link{gen_tapas_data}} to run in parallel. We create the
+#' @description This function wraps \code{\link{tapas_data}} to run in parallel. We create the
 #' training vectors for subjects from a probability map, gold standard mask (normally
 #' manual segmentation), and brain mask. For a grid of thresholds provided and applied to the
 #' probability map it calculates Sørensen's–Dice coefficient between the automatic volume and the
@@ -34,7 +34,7 @@
 #' @importFrom foreach foreach
 #' @importFrom parallel makeCluster mclapply
 #' @importFrom stringr str_detect
-#' @return A list of the \code{tibble} object returned from \code{\link{gen_tapas_data}} for each subject.
+#' @return A list of the \code{tibble} object returned from \code{\link{tapas_data}} for each subject.
 #' @examples \dontrun{
 #' tapas_data_par(cores = 1,
 #' thresholds = seq(from = 0, to = 1, by = 0.01),
@@ -98,7 +98,7 @@ tapas_data_par <- function(cores = 1,
   }
 
   data_parallel <- function(i){
-    subject_data = gen_tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
+    subject_data = tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
                                   pmap = pmap[[i]],
                                   gold_standard = gold_standard[[i]],
                                   mask = mask[[i]],

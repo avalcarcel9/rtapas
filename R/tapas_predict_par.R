@@ -1,14 +1,14 @@
 #' @title TAPAS Prediction in Parallel
-#' @description This function wraps \code{\link{predict_tapas}} to run in parallel. This function takes
+#' @description This function wraps \code{\link{tapas_predict}} to run in parallel. This function takes
 #' probability maps across subjects and predicts the subject specific threshold to apply based on the
-#' TAPAS model generated from \code{\link{train_tapas}}. The function will return or save a list of objects
+#' TAPAS model generated from \code{\link{tapas_train}}. The function will return or save a list of objects
 #' for each subject including the TAPAS predicted subject-specific threshold, the lesion mask produced from
 #' applying this threshold, as well as the lesion mask produced from using the group threshold.
 #' @param cores The number of cores to use. This argument controls at most how many child processes will
 #' be run simultaneously. The default is set to 1.
 #' @param pmap A \code{vector} of \code{character} file paths to probability map images or a
 #' \code{list} object with elements of class \code{nifti}.
-#' @param model The TAPAS model fit from \code{\link{train_tapas}} of class \code{gam}. This model will be
+#' @param model The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
 #' used to make subject-specific threshold predictions.
 #' @param clamp A \code{logical} object that is \code{TRUE} by default. This setting uses the clamped
 #' subject-specific threshold prediction rather than the prediction fit by the
@@ -33,7 +33,7 @@
 #' @importFrom parallel makeCluster mclapply
 #' @importFrom stringr str_detect
 #' @return A nested \code{list}. Each element in the list contains data from a subject. The subject data
-#' is a \code{list} object containing the objects returned from \code{\link{predict_tapas}}.
+#' is a \code{list} object containing the objects returned from \code{\link{tapas_predict}}.
 #' @examples \dontrun{
 #' tapas_data_par(cores = 1,
 #' thresholds = seq(from = 0, to = 1, by = 0.01),
@@ -44,7 +44,7 @@
 #' verbose = TRUE)
 #' }
 
-predict_tapas_par <- function(cores = 1,
+tapas_predict_par <- function(cores = 1,
                               pmap,
                               model,
                               clamp = TRUE,
@@ -76,7 +76,7 @@ predict_tapas_par <- function(cores = 1,
   }
 
   predict_parallel <- function(i){
-    subject_data = predict_tapas(pmap = pmap[[i]],
+    subject_data = tapas_predict(pmap = pmap[[i]],
                                  model = model,
                                  clamp = clamp,
                                  k = k,

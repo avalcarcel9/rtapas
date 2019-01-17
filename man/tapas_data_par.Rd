@@ -45,10 +45,10 @@ specify a \code{list} or \code{vector} of file paths to save with either .rds or
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
 \value{
-A list of the \code{tibble} object returned from \code{\link{gen_tapas_data}} for each subject.
+A list of the \code{tibble} object returned from \code{\link{tapas_data}} for each subject.
 }
 \description{
-This function wraps \code{\link{gen_tapas_data}} to run in parallel. We create the
+This function wraps \code{\link{tapas_data}} to run in parallel. We create the
 training vectors for subjects from a probability map, gold standard mask (normally
 manual segmentation), and brain mask. For a grid of thresholds provided and applied to the
 probability map it calculates Sørensen's–Dice coefficient between the automatic volume and the

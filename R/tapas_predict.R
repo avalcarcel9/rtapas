@@ -1,12 +1,12 @@
 #' @title TAPAS Prediction
 #' @description This function takes a probability map for a single subject and predicts the subject
-#' specific threshold to apply based on the TAPAS model generated from \code{\link{train_tapas}}.
+#' specific threshold to apply based on the TAPAS model generated from \code{\link{tapas_train}}.
 #' The function will return a list of objects including the TAPAS predicted subject-specific threshold,
 #' the lesion mask produced from applying this threshold, as well as the lesion mask
 #' produced from using the group threshold.
 #' @param pmap A \code{character} file path to probability map images or an object of
 #' class \code{nifti}.
-#' @param model The TAPAS model fit from \code{\link{train_tapas}} of class \code{gam}. This model will be
+#' @param model The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
 #' used to make subject-specific threshold predictions.
 #' @param clamp A \code{logical} object that is \code{TRUE} by default. This setting uses the clamped
 #' subject-specific threshold prediction rather than the prediction fit by the
@@ -32,11 +32,11 @@
 #' lesion segmentation mask obtained using the group threshold (\code{group_binary_mask}).
 #' @examples \dontrun{
 #' # Put the code from other examples in here
-#' predict_tapas(pmap, model, clamp = TRUE, k = 8, verbose = TRUE)
+#' tapas_predict(pmap, model, clamp = TRUE, k = 8, verbose = TRUE)
 #'
 #' }
 
-predict_tapas <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
+tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){

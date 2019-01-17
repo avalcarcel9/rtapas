@@ -29,7 +29,7 @@
 #' @return A \code{tibble} containing the training data. The data contains columns \code{threshold},
 #' Sørensen's–Dice coefficient (\code{dsc}), and \code{volume}.
 #' @examples \dontrun{
-#' gen_tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
+#' tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
 #' pmap = 'probability_map_subject_1.nii.gz',
 #' gold_standard = 'manual_segmentation_subject_1.nii.gz',
 #' mask = 'brain_mask_subject_1.nii.gz',
@@ -37,7 +37,7 @@
 #' subject_id = 'subject_1')
 #' }
 
-gen_tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
+tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
                            pmap,
                            gold_standard,
                            mask,
