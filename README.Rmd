@@ -4,15 +4,9 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Build Status](https://travis-ci.org/avalcarcel9/rtapas.svg?branch=master)](https://travis-ci.org/avalcarcel9/rtapas)
-
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/avalcarcel9/rtapas?branch=master&svg=true)](https://ci.appveyor.com/project/avalcarcel9/rtapas)
-
-[![CRAN_Release_Badge](http://www.r-pkg.org/badges/version-ago/rtapas)](https://CRAN.R-project.org/package=rtapas)
-
-
-
 # rtapas
+
+[![Build Status](https://travis-ci.org/avalcarcel9/rtapas.svg?branch=master)](https://travis-ci.org/avalcarcel9/rtapas)[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/avalcarcel9/rtapas?branch=master&svg=true)](https://ci.appveyor.com/project/avalcarcel9/rtapas)[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/rtapas)](https://cran.r-project.org/package=rtapas)
 
 The goal of `rtapas` is to determine a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific threhsolds to use on probability maps for automatic lesion segmentation.
 
@@ -50,7 +44,7 @@ This function creates the training vectors for a single subject from a probabili
 __Usage__:
 
 - `thresholds` A `vector` of thresholds to apply to the probability map. The default
-#' `vector` applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be between 0 and 1.  
+ `vector` applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be between 0 and 1.  
 - `pmap` A `character` file path to probability map images or an object of class `nifti`.
 - `gold_standard` A `character` file path to a gold standard image (normally a manual segmentation) or an object of class `nifti`. The gold standard segmentation is used to compare the thresholded probability map image using Sørensen's–Dice coefficient (DSC).  
 - `mask` A `character` file path to a brain mask image or an object of class `nifti`.  
@@ -87,7 +81,7 @@ __Usage__:
 - `gold_standard` A `vector` of `character` file paths to gold standard images (normally a manual segmentation) or a `list` object with elements of class `nifti`. The gold standard segmentation is used to compare the thresholded probability map image using Sørensen's–Dice coefficient (DSC).
 - `mask` A `vector` of `character` file paths to brain mask images or a `list` object with elements of class `nifti`.  
 - `k` The minimum number of voxels for a cluster/component. Passed to `label_mask`.
-#' Segmentation clusters of size less than k are removed from the mask, volume estimation, the and Sørensen's–Dice coefficient (DSC) calculation.  
+ Segmentation clusters of size less than k are removed from the mask, volume estimation, the and Sørensen's–Dice coefficient (DSC) calculation.  
 - `subject_id` A subject ID of class `character`. By default this is set to `NULL` but users must provide an ID.  
 - `ret` A `logical` argument set to `TRUE` by default. Return the `tibble` objects from the function as a `list` in the local R environement. If `FALSE` then `outfile` must be specified so subject data is saved.  
 - `outfile` Is set to `NULL` by default which only Return the subject-level `tibble` as a list in the local R environment. To save each subject-level `tibble` as an R object specify a `list` or `vector` of file paths to save with either .rds or .RData exentions included.  
