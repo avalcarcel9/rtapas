@@ -38,12 +38,12 @@
 #' }
 
 tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
-                           pmap,
-                           gold_standard,
-                           mask,
-                           k = 8,
-                           subject_id = NULL,
-                           verbose = TRUE){
+                       pmap,
+                       gold_standard,
+                       mask,
+                       k = 8,
+                       subject_id = NULL,
+                       verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){
@@ -55,8 +55,13 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
   }
   # Verify inputs are NIFTI objects
   pmap = neurobase::check_nifti(pmap)
-  gold_standard = neurobase::check_mask(gold_standard)
-  mask = neurobase::check_mask(mask)
+  gold_standard = neurobase::check_nifti(gold_standard)
+  mask = neurobase::check_nifti(mask)
+
+  # Check gold_standard and mask are both binary 0/1
+  if(neurobase::check_mask(gold_standard) == FALSE | neurobase::check_mask(mask) == FALSE){
+    stop('# gold_standard or mask is not binary.')
+  }
 
   # Check that grid is a vector from 0 to 1
   if(base::is.numeric(thresholds) == FALSE | base::any(thresholds < 0) == TRUE | base::any(thresholds > 1) == TRUE){

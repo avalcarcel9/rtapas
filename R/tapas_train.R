@@ -15,7 +15,7 @@
 #' @importFrom dplyr bind_rows filter group_by inner_join ungroup mutate select slice summarize
 #' @importFrom gtools inv.logit logit
 #' @importFrom magrittr "%>%"
-#' @importFrom mgcv gam predict.gam s
+#' @importFrom mgcv gam predict.gam
 #' @importFrom rlang .data
 #' @importFrom stats quantile
 #' @importFrom tibble tibble is_tibble
@@ -59,7 +59,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   # Calculate subject level threshold that produces maximum DSC
   subject_thresholds = data %>%
     dplyr::group_by(.data$subject_id) %>%
-    dplyr::slice(which.max(dsc)) %>%
+    dplyr::slice(base::which.max(dsc)) %>%
     dplyr::ungroup() %>%
     dplyr::select(-.data$volume)
 
@@ -83,7 +83,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   ## The volume produced using the group threshold
   ## The unique subject_id
   data = dplyr::inner_join(x = subject_thresholds, y = group_volumes,
-                           by = c(".data$subject_id" = ".data$subject_id"))
+                           by = c("subject_id" = "subject_id"))
 
   # Check for subjects with DSC less than the dsc_cutoff
   if(base::any(data$dsc < dsc_cutoff)){
@@ -110,7 +110,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   }
 
   # Fit the TAPAS model
-  tapas_model = mgcv::gam(formula = gtools::logit(threshold) ~ mgcv::s(volume),
+  tapas_model = mgcv::gam(formula = gtools::logit(threshold) ~ s(volume),
                           data = data)
 
   if(verbose == TRUE){
@@ -120,7 +120,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   # Based on the training data obtain the volume associated with the 10th and 90th percentile
   # Use these volumes to predict a threshold
   clamp_data = tibble::tibble(volume = c(stats::quantile(data$volume, .1), stats::quantile(data$volume, .9))) %>%
-    dplyr::mutate(pred_threshold = gtools::inv.logit(mgcv::predict.gam(tapas_model, .data$., type = "response")),
+    dplyr::mutate(pred_threshold = gtools::inv.logit(mgcv::predict.gam(tapas_model, ., type = "response")),
                   bound = c('lower', 'upper')) %>%
     dplyr::select(.data$bound, .data$volume, .data$pred_threshold)
 

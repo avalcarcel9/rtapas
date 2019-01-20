@@ -60,8 +60,8 @@ tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
 
   # Threshold pmap at the group threshold to obtain a naive volume estimate
   group_binary_mask = pmap
-  group_binary_mask[pmap > model$group_threshold] = 1
-  group_binary_mask[pmap <= model$group_threshold] = 0
+  group_binary_mask[pmap >= model$group_threshold] = 1
+  group_binary_mask[pmap < model$group_threshold] = 0
 
   # Remove connected components less than k then return mask to binary 0/1 after counted components
   group_binary_mask = extrantsr::label_mask(group_binary_mask, k = k)
@@ -101,8 +101,8 @@ tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
 
   # Update the binary mask using the subject-specific threshold
   tapas_binary_mask = pmap
-  tapas_binary_mask[pmap > model$subject_threshold] = 1
-  tapas_binary_mask[pmap <= model$subject_threshold] = 0
+  tapas_binary_mask[pmap >= subject_threshold[1]] = 1
+  tapas_binary_mask[pmap < subject_threshold[1]] = 0
 
   # Remove connected components less than k then return mask to binary 0/1 after counted components
   tapas_binary_mask = extrantsr::label_mask(tapas_binary_mask, k = k)
