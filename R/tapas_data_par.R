@@ -20,7 +20,7 @@
 #' @param k The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
 #' Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
 #' Sørensen's–Dice coefficient (DSC) calculation.
-#' @param subject_id A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
+#' @param subject_id A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
 #' provide an ID.
 #' @param ret A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the
 #' function as a \code{list} in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
@@ -93,33 +93,19 @@ tapas_data_par <- function(cores = 1,
   }
 
   # Check that pmap, gold_standard, mask, and subject_id are all the same length
-  if(base::length(pmap) != base::length(gold_standard) | base::length(pmap) == base::length(mask) | base::length(pmap) == base::length(subject_id)){
+  if(base::length(pmap) != base::length(gold_standard) | base::length(pmap) != base::length(mask) | base::length(pmap) != base::length(subject_id)){
     base::stop("# pmap, gold_standard, mask, or subject_id are not of equal lengths.")
   }
 
   data_parallel <- function(i){
     subject_data = tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
-                                  pmap = pmap[[i]],
-                                  gold_standard = gold_standard[[i]],
-                                  mask = mask[[i]],
-                                  k = k,
-                                  subject_id = subject_id[[i]],
-                                  verbose = verbose)
-    # Return the tibble and do not save outfile
-    if(ret == TRUE & base::is.null(outfile) == FALSE){
-      base::return(subject_data)
-    }
-    # Return the tibble and save to the outfile
-    if(ret == TRUE & base::is.null(outfile) == FALSE){
-      base::return(subject_data)
-      if(stringr::str_detect(outfile[[i]], '.rds') == TRUE){
-        base::saveRDS(subject_data, file = outfile[[i]])
-      } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
-        base::save(subject_data, file = outfile[[i]])
-      } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
-        base::stop('# outfile must have .rds or .RData extension.')
-      }
-    }
+                              pmap = pmap[[i]],
+                              gold_standard = gold_standard[[i]],
+                              mask = mask[[i]],
+                              k = k,
+                              subject_id = subject_id[[i]],
+                              verbose = verbose)
+
     # Don't return the tibble and just save to the outfile
     if(ret == FALSE & base::is.null(outfile) == FALSE){
       if(stringr::str_detect(outfile[[i]], '.rds') == TRUE){
@@ -130,7 +116,22 @@ tapas_data_par <- function(cores = 1,
         base::stop('# outfile must have .rds or .RData extension.')
       }
     }
-
+    # Return the tibble and save to the outfile
+    if(ret == TRUE & base::is.null(outfile) == FALSE){
+      if(stringr::str_detect(outfile[[i]], '.rds') == TRUE){
+        base::saveRDS(subject_data, file = outfile[[i]])
+      } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
+        base::save(subject_data, file = outfile[[i]])
+      } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
+        base::stop('# outfile must have .rds or .RData extension.')
+      }
+      base::return(subject_data)
+    }
+    # Return the tibble and do not save outfile
+    if(ret == TRUE & base::is.null(outfile) == TRUE){
+      base::return(subject_data)
+      message('ret == TRUE & base::is.null(outfile) == TRUE')
+    }
   }
 
   if(Sys.info()["sysname"] == "Windows"){

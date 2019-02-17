@@ -81,21 +81,7 @@ tapas_predict_par <- function(cores = 1,
                                  clamp = clamp,
                                  k = k,
                                  verbose = verbose)
-    # Return the list and do not save outfile
-    if(ret == TRUE & base::is.null(outfile) == FALSE){
-      base::return(subject_data)
-    }
-    # Return the list and save to the outfile
-    if(ret == TRUE & base::is.null(outfile) == FALSE){
-      base::return(subject_data)
-      if(stringr::str_detect(outfile[[i]], '.rds') == TRUE){
-        base::saveRDS(subject_data, file = outfile[[i]])
-      } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
-        base::save(subject_data, file = outfile[[i]])
-      } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
-        base::stop('# outfile must have .rds or .RData extension.')
-      }
-    }
+
     # Don't return the list and just save to the outfile
     if(ret == FALSE & base::is.null(outfile) == FALSE){
       if(stringr::str_detect(outfile[[i]], '.rds') == TRUE){
@@ -106,6 +92,24 @@ tapas_predict_par <- function(cores = 1,
         base::stop('# outfile must have .rds or .RData extension.')
       }
     }
+
+    # Return the list and save to the outfile
+    if(ret == TRUE & base::is.null(outfile) == FALSE){
+      if(stringr::str_detect(outfile[[i]], '.rds') == TRUE){
+        base::saveRDS(subject_data, file = outfile[[i]])
+      } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
+        base::save(subject_data, file = outfile[[i]])
+      } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
+        base::stop('# outfile must have .rds or .RData extension.')
+      }
+      base::return(subject_data)
+    }
+
+    # Return the list and do not save outfile
+    if(ret == TRUE & base::is.null(outfile) == TRUE){
+      base::return(subject_data)
+    }
+
 
   }
 

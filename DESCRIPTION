@@ -31,8 +31,8 @@ Suggests:
 Remotes:
     avalcarcel9/aliviateR,
     muschellij2/extrantsr,
-    stnava/ITKR,
-    RMHogervorst/badgecreatr
+    RMHogervorst/badgecreatr,
+    stnava/ITKR
 VignetteBuilder: knitr
 ByteCompile: true
 RoxygenNote: 6.1.1

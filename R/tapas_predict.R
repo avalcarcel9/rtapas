@@ -6,6 +6,8 @@
 #' produced from using the group threshold.
 #' @param pmap A \code{character} file path to probability map images or an object of
 #' class \code{nifti}.
+#' @param subject_id A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
+#' provide an ID.
 #' @param model The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
 #' used to make subject-specific threshold predictions.
 #' @param clamp A \code{logical} object that is \code{TRUE} by default. This setting uses the clamped
@@ -36,7 +38,7 @@
 #'
 #' }
 
-tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
+tapas_predict <- function(pmap, subject_id, model, clamp = TRUE, k = 8, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){
@@ -109,7 +111,8 @@ tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
   tapas_binary_mask[tapas_binary_mask > 0] = 1
 
   # Return subject-specific threshold, tapas lesion mask, group lesion mask
-  base::return(base::list(subject_threshold = subject_threshold,
+  base::return(base::list(subject_id = subject_id[[i]],
+                          subject_threshold = subject_threshold,
                           tapas_binary_mask = tapas_binary_mask,
                           group_binary_mask = group_binary_mask))
 }
