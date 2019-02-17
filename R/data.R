@@ -127,3 +127,125 @@ NULL
 NULL
 
 
+#' @title Probability Map 1
+#' @description Probability map simulated for subject 1. Simulated from uniform(0.2, 0.4).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap1
+#' @docType data
+#' @usage pmap1
+NULL
+
+#' @title Probability Map 2
+#' @description Probability map simulated for subject 2. Simulated from uniform(0.3, 0.6).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap2
+#' @docType data
+#' @usage pmap2
+NULL
+
+#' @title Probability Map 3
+#' @description Probability map simulated for subject 3. Simulated from uniform(0.1, 0.8).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap3
+#' @docType data
+#' @usage pmap3
+NULL
+
+#' @title Probability Map 4
+#' @description Probability map simulated for subject 4. Simulated from uniform(0.6, 0.9).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap4
+#' @docType data
+#' @usage pmap4
+NULL
+
+#' @title Probability Map 5
+#' @description Probability map simulated for subject 5. Simulated from uniform(0.3, 0.7).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap5
+#' @docType data
+#' @usage pmap5
+NULL
+
+#' @title Probability Map 6
+#' @description Probability map simulated for subject 6. Simulated from uniform(0.25, 0.3).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap6
+#' @docType data
+#' @usage pmap6
+NULL
+
+#' @title Probability Map 7
+#' @description Probability map simulated for subject 7. Simulated from uniform(0.1, 0.3).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap7
+#' @docType data
+#' @usage pmap7
+NULL
+
+#' @title Probability Map 8
+#' @description Probability map simulated for subject 8. Simulated from uniform(0.55, 0.75).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap8
+#' @docType data
+#' @usage pmap8
+NULL
+
+#' @title Probability Map 9
+#' @description Probability map simulated for subject 9. Simulated from uniform(0.15, 0.45).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap9
+#' @docType data
+#' @usage pmap9
+NULL
+
+#' @title Probability Map 10
+#' @description Probability map simulated for subject 10. Simulated from uniform(0.7, 0.9).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap10
+#' @docType data
+#' @usage pmap10
+NULL
+
+#' @title Probability Map 11
+#' @description Probability map simulated for subject 11. Simulated from uniform(0.2, 0.8).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap11
+#' @docType data
+#' @usage pmap11
+NULL
+
+#' @title Probability Map 12
+#' @description Probability map simulated for subject 12. Simulated from uniform(0.05, 0.3).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap12
+#' @docType data
+#' @usage pmap12
+NULL
+
+#' @title Probability Map 13
+#' @description Probability map simulated for subject 13. Simulated from uniform(0.23, 0.3).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap13
+#' @docType data
+#' @usage pmap13
+NULL
+
+#' @title Probability Map 14
+#' @description Probability map simulated for subject 14. Simulated from uniform(0.5, 0.65).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap14
+#' @docType data
+#' @usage pmap14
+NULL
+
+#' @title Probability Map 15
+#' @description Probability map simulated for subject 15. Simulated from uniform(0.2, 0.6).
+#' This data was created by Alessandra Valcarcel and is artificial for example purposes.
+#' @name pmap15
+#' @docType data
+#' @usage pmap15
+NULL
+
+
+
