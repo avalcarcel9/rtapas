@@ -85,10 +85,10 @@ tapas_predict_par <- function(cores = 1,
                                  k = k,
                                  verbose = verbose)
 
-    subject_data = base::list(subject_id,
-                              subject_data$subject_threshold,
-                              subject_data$tapas_binary_mask,
-                              subject_data$group_binary_mask)
+    subject_data = base::list(subject_id = subject_id[[i]],
+                              subject_threshold = subject_data$subject_threshold,
+                              tapas_binary_mask = subject_data$tapas_binary_mask,
+                              group_binary_mask = subject_data$group_binary_mask)
 
 
     # Don't return the list and just save to the outfile
