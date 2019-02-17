@@ -8,6 +8,8 @@
 #' be run simultaneously. The default is set to 1.
 #' @param pmap A \code{vector} of \code{character} file paths to probability map images or a
 #' \code{list} object with elements of class \code{nifti}.
+#' @param subject_id A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
+#' provide an ID.
 #' @param model The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
 #' used to make subject-specific threshold predictions.
 #' @param clamp A \code{logical} object that is \code{TRUE} by default. This setting uses the clamped
@@ -46,6 +48,7 @@
 
 tapas_predict_par <- function(cores = 1,
                               pmap,
+                              subject_id,
                               model,
                               clamp = TRUE,
                               k = 8,
@@ -81,6 +84,12 @@ tapas_predict_par <- function(cores = 1,
                                  clamp = clamp,
                                  k = k,
                                  verbose = verbose)
+
+    subject_data = base::list(subject_id,
+                              subject_data$subject_threshold,
+                              subject_data$tapas_binary_mask,
+                              subject_data$group_binary_mask)
+
 
     # Don't return the list and just save to the outfile
     if(ret == FALSE & base::is.null(outfile) == FALSE){

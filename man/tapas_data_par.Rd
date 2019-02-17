@@ -31,7 +31,7 @@ with elements of class \code{nifti}.}
 Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
 Sørensen's–Dice coefficient (DSC) calculation.}
 
-\item{subject_id}{A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
+\item{subject_id}{A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
 provide an ID.}
 
 \item{ret}{A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the

@@ -4,8 +4,8 @@
 \alias{tapas_predict_par}
 \title{TAPAS Prediction in Parallel}
 \usage{
-tapas_predict_par(cores = 1, pmap, model, clamp = TRUE, k = 8,
-  ret = FALSE, outfile = NULL, verbose = TRUE)
+tapas_predict_par(cores = 1, pmap, subject_id, model, clamp = TRUE,
+  k = 8, ret = FALSE, outfile = NULL, verbose = TRUE)
 }
 \arguments{
 \item{cores}{The number of cores to use. This argument controls at most how many child processes will
@@ -13,6 +13,9 @@ be run simultaneously. The default is set to 1.}
 
 \item{pmap}{A \code{vector} of \code{character} file paths to probability map images or a
 \code{list} object with elements of class \code{nifti}.}
+
+\item{subject_id}{A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
+provide an ID.}
 
 \item{model}{The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
 used to make subject-specific threshold predictions.}
