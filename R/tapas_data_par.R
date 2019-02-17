@@ -31,8 +31,8 @@
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
 #' @importFrom doParallel registerDoParallel
-#' @importFrom foreach foreach
-#' @importFrom parallel makeCluster mclapply
+#' @importFrom foreach foreach %dopar%
+#' @importFrom parallel makeCluster mclapply stopCluster
 #' @importFrom stringr str_detect
 #' @return A list of the \code{tibble} object returned from \code{\link{tapas_data}} for each subject.
 #' @examples \dontrun{

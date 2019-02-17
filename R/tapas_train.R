@@ -120,7 +120,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   # Based on the training data obtain the volume associated with the 10th and 90th percentile
   # Use these volumes to predict a threshold
   clamp_data = tibble::tibble(volume = c(stats::quantile(data$volume, .1), stats::quantile(data$volume, .9))) %>%
-    dplyr::mutate(pred_threshold = gtools::inv.logit(mgcv::predict.gam(tapas_model, ., type = "response")),
+    dplyr::mutate(pred_threshold = gtools::inv.logit(mgcv::predict.gam(tapas_model, .data$., type = "response")),
                   bound = c('lower', 'upper')) %>%
     dplyr::select(.data$bound, .data$volume, .data$pred_threshold)
 

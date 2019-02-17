@@ -31,8 +31,8 @@
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
 #' @importFrom doParallel registerDoParallel
-#' @importFrom foreach foreach
-#' @importFrom parallel makeCluster mclapply
+#' @importFrom foreach foreach %dopar%
+#' @importFrom parallel makeCluster mclapply stopCluster
 #' @importFrom stringr str_detect
 #' @return A nested \code{list}. Each element in the list contains data from a subject. The subject data
 #' is a \code{list} object containing the objects returned from \code{\link{tapas_predict}}.
@@ -126,7 +126,7 @@ tapas_predict_par <- function(cores = 1,
     cl = parallel::makeCluster(cores)
     doParallel::registerDoParallel(cl)
     results = foreach::foreach(i = 1:length(pmap)) %dopar% predict_parallel(i)
-    stopCluster(cl)
+    parallel::stopCluster(cl)
   } else if (Sys.info()["sysname"] != "Windows"){
     results = parallel::mclapply(1:length(pmap), predict_parallel, mc.cores = cores)
   }
