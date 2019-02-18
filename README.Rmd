@@ -17,8 +17,9 @@ This packages is still under construction and development. Please check back whe
 To get the latest development version from GitHub:
 
 ```{r, eval = FALSE}
-# install.packages('devtools')
-devtools::install_github('avalcarcel9/rtapas')
+# install.packages('remotes')
+library(remotes)
+remotes::install_github('avalcarcel9/rtapas')
 ```
 
 We are currently working to get the package on [Neuroconductor](www.neuroconductor.org).
@@ -138,6 +139,7 @@ A `list` containing the TAPAS predicted subject-specific threshold (`subject_thr
 ```{r, eval = FALSE}
 tapas_predict_par(cores = 1,
                   pmap,
+                  subject_id,
                   model,
                   clamp = TRUE,
                   k = 8,
@@ -154,6 +156,7 @@ __Usage__:
 
 - `cores` The number of cores to use. This argument controls at most how many child processes will be run simultaneously. The default is set to 1.
 - `pmap` A `vector` of `character` file paths to probability map images or a `list` object with elements of class `nifti`.
+- `subject_id` A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must provide an ID.
 - `model` The TAPAS model fit from ``tapas_train`` of class `gam`. This model will be used to make subject-specific threshold predictions.
 - `clamp` A `logical` object that is `TRUE` by default. This setting uses the clamped subject-specific threshold prediction rather than the prediction fit by the TAPAS `model`. This only applied to volumes exceeding those at the 10th and 90th percentile calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate falls in the tails of the TAPAS model. If `FALSE` then the the TAPAS `model` predicted threshold will be used for segmentation rather than the clamped threshold. The clamping method was used in published work.
 - `k` The minimum number of voxels for a cluster/component. Passed to `\link[extrantsr]{label_mask``. Segmentation clusters of size less than k are removed from the mask, volume estimation, the and Sørensen's–Dice coefficient (DSC) calculation. @param ret A `logical` argument set to `TRUE` by default. Returns a nested `list` of objects from the function to the local R environement. If `FALSE` then `outfile` must be specified so subject data is saved.

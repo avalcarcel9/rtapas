@@ -25,8 +25,8 @@ back when the builds are stable.
 To get the latest development version from GitHub:
 
 ``` r
-# install.packages('devtools')
-devtools::install_github('avalcarcel9/rtapas')
+# install.packages('remotes')
+remotes::install_github('avalcarcel9/rtapas')
 ```
 
 We are currently working to get the package on
@@ -238,6 +238,7 @@ the lesion segmentation mask obtained using the group threshold
 ``` r
 tapas_predict_par(cores = 1,
                   pmap,
+                  subject_id,
                   model,
                   clamp = TRUE,
                   k = 8,
@@ -263,6 +264,8 @@ lesion mask produced from using the group threshold.
     set to 1.
   - `pmap` A `vector` of `character` file paths to probability map
     images or a `list` object with elements of class `nifti`.
+  - `subject_id` A  of subject IDs of class . By default this is set to 
+    but users must provide an ID.
   - `model` The TAPAS model fit from `tapas_train` of class `gam`. This
     model will be used to make subject-specific threshold predictions.
   - `clamp` A `logical` object that is `TRUE` by default. This setting

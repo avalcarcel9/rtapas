@@ -28,7 +28,8 @@ Imports:
     tibble (>= 1.7.0)
 Suggests: 
     covr,
-    knitr
+    knitr,
+    remotes
 Remotes:
     avalcarcel9/aliviateR,
     muschellij2/extrantsr,
