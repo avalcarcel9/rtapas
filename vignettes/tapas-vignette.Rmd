@@ -189,7 +189,6 @@ The packages you will need to load for use with this tutorial are below:
 library(rtapas)
 library(neurobase)
 library(oro.nifti)
-library(patchwork)
 ```
 
 # Tutorial Data
