@@ -29,7 +29,10 @@ Imports:
 Suggests: 
     covr,
     knitr,
-    remotes
+    remotes,
+    bookdown,
+    oro.nifti,
+    patchwork
 Remotes:
     avalcarcel9/aliviateR,
     muschellij2/extrantsr,

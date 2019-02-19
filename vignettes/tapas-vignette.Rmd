@@ -1,14 +1,15 @@
 ---
-title: "rtapas Vignette"
+title: "rtapas: An R Package for Thresholding Approach for Probability Map Automatic Segmentation (TAPAS)"
 author: "Alessandra Valcarcel"
 date: "`r Sys.Date()`"
+# output: rmarkdown::github_document
 output:
     bookdown::html_document2:
       base_format: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{rtapas}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include = FALSE}
@@ -17,6 +18,10 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+# Overview
+
+The `rtapas` package determines a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates the data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific threhsolds to use on probability maps for automatic lesion segmentation.
 
 # Installation
 
@@ -93,8 +98,8 @@ __Usage__:
 - `k` The minimum number of voxels for a cluster/component. Passed to `label_mask`.
  Segmentation clusters of size less than k are removed from the mask, volume estimation, the and Sørensen's–Dice coefficient (DSC) calculation.  
 - `subject_id` A subject ID of class `character`. By default this is set to `NULL` but users must provide an ID.  
-- `ret` A `logical` argument set to `TRUE` by default. Return the `tibble` objects from the function as a `list` in the local R environement. If `FALSE` then `outfile` must be specified so subject data is saved.  
-- `outfile` Is set to `NULL` by default which only Return the subject-level `tibble` as a list in the local R environment. To save each subject-level `tibble` as an R object specify a `list` or `vector` of file paths to save with either .rds or .RData exentions included.  
+- `ret` A `logical` argument set to `TRUE` by default. Return the `tibble` objects from the function as a `list` in the local R environment. If `FALSE` then `outfile` must be specified so subject data is saved.  
+- `outfile` Is set to `NULL` by default which only Return the subject-level `tibble` as a list in the local R environment. To save each subject-level `tibble` as an R object specify a `list` or `vector` of file paths to save with either .rds or .RData exertions included.  
 - `verbose` A `logical` argument to print messages. Set to `TRUE` by default.  
 
 __Return__: 
@@ -169,15 +174,105 @@ __Usage__:
 - `model` The TAPAS model fit from ``tapas_train`` of class `gam`. This model will be used to make subject-specific threshold predictions.
 - `clamp` A `logical` object that is `TRUE` by default. This setting uses the clamped subject-specific threshold prediction rather than the prediction fit by the TAPAS `model`. This only applied to volumes exceeding those at the 10th and 90th percentile calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate falls in the tails of the TAPAS model. If `FALSE` then the the TAPAS `model` predicted threshold will be used for segmentation rather than the clamped threshold. The clamping method was used in published work.
 - `k` The minimum number of voxels for a cluster/component. Passed to `\link[extrantsr]{label_mask``. Segmentation clusters of size less than k are removed from the mask, volume estimation, the and Sørensen's–Dice coefficient (DSC) calculation. @param ret A `logical` argument set to `TRUE` by default. Returns a nested `list` of objects from the function to the local R environement. If `FALSE` then `outfile` must be specified so subject data is saved.
-- `outfile` Is set to `NULL` by default which only returns the subject-level `tibble` as a list in the local R environment. To save each subject-level `tibble` as an R object specify a `list` or `vector` of file paths to save with either .rds or .RData exentions included.
+- `outfile` Is set to `NULL` by default which only returns the subject-level `tibble` as a list in the local R environment. To save each subject-level `tibble` as an R object specify a `list` or `vector` of file paths to save with either .rds or .RData exertions included.
 - `verbose` A `logical` argument to print messages. Set to `TRUE` by default.
 
 __Return__:
 
 A nested `list`. Each element in the list contains data from a subject. The subject data is a `list` object containing the objects returned from ``tapas_predict``.
 
+# Packages
 
-# Data
+The packages you will need to load for use with this tutorial are below:
+
+```{r}
+library(rtapas)
+library(neurobase)
+library(oro.nifti)
+library(patchwork)
+```
+
+# Tutorial Data
+
+TAPAS is a post-hoc approach to determine a subject-specific threshold for automatic segmentation of probability maps in the context of MS lesions. To apply TAPAS, users should first run an automatic segmentation method of choice to obtain probability maps. At this point, TAPAS can be applied in order to obtain subject-specific thresholds for segmentation. In the original TAPAS work we used MIMoSA ([1](https://onlinelibrary.wiley.com/doi/full/10.1111/jon.12506),[2](https://www.sciencedirect.com/science/article/pii/S2213158218303231)) as the automatic segmentation algorithm to generate probability maps which has software available on [Neuroconductor](https://neuroconductor.org/package/mimosa) and documentation on [GitHub](https://github.com/avalcarcel9/mimosa/blob/master/vignettes/mimosa_git.md). The data provided in this package and used throughout this vignette are synthetic. The package contains 15 2D "gold standard" masks that were created by Alessandra Valcarcel to appear similar to manually segmented lesion masks. The package also includes "probability maps" that were created by randomly generating uniform data for each subject inside of the "gold standard"" masks. Each map is generated using different end points so that the probability distribution is variable across subjects. The package also contains a single brain mask that applies to all synthetic gold standard and probability maps.
+
+Since these probability maps are generated randomly from a uniform distribution the spatial distribution of probability is quite different than when real data is used. Probability maps generated from real data tend to have higher probabilities in the center of lesions and decrease at the edges of lesions. The synthetic data results in speckled automatic masks because uniformly generated data does not incorporate spatial information.
+
+The authors would like to re-iterate that all data available in the package and used throughout this vignette are synthetic and created by the authors simply for demonstration of the package usage. The data is meant to mimic a simple set of real data.
+
+## Load Data
+
+The data contained in this package contains 2D slices of 15 synthetic gold standard segmentations, 15 probability maps, and a single brain mask that can be used for all 30 subjects and is set `Lazy Data: true`. These are saved as arrays which we will convert to   `nifti` objects. To use the data throughout this tutorial we will initialize the gold standard masks, probability maps, and brain masks into a list.
+
+### Gold Standard Masks
+
+```{r}
+# Make a list of the gold standard masks
+all_gold_standard_masks = list(gs1 = gs1, 
+                               gs2 = gs2, 
+                               gs3 = gs3, 
+                               gs4 = gs4, 
+                               gs5 = gs5, 
+                               gs6 = gs6, 
+                               gs7 = gs7, 
+                               gs8 = gs8, 
+                               gs9 = gs9, 
+                               gs10 = gs10, 
+                               gs11 = gs11, 
+                               gs12 = gs12, 
+                               gs13 = gs13, 
+                               gs14 = gs14, 
+                               gs15 = gs15)
+# Convert the gold standard masks to nifti objects
+all_gold_standard_masks = lapply(all_gold_standard_masks, oro.nifti::nifti)
+# Show the gold standard masks using patchwork
+oro.nifti::image(all_gold_standard_masks$gs1) + oro.nifti::image(all_gold_standard_masks$gs2) + 
+oro.nifti::image(all_gold_standard_masks$gs3) + oro.nifti::image(all_gold_standard_masks$gs4) +
+oro.nifti::image(all_gold_standard_masks$gs5) + oro.nifti::image(all_gold_standard_masks$gs6) +
+oro.nifti::image(all_gold_standard_masks$gs7) + oro.nifti::image(all_gold_standard_masks$gs8) +
+oro.nifti::image(all_gold_standard_masks$gs9) + oro.nifti::image(all_gold_standard_masks$gs10) +
+oro.nifti::image(all_gold_standard_masks$gs11) + oro.nifti::image(all_gold_standard_masks$gs12) +
+oro.nifti::image(all_gold_standard_masks$gs13) + oro.nifti::image(all_gold_standard_masks$gs14) +
+oro.nifti::image(all_gold_standard_masks$gs15)
+```
+
+### Probability Maps
+
+```{r}
+# Make a list of the gold standard masks
+all_probability_maps = list(pmap1 = pmap1, 
+                            pmap2 = pmap2, 
+                            pmap3 = pmap3, 
+                            pmap4 = pmap4, 
+                            pmap5 = pmap5, 
+                            pmap6 = pmap6, 
+                            pmap7 = pmap7, 
+                            pmap8 = pmap8, 
+                            pmap9 = pmap9, 
+                            pmap10 = pmap10, 
+                            pmap11 = pmap11, 
+                            pmap12 = pmap12, 
+                            pmap13 = pmap13, 
+                            pmap14 = pmap14, 
+                            pmap15 = pmap15)
+# Convert the gold standard masks to nifti objects
+all_probability_maps = lapply(all_probability_maps, oro.nifti::nifti)
+# Show the gold standard masks using patchwork
+oro.nifti::image(all_probability_maps$pmap1, col = heat.colors(100)) + oro.nifti::image(all_probability_maps$pmap2, col = heat.colors(100)) + 
+  oro.nifti::image(all_probability_maps$pmap3, col = heat.colors(100)) + oro.nifti::image(all_probability_maps$pmap4, col = heat.colors(100)) +
+  oro.nifti::image(all_probability_maps$pmap5, col = heat.colors(100)) + oro.nifti::image(all_probability_maps$pmap6, col = heat.colors(100)) +
+  oro.nifti::image(all_probability_maps$pmap7, col = heat.colors(100)) + oro.nifti::image(all_probability_maps$pmap8, col = heat.colors(100)) +
+  oro.nifti::image(all_probability_maps$pmap9, col = heat.colors(100)) + oro.nifti::image(all_probability_maps$pmap10, col = heat.colors(100)) +
+  oro.nifti::image(all_probability_maps$pmap11, col = heat.colors(100)) + oro.nifti::image(all_probability_maps$pmap12, col = heat.colors(100)) +
+  oro.nifti::image(all_probability_maps$pmap13, col = heat.colors(100)) + oro.nifti::image(all_probability_maps$pmap14, col = heat.colors(100)) +
+  oro.nifti::image(all_probability_maps$pmap15, col = heat.colors(100))
+```
+
+
+
+
+
+
 
 
 
