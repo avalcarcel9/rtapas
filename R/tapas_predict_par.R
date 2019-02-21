@@ -27,7 +27,7 @@
 #' saved.
 #' @param outfile Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
 #' in the local R environment. To save each subject-level \code{tibble} as an R object
-#' specify a \code{list} or \code{vector} of file paths to save with either .rds or .RData exentions included.
+#' specify a \code{list} or \code{vector} of file paths to save with either .rds or .RData extensions included.
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
 #' @importFrom doParallel registerDoParallel
@@ -74,7 +74,7 @@ tapas_predict_par <- function(cores = 1,
   }
 
   # Check that outfile is character
-  if(base::any(base::is.character(outfile)) == FALSE){
+  if(base::any(base::is.character(outfile)) == FALSE & base::is.null(outfile) == FALSE){
     base::stop('# At least one outfile is not character. Must be character or NULL.')
   }
 

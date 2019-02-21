@@ -38,7 +38,7 @@ saved.}
 
 \item{outfile}{Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
 in the local R environment. To save each subject-level \code{tibble} as an R object
-specify a \code{list} or \code{vector} of file paths to save with either .rds or .RData exentions included.}
+specify a \code{list} or \code{vector} of file paths to save with either .rds or .RData extensions included.}
 
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
