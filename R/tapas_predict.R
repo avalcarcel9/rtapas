@@ -64,8 +64,10 @@ tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
   group_binary_mask[pmap < model$group_threshold] = 0
 
   # Remove connected components less than k then return mask to binary 0/1 after counted components
-  group_binary_mask = extrantsr::label_mask(group_binary_mask, k = k)
-  group_binary_mask[group_binary_mask > 0] = 1
+  if(sum(group_binary_mask) > 0){
+    group_binary_mask = extrantsr::label_mask(group_binary_mask, k = k)
+    group_binary_mask[group_binary_mask > 0] = 1
+  }
 
   # Obtain a naive estimate of the volume using the group thresholded binary mask
   naive_volume = tibble::tibble(volume = base::sum(group_binary_mask))
@@ -105,8 +107,10 @@ tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
   tapas_binary_mask[pmap < subject_threshold[1]] = 0
 
   # Remove connected components less than k then return mask to binary 0/1 after counted components
-  tapas_binary_mask = extrantsr::label_mask(tapas_binary_mask, k = k)
-  tapas_binary_mask[tapas_binary_mask > 0] = 1
+  if(sum(tapas_binary_mask) > 0){
+    tapas_binary_mask = extrantsr::label_mask(tapas_binary_mask, k = k)
+    tapas_binary_mask[tapas_binary_mask > 0] = 1
+  }
 
   # Return subject-specific threshold, tapas lesion mask, group lesion mask
   base::return(base::list(subject_threshold = subject_threshold,

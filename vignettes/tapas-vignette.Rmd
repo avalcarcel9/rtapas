@@ -14,6 +14,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
+  eval = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -33,7 +34,7 @@ To get the latest development version from GitHub:
 ```{r, eval = FALSE}
 # install.packages("remotes")
 library(remotes)
-remotes::install_github('avalcarcel9/rtapas')
+remotes::insttrain_github('avalcarcel9/rtapas')
 ```
 
 We are currently working to get the package on [Neuroconductor](www.neuroconductor.org).
@@ -193,21 +194,23 @@ library(oro.nifti)
 
 # Tutorial Data
 
-TAPAS is a post-hoc approach to determine a subject-specific threshold for automatic segmentation of probability maps in the context of MS lesions. To apply TAPAS, users should first run an automatic segmentation method of choice to obtain probability maps. At this point, TAPAS can be applied in order to obtain subject-specific thresholds for segmentation. In the original TAPAS work we used MIMoSA ([1](https://onlinelibrary.wiley.com/doi/full/10.1111/jon.12506),[2](https://www.sciencedirect.com/science/article/pii/S2213158218303231)) as the automatic segmentation algorithm to generate probability maps which has software available on [Neuroconductor](https://neuroconductor.org/package/mimosa) and documentation on [GitHub](https://github.com/avalcarcel9/mimosa/blob/master/vignettes/mimosa_git.md). The data provided in this package and used throughout this vignette are synthetic. The package contains 15 2D "gold standard" masks that were created by Alessandra Valcarcel to appear similar to manually segmented lesion masks. The package also includes "probability maps" that were created by randomly generating uniform data for each subject inside of the "gold standard"" masks. Each map is generated using different end points so that the probability distribution is variable across subjects. The package also contains a single brain mask that applies to all synthetic gold standard and probability maps.
+TAPAS is a post-hoc approach to determine a subject-specific threshold for automatic segmentation of probability maps in the context of MS lesions. To apply TAPAS, users should first run an automatic segmentation method of choice to obtain probability maps. At this point, TAPAS can be applied in order to obtain subject-specific thresholds for segmentation. In the original TAPAS work we used MIMoSA ([1](https://onlinelibrary.wiley.com/doi/full/10.1111/jon.12506),[2](https://www.sciencedirect.com/science/article/pii/S2213158218303231)) as the automatic segmentation algorithm to generate probability maps which has software available on [Neuroconductor](https://neuroconductor.org/package/mimosa) and documentation on [GitHub](https://github.com/avalcarcel9/mimosa/blob/master/vignettes/mimosa_git.md). The data provided in this package and used throughout this vignette are synthetic. The package contains 15 2D "gold standard" masks that were created by Alessandra Valcarcel to appear similar to manually segmented lesion masks. The package also includes "probability maps" that were created by randomly generating uniform data for each subject inside of the "gold standard" masks and then smoothing the maps. Each map is generated using different end points so that the probability distribution is variable across subjects. The package also contains a single brain mask that applies to all synthetic gold standard and probability maps.
 
 Since these probability maps are generated randomly from a uniform distribution the spatial distribution of probability is quite different than when real data is used. Probability maps generated from real data tend to have higher probabilities in the center of lesions and decrease at the edges of lesions. The synthetic data results in speckled automatic masks because uniformly generated data does not incorporate spatial information.
 
 The authors would like to re-iterate that all data available in the package and used throughout this vignette are synthetic and created by the authors simply for demonstration of the package usage. The data is meant to mimic a simple set of real data.
 
-## Load Data
+The data contained in this package contains 3D arrays for 15 synthetic gold standard segmentations (`gs#`), 15 probability maps (`pmap#`), and a single brain mask (`brain_mask`) that can be used for all 30 subjects and is set `Lazy Data: true`. We use 10 subjects for training the TAPAS model and then evaluate the model using 5 subjects excluded from training. The `#` value noted can be any number 1-15. The gold standard segmentations and probability maps consist of a single slice with voxel values and a second slice where all voxels are equal to 0. The brain mask contains a brain mask value in both slices. These are saved as arrays which we will convert to `nifti` objects.
 
-The data contained in this package contains 3D arrays for 15 synthetic gold standard segmentations (`gs#`), 15 probability maps (`pmap#`), and a single brain mask (`brain_mask`) that can be used for all 30 subjects and is set `Lazy Data: true`. The `#` value noted can be any number 1-15. The gold standard segmentations and probability maps consist of a single slice with voxel values and a second slice where all voxels are equal to 0. The brain mask contains a brain mask value in both slices. These are saved as arrays which we will convert to `nifti` objects. To use the data throughout this tutorial we will initialize the gold standard masks, probability maps, and brain masks into a list.
+## Load Training Data
 
-### Gold Standard Masks
+To use the data throughout this tutorial we will initialize the 10 gold standard masks, 10 probability maps, and 10 brain masks into a list.
+
+### Training Gold Standard Masks
 
 ```{r}
 # Make a list of the gold standard masks
-all_gold_standard_masks = list(gs1 = gs1, 
+train_gold_standard_masks = list(gs1 = gs1, 
                                gs2 = gs2, 
                                gs3 = gs3, 
                                gs4 = gs4, 
@@ -216,30 +219,23 @@ all_gold_standard_masks = list(gs1 = gs1,
                                gs7 = gs7, 
                                gs8 = gs8, 
                                gs9 = gs9, 
-                               gs10 = gs10, 
-                               gs11 = gs11, 
-                               gs12 = gs12, 
-                               gs13 = gs13, 
-                               gs14 = gs14, 
-                               gs15 = gs15)
+                               gs10 = gs10)
+                               
 # Convert the gold standard masks to nifti objects
-all_gold_standard_masks = lapply(all_gold_standard_masks, oro.nifti::nifti)
+train_gold_standard_masks = lapply(train_gold_standard_masks, oro.nifti::nifti)
 # Show the gold standard masks using patchwork
-oro.nifti::image(all_gold_standard_masks$gs1) + oro.nifti::image(all_gold_standard_masks$gs2) + 
-oro.nifti::image(all_gold_standard_masks$gs3) + oro.nifti::image(all_gold_standard_masks$gs4) +
-oro.nifti::image(all_gold_standard_masks$gs5) + oro.nifti::image(all_gold_standard_masks$gs6) +
-oro.nifti::image(all_gold_standard_masks$gs7) + oro.nifti::image(all_gold_standard_masks$gs8) +
-oro.nifti::image(all_gold_standard_masks$gs9) + oro.nifti::image(all_gold_standard_masks$gs10) +
-oro.nifti::image(all_gold_standard_masks$gs11) + oro.nifti::image(all_gold_standard_masks$gs12) +
-oro.nifti::image(all_gold_standard_masks$gs13) + oro.nifti::image(all_gold_standard_masks$gs14) +
-oro.nifti::image(all_gold_standard_masks$gs15)
+oro.nifti::image(train_gold_standard_masks$gs1) + oro.nifti::image(train_gold_standard_masks$gs2) + 
+oro.nifti::image(train_gold_standard_masks$gs3) + oro.nifti::image(train_gold_standard_masks$gs4) +
+oro.nifti::image(train_gold_standard_masks$gs5) + oro.nifti::image(train_gold_standard_masks$gs6) +
+oro.nifti::image(train_gold_standard_masks$gs7) + oro.nifti::image(train_gold_standard_masks$gs8) +
+oro.nifti::image(train_gold_standard_masks$gs9) + oro.nifti::image(train_gold_standard_masks$gs10) 
 ```
 
-### Probability Maps
+### Training Probability Maps
 
 ```{r}
-# Make a list of the gold standard masks
-all_probability_maps = list(pmap1 = pmap1, 
+# Make a list of the training probability maps
+train_probability_maps = list(pmap1 = pmap1, 
                             pmap2 = pmap2, 
                             pmap3 = pmap3, 
                             pmap4 = pmap4, 
@@ -248,39 +244,30 @@ all_probability_maps = list(pmap1 = pmap1,
                             pmap7 = pmap7, 
                             pmap8 = pmap8, 
                             pmap9 = pmap9, 
-                            pmap10 = pmap10, 
-                            pmap11 = pmap11, 
-                            pmap12 = pmap12, 
-                            pmap13 = pmap13, 
-                            pmap14 = pmap14, 
-                            pmap15 = pmap15)
-# Convert the gold standard masks to nifti objects
-all_probability_maps = lapply(all_probability_maps, oro.nifti::nifti)
-# Show the gold standard masks using patchwork
-oro.nifti::image(all_probability_maps$pmap1, col = heat.colors(100)) + 
-  oro.nifti::image(all_probability_maps$pmap2, col = heat.colors(100)) + 
-  oro.nifti::image(all_probability_maps$pmap3, col = heat.colors(100)) + 
-  oro.nifti::image(all_probability_maps$pmap4, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap5, col = heat.colors(100)) + 
-  oro.nifti::image(all_probability_maps$pmap6, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap7, col = heat.colors(100)) + 
-  oro.nifti::image(all_probability_maps$pmap8, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap9, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap10, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap11, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap12, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap13, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap14, col = heat.colors(100)) +
-  oro.nifti::image(all_probability_maps$pmap15, col = heat.colors(100))
+                            pmap10 = pmap10)
+
+# Convert the probability maps to nifti objects
+train_probability_maps = lapply(train_probability_maps, oro.nifti::nifti)
+# Show the probability maps using patchwork
+oro.nifti::image(train_probability_maps$pmap1, col = heat.colors(100)) + 
+  oro.nifti::image(train_probability_maps$pmap2, col = heat.colors(100)) + 
+  oro.nifti::image(train_probability_maps$pmap3, col = heat.colors(100)) + 
+  oro.nifti::image(train_probability_maps$pmap4, col = heat.colors(100)) +
+  oro.nifti::image(train_probability_maps$pmap5, col = heat.colors(100)) + 
+  oro.nifti::image(train_probability_maps$pmap6, col = heat.colors(100)) +
+  oro.nifti::image(train_probability_maps$pmap7, col = heat.colors(100)) + 
+  oro.nifti::image(train_probability_maps$pmap8, col = heat.colors(100)) +
+  oro.nifti::image(train_probability_maps$pmap9, col = heat.colors(100)) +
+  oro.nifti::image(train_probability_maps$pmap10, col = heat.colors(100)) 
 ```
 
-### Brain Mask
+### Training Brain Mask
 
 There is only one brain mask included in the example data with this package. This mask was created manually just to cover all the "brain matter" in the gold standard masks and probability maps. Often each subject will have a unique brain mask depending on the registration technique. Below we create a list of brain masks so that the indices match the indices of the gold standard list and probability map list.
 
 ```{r}
-# Make a list of the gold standard masks
-all_brain_masks = list(brain_mask1 = brain_mask, 
+# Make a list of the brain masks
+train_brain_masks = list(brain_mask1 = brain_mask, 
                        brain_mask2 = brain_mask, 
                        brain_mask3 = brain_mask, 
                        brain_mask4 = brain_mask, 
@@ -289,43 +276,37 @@ all_brain_masks = list(brain_mask1 = brain_mask,
                        brain_mask7 = brain_mask, 
                        brain_mask8 = brain_mask, 
                        brain_mask9 = brain_mask, 
-                       brain_mask10 = brain_mask, 
-                       brain_mask11 = brain_mask, 
-                       brain_mask12 = brain_mask, 
-                       brain_mask13 = brain_mask, 
-                       brain_mask14 = brain_mask, 
-                       brain_mask15 = brain_mask)
+                       brain_mask10 = brain_mask)
 
 # Convert the brain masks to nifti objects
-all_brain_masks = lapply(all_brain_masks, oro.nifti::nifti)
+train_brain_masks = lapply(train_brain_masks, oro.nifti::nifti)
 ```
 
-### Subject ID
+### Training Subject ID
 
 We will also need a vector of subject IDs to include. We simply create an ID vector below:
 
 ```{r}
-ids = paste0('subject_', 1:length(all_gold_standard_masks))
+ids = paste0('subject_', 1:length(train_gold_standard_masks))
 ```
-
 
 # Generating TAPAS Model Data
 
 Before we can fit the TAPAS model, we have to generate the threshold data required for model input. The model requires the Sørensen–Dice coefficient value evaluated across all `thresholds` values for each subject in the training set. We suggest evaluating threhsolds from 0 to 1 by 1% increments. This can be carried out using two functions: `tapas_data` and `tapas_data_par`. The `tapas_data` function will produce the model data for a single subject whereas `tapas_data_par` is a wrapper around `tapas_data` and will run in parallel for multiple subjects.
 
-Below we will calculate the TAPAS model input data using the example data subject by subject using `tapas_data`. We implement a `for` loop for simplicity. The `pmap`,  `gold_standard`, and `mask` inputs must be either a local object of class `nifti` or a vector of file paths to a `nifti` object. The `subject_id` is simply a vector of subject IDs. These can be character or numeric. For this example we set `k = 1` since the data is only a single slice of segmented values and probability maps were randomly generated from a uniform. The `thresholds` and `verbose` inputs are all set to the default. 
+Below we will calculate the TAPAS model input data using the example data subject by subject using `tapas_data`. We implement a `for` loop for simplicity. The `pmap`,  `gold_standard`, and `mask` inputs must be either a local object of class `nifti` or a vector of file paths to a `nifti` object. The `subject_id` is simply a vector of subject IDs. These can be character or numeric. For this example we set `k = 0` since the data is only a single slice of segmented values and probability maps were randomly generated from a uniform. The `thresholds` and `verbose` inputs are all set to the default. 
 
-```{r, eval = FALSE}
+```{r}
 # Initialize an empty list to store results created on 1 core
-data1 = list()
+train_data1 = list()
 
 # Run tapas_data function
-for(i in 1:length(all_probability_maps)){
-  data1[[i]] = tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
-                         pmap = all_probability_maps[[i]],
-                         gold_standard = all_gold_standard_masks[[i]],
-                         mask = all_brain_masks[[i]],
-                         k = 1,
+for(i in 1:length(train_probability_maps)){
+  train_data1[[i]] = tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
+                         pmap = train_probability_maps[[i]],
+                         gold_standard = train_gold_standard_masks[[i]],
+                         mask = train_brain_masks[[i]],
+                         k = 0,
                          subject_id = ids[[i]],
                          verbose = TRUE)
 }
@@ -335,15 +316,15 @@ The `tapas_data_par` function simply is a parallel wrapper around `tapas_data`. 
 
 The inputs for `tapas_data_par` are similar to the `tapas_data` function but instead of single subject values include either a `list` of `nifti` objects or a `vector` of file paths to `nifti` objects. By setting `ret = TRUE` the subject TAPAS data generated by the wrapped `tapas_data` function will be returned locally in as a `list`. This object may be extremely large depending on the number of subjects used for training so be aware of memory constraints if returning these objects locally. By default `outfile = NULL` and the subject-level TAPAS data generated will not be saved out. If users would like to save the subject-level data out then users must specify a vector of file names with `.rda` or `.RData` file extensions included. Be sure that across `list` and `vector` inputs the subject-level information is sorted and consistent across each input.
 
-```{r, eval = FALSE}
+```{r}
 # Store results created on 2 cores
 # Run tapas_data_par function
-data2 = tapas_data_par(cores = 2, 
+train_data2 = tapas_data_par(cores = 2, 
                        thresholds = seq(from = 0, to = 1, by = 0.01), 
-                       pmap = all_probability_maps, 
-                       gold_standard = all_gold_standard_masks, 
-                       mask = all_brain_masks, 
-                       k = 1, 
+                       pmap = train_probability_maps, 
+                       gold_standard = train_gold_standard_masks, 
+                       mask = train_brain_masks, 
+                       k = 0, 
                        subject_id = ids,
                        ret = TRUE, 
                        outfile = NULL, 
@@ -352,38 +333,160 @@ data2 = tapas_data_par(cores = 2,
 
 The data produced using these functions is exactly the same. The only difference is whether users would like to utilize parallel computing.
 
-```{r, eval = FALSE}
+```{r}
 # Bind the single core data across list objects (subjects)
-data1 = dplyr::bind_rows(data1)
+train_data1 = dplyr::bind_rows(train_data1)
 # Bind the 2 core data across list objects (subjects)
-data2 = dplyr::bind_rows(data2)
+train_data2 = dplyr::bind_rows(train_data2)
 # Check that datasets are equal
-all.equal(data1, data2)
+all.equal(train_data1, train_data2)
 ```
 
-The data returned from either of these functions is needed to train the TAPAS model. The `tapas_data` function returns a single subject level tibble while the `tapas_data_par` returns a list with each subject-level tibble as an element in the list (only if `ret = TRUE`). Each subject-level tibble contains the following columns: `threshold`, `dsc`, `volume`, and `subject_id`. The first and last 5 rows of `data1` are shown below:
+The data returned from either of these functions is needed to train the TAPAS model. The `tapas_data` function returns a single subject level tibble while the `tapas_data_par` returns a list with each subject-level tibble as an element in the list (only if `ret = TRUE`). Each subject-level tibble contains the following columns: `threshold`, `dsc`, `volume`, and `subject_id`. The first and last 5 rows of `train_data1` are shown below:
 
-```{r, eval = FALSE}
-head(data1)
-tail(data1)
+```{r}
+head(train_data1)
+tail(train_data1)
 ```
 
 # Fit the TAPAS Model
 
-After the TAPAS data is generated using either `tapas_data` or `tapas_data_par` the TAPAS model can be fit using the `tapas_train` function. All the training subject data needs to be appended into a large `tibble`. We did this above when checking that `data1` and `data2` are equal. 
+After the TAPAS data is generated using either `tapas_data` or `tapas_data_par` the TAPAS model can be fit using the `tapas_train` function. All the training subject data needs to be appended into a large `tibble`. We did this above when checking that `train_data1` and `train_data2` are equal. 
 
-```{r, eval = FALSE}
-tapas_model = tapas_train(data = data1, dsc_cutoff = 0.03, verbose = TRUE)
+```{r}
+tapas_model = tapas_train(data = train_data1, dsc_cutoff = 0.03, verbose = TRUE)
 ```
 
-- Show the summary
-- Plot the model using voxel
-- put the quantile cutoffs
+The return object from running `tapas_train` includes a list with the model in the named element `tapas_model`, the group threshold in the named element `group_threshold`, and the information about the clamping thresholds in the element `clamp_data`. Let's look at these objects:
+
+```{r}
+# The TAPAS GAM model
+summary(tapas_model$tapas_model)
+# The threshold that optimizes group-level DSC
+tapas_model$group_threshold
+# The lower and uppber bound clamps to avoid extrapolation
+tapas_model$clamp_data
+```
+
+With this model, we can use this model to predict on subjects that are not included in the training data set.
 
 # Predict a Subject-Specific Threshold Using TAPAS
 
+## Load Testing Data
 
+To use the data throughout the testing of the model we will initialize the 5 gold standard masks, 5 probability maps, and 5 brain masks into a list.
 
+### Testing Gold Standard Masks
+
+```{r}
+# Testing gold standard masks
+test_gold_standard_masks = list(gs11 = gs11,
+                                gs12 = gs12,
+                                gs13 = gs13,
+                                gs14 = gs14,
+                                gs15 = gs15)
+
+# Make array objects niftis
+test_gold_standard_masks = lapply(test_gold_standard_masks, oro.nifti::nifti)
+
+# Visualize the testing subjects gold standard masks
+oro.nifti::image(test_gold_standard_masks$gs11) + oro.nifti::image(test_gold_standard_masks$gs12) +
+oro.nifti::image(test_gold_standard_masks$gs13) + oro.nifti::image(test_gold_standard_masks$gs14) +
+oro.nifti::image(test_gold_standard_masks$gs15)
+```
+
+### Testing Probability Maps
+
+```{r}
+# Obtain the test subject probability maps
+test_probability_maps = list(pmap11 = pmap11, 
+                             pmap12 = pmap12,
+                             pmap13 = pmap13,
+                             pmap14 = pmap14,
+                             pmap15 = pmap15)
+
+# Make array objects niftis
+test_probability_maps = lapply(test_probability_maps, oro.nifti::nifti)
+
+# Visualize the 5 testing probability maps
+oro.nifti::image(test_probability_maps$pmap11, col = heat.colors(100)) +
+oro.nifti::image(test_probability_maps$pmap12, col = heat.colors(100)) +
+oro.nifti::image(test_probability_maps$pmap13, col = heat.colors(100)) +
+oro.nifti::image(test_probability_maps$pmap14, col = heat.colors(100)) +
+oro.nifti::image(test_probability_maps$pmap15, col = heat.colors(100))
+```
+
+### Testing Brain Masks
+
+There is only one brain mask included in the example data with this package. This mask was created manually just to cover all the "brain matter" in the gold standard masks and probability maps. Often each subject will have a unique brain mask depending on the registration technique. Below we create a list of brain masks so that the indices match the indices of the gold standard list and probability map list.
+
+```{r}
+# Create a list of testing brain masks
+test_brain_masks = list(brain_mask11 = brain_mask, 
+                        brain_mask12 = brain_mask,
+                        brain_mask13 = brain_mask,
+                        brain_mask14 = brain_mask,
+                        brain_mask15 = brain_mask)
+
+# Make array objects niftis
+test_brain_masks = lapply(test_brain_masks, oro.nifti::nifti)
+```
+
+### Testing Subject ID
+
+We will also need a vector of subject IDs to include. We simply create an ID vector below:
+
+```{r}
+ids = paste0('subject_', (10 + 1:length(test_gold_standard_masks)))
+```
+
+# Predicting Thresholds and Segmentation Masks
+
+Below we will calculate the TAPAS model input data using the example data subject by subject using `tapas_data`. We implement a `for` loop for simplicity. The `pmap`,  `gold_standard`, and `mask` inputs must be either a local object of class `nifti` or a vector of file paths to a `nifti` object. The `subject_id` is simply a vector of subject IDs. These can be character or numeric. For this example we set `k = 0` since the data is only a single slice of segmented values and probability maps were randomly generated from a uniform. The `thresholds` and `verbose` inputs are all set to the default. 
+
+Below we will predict using the TAPAS model subject by subject using `tapas_predict`. We implement a `for` loop for simplicity. The `pmap`,  `gold_standard`, and `mask` inputs must be either a local object of class `nifti` or a vector of file paths to a `nifti` object. The `subject_id` is simply a vector of subject IDs. These can be character or numeric. For this example we set `k = 0` since the data is only a single slice of segmented values and probability maps were randomly generated from a uniform. The `thresholds` and `verbose` inputs are all set to the default. 
+
+```{r}
+# Initialize an empty list to store results created on 1 core
+test_data1 = list()
+
+# Run tapas_predict function
+for(i in 1:length(test_probability_maps)){
+  test_data1[[i]] = tapas_predict(pmap = test_probability_maps[[i]],
+                                  model = tapas_model,
+                                  clamp = TRUE,
+                                  k = 0,
+                                  verbose = TRUE)
+}
+```
+
+The `tapas_data_par` function simply is a parallel wrapper around `tapas_data`. Before we look at the return objects from these functions let's replicate the results from `tapas_data` using `tapas_data_par` with 2 cores. The `tapas_data_par` function is compatible with on both Unix and Windows machines. Again, the code below is going to run on 2 cores so be sure your machine has access to 2 cores or reduce back down to 1.
+
+The inputs for `tapas_data_par` are similar to the `tapas_data` function but instead of single subject values include either a `list` of `nifti` objects or a `vector` of file paths to `nifti` objects. By setting `ret = TRUE` the subject TAPAS data generated by the wrapped `tapas_data` function will be returned locally in as a `list`. This object may be extremely large depending on the number of subjects used for training so be aware of memory constraints if returning these objects locally. By default `outfile = NULL` and the subject-level TAPAS data generated will not be saved out. If users would like to save the subject-level data out then users must specify a vector of file names with `.rda` or `.RData` file extensions included. Be sure that across `list` and `vector` inputs the subject-level information is sorted and consistent across each input.
+
+```{r}
+# Store results created on 2 cores
+# Run tapas_predict_par function
+test_data2 = tapas_predict_par(cores = 2, 
+                               pmap = test_probability_maps, 
+                               subject_id = ids, 
+                               model = tapas_model, 
+                               clamp = TRUE,
+                               k = 0, 
+                               ret = TRUE, 
+                               outfile = NULL, 
+                               verbose = TRUE)
+```
+
+The data produced using these functions is exactly the same. The only difference is whether users would like to utilize parallel computing. Below we show that the data produced for subject 11 is the same in both:
+
+```{r}
+all.equal(test_data1[[1]]$subject_threshold, test_data2[[1]]$subject_threshold)
+all.equal(sum(test_data1[[1]]$tapas_binary_mask), sum(test_data2[[1]]$tapas_binary_mask))
+all.equal(sum(test_data1[[1]]$group_binary_mask), sum(test_data2[[1]]$group_binary_mask))
+```
+#### SHOW THE TAPAS MASKS AND THEN
+#### CALCULATE DSC FOR EACH GROUP AND TAPAS MASK
 
 
 
