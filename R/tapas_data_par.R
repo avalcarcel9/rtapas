@@ -8,7 +8,7 @@
 #' @param cores The number of cores to use. This argument controls at most how many child processes will
 #' be run simultaneously. The default is set to 1.
 #' @param thresholds A \code{vector} of thresholds to apply to the probability maps. The default
-#' \code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be
+#' \code{vector} applied is 0 to 1 by 0.01 increments. Threshold values must be
 #' between 0 and 1.
 #' @param pmap A \code{vector} of \code{character} file paths to probability map images or a
 #' \code{list} object with elements of class \code{nifti}.

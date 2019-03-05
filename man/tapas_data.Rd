@@ -9,7 +9,7 @@ tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01), pmap,
 }
 \arguments{
 \item{thresholds}{A \code{vector} of thresholds to apply to the probability map. The default
-\code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be
+\code{vector} applied is 0 to 1 by 0.01 increments. Threshold values must be
 between 0 and 1.}
 
 \item{pmap}{A \code{character} file path to a probability map image or an object of

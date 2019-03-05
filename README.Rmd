@@ -45,7 +45,7 @@ This function creates the training vectors for a single subject from a probabili
 __Usage__:
 
 - `thresholds` A `vector` of thresholds to apply to the probability map. The default
- `vector` applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be between 0 and 1.
+ `vector` applied is 0 to 1 by 0.01 increments. Threshold values must be between 0 and 1.
 - `pmap` A `character` file path to a probability map image or an object of class `nifti`.
 - `gold_standard` A `character` file path to a gold standard image (normally a manual segmentation) or an object of class `nifti`. The gold standard segmentation is used to compare the thresholded probability map image using Sørensen's–Dice coefficient (DSC).  
 - `mask` A `character` file path to a brain mask image or an object of class `nifti`.  
@@ -79,7 +79,7 @@ This function wraps `tapas_data` to run in parallel. This function creates the t
 __Usage__:
 
 - `cores` The number of cores to use. This argument controls at most how many child processes will be run simultaneously. The default is set to 1.  
-- `thresholds` A `vector` of thresholds to apply to the probability maps. The default `vector` applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be between 0 and 1.  
+- `thresholds` A `vector` of thresholds to apply to the probability maps. The default `vector` applied is 0 to 1 by 0.01 increments. Threshold values must be between 0 and 1.  
 - `pmap` A `vector` of `character` file paths to probability map images or a `list` object with elements of class `nifti`.
 - `gold_standard` A `vector` of `character` file paths to gold standard images (normally a manual segmentation) or a `list` object with elements of class `nifti`. The gold standard segmentation is used to compare the thresholded probability map image using Sørensen's–Dice coefficient (DSC).
 - `mask` A `vector` of `character` file paths to brain mask images or a `list` object with elements of class `nifti`.  
