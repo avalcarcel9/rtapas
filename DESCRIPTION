@@ -31,8 +31,7 @@ Suggests:
     knitr,
     remotes,
     bookdown,
-    oro.nifti,
-    remotes
+    oro.nifti
 Remotes:
     avalcarcel9/aliviateR,
     muschellij2/extrantsr,

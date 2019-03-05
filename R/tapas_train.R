@@ -1,11 +1,10 @@
 #' @title TAPAS Model Training
-#' @description  This function trains the TAPAS model from a \code{tibble} or \code{data.frame}
-#' produced from the \code{\link{tapas_data}} function. The TAPAS model is fit and clamp data
-#' is calculated. The clamp data contains the predicted threshold when using the 10th and 90th percentile volume
-#' from training data.
+#' @description  This function trains the TAPAS model using all binded subject-level \code{tibble}s produced
+#' from the \code{\link{tapas_data}} function. The TAPAS model is fit and clamp data is calculated. The clamp data
+#' contains the predicted threshold when using the 10th and 90th percentile volume from training data.
 #' @param data Data resulting from \code{\link{tapas_data}}. The \code{data} should be a \code{tibble} or
-#' \code{data.frame} containing binded subject data or a \code{list} object with all subject data. Data from these
-#' subjects will be used for model training.
+#' \code{data.frame} containing binded subject data or a \code{list} object with subject data in each element.
+#' Data from these subjects will be used for model training.
 #' @param dsc_cutoff The Sørensen's–Dice coefficient (DSC) value to use as a cutoff for training inclusion.
 #' By default 0.03 is used. This must be a single value between 0 and 1. Only training subjects with a subject-specific
 #' threshold estimate resulting in Sørensen's–Dice coefficient (DSC) greater than or equal to the \code{dsc_cutoff}
@@ -19,7 +18,7 @@
 #' @importFrom rlang .data
 #' @importFrom stats quantile
 #' @importFrom tibble tibble is_tibble
-#' @return A \code{list} with the TAPAS model (\code{tapas_model}) of class \code{gam} and the
+#' @return A \code{list} with the TAPAS model (\code{tapas_model}) of class \code{gam} and
 #' a \code{tibble} with the clamp information (\code{clamp_data}). The clamp information contains the
 #' TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the
 #' 10th and 90th percentile.

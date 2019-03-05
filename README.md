@@ -14,13 +14,10 @@ segmentation. This R package is based on the Thresholding Approach for
 Probability Map Automatic Segmentation (TAPAS) method. The methods are
 in progress for publication. This package creates data structures
 necessary for training the TAPAS model. After training, the model can be
-used to predict subject-specific threhsolds to use on probability maps
+used to predict subject-specific thresholds to use on probability maps
 for automatic lesion segmentation.
 
 ## Installation
-
-This packages is still under construction and development. Please check
-back when the builds are stable.
 
 To get the latest development version from GitHub:
 
@@ -36,9 +33,9 @@ We are currently working to get the package on
 ## Function Documentation
 
 The TAPAS package contains a number of functions to generate data
-required for training, train the model, and predict subject-specific
-thresholds based on the trained model. The functions, defaults, and
-usage are provided below.
+required for training, train the TAPAS model, and predict
+subject-specific thresholds based on the trained TAPAS model. The
+functions, defaults, and usage are provided below.
 
 ### `tapas_data`
 
@@ -58,9 +55,9 @@ This function creates the training vectors for a single subject from a
 probability map, a gold standard mask (normally a manual segmentation),
 and a brain mask. For a grid of thresholds provided and applied to the
 probability map the function calculates Sørensen’s–Dice coefficient
-(DSC) between the automatic volume and the gold standard volume. The
-function also calculates the automatic volume associated with
-thresholding at each respective threshold.
+(DSC) between the automatic image and the gold standard image. The
+function also calculates the volume associated with thresholding at each
+respective threshold.
 
 **Usage**:
 
@@ -76,10 +73,10 @@ thresholding at each respective threshold.
     probability map image using Sørensen’s–Dice coefficient (DSC).  
   - `mask` A `character` file path to a brain mask image or an object of
     class `nifti`.  
-  - `k` The minimum number of voxels for a cluster/component. Passed to
-    `label_mask`. Segmentation clusters of size less than k are removed
-    from the mask, volume estimation, the and Sørensen’s–Dice
-    coefficient (DSC) calculation.  
+  - `k` TThe minimum number of voxels for a cluster/component. Passed to
+    `extrantsr::label_mask`. Segmentation clusters of size less than k
+    are removed from the mask, volume estimation, and the
+    Sørensen’s–Dice coefficient (DSC) calculation.
   - `subject_id` A subject ID of class `character`. By default this is
     set to `NULL` but users must provide an ID.  
   - `verbose` A `logical` argument to print messages. Set to `TRUE` by
@@ -89,6 +86,10 @@ thresholding at each respective threshold.
 
 A `tibble` containing the training data. The data contains columns
 `threshold`, Sørensen’s–Dice coefficient (`dsc`), and `volume`.
+
+A `tibble` containing the training data for a single subject. The data
+contains columns `threshold`, Sørensen’s–Dice coefficient (`dsc`), and
+`volume`.
 
 ### `tapas_data_par`
 
@@ -135,27 +136,29 @@ threshold.
   - `mask` A `vector` of `character` file paths to brain mask images or
     a `list` object with elements of class `nifti`.  
   - `k` The minimum number of voxels for a cluster/component. Passed to
-    `label_mask`. Segmentation clusters of size less than k are removed
-    from the mask, volume estimation, the and Sørensen’s–Dice
-    coefficient (DSC) calculation.  
-  - `subject_id` A subject ID of class `character`. By default this is
-    set to `NULL` but users must provide an ID.  
+    `extrantsr::label_mask`. Segmentation clusters of size less than k
+    are removed from the mask, volume estimation, the and
+    Sørensen’s–Dice coefficient (DSC) calculation.  
+  - `subject_id` A `vector` of subject IDs of class `character`. By
+    default this is set to `NULL` but users must provide an ID `vector`.
   - `ret` A `logical` argument set to `TRUE` by default. Return the
     `tibble` objects from the function as a `list` in the local R
     environment. If `FALSE` then `outfile` must be specified so subject
     data is saved.  
-  - `outfile` Is set to `NULL` by default which only Return the
+  - `outfile` Is set to `NULL` by default which only returns the
     subject-level `tibble` as a list in the local R environment. To save
     each subject-level `tibble` as an R object specify a `list` or
     `vector` of file paths to save with either .rds or .RData extensions
-    included.  
+    included.
   - `verbose` A `logical` argument to print messages. Set to `TRUE` by
     default.
 
 **Return**:
 
-A list of the `tibble` object returned from `tapas_data` for each
-subject.
+A `list` with the subject-level `tibble` object in each element returned
+from `tapas_data` for each subject. `ret` must be `TRUE` to return
+objects locally. To save objects a `vector` of `outfile` file paths must
+be provided.
 
 ### `tapas_train`
 
@@ -167,9 +170,9 @@ tapas_train(data,
 
 **Description**:
 
-This function trains the TAPAS model from a `tibble` or `data.frame`
-produced from the `tapas_data` function. The TAPAS model is fit and
-clamp data is calculated. The clamp data contains the predicted
+This function trains the TAPAS model using all binded subject-level
+`tibble`s produced from the `tapas_data` function. The TAPAS model is
+fit and clamp data is calculated. The clamp data contains the predicted
 threshold when using the 10th and 90th percentile volume from training
 data.
 
@@ -177,8 +180,8 @@ data.
 
   - `data` Data resulting from `tapas_data`. The `data` should be a
     `tibble` or `data.frame` containing binded subject data or a `list`
-    object with all subject data. Data from these subjects will be used
-    for model training.  
+    object with subject data in each element. Data from these subjects
+    will be used for model training.  
   - `dsc_cutoff` The Sørensen’s–Dice coefficient (DSC) value to use as a
     cutoff for training inclusion. By default 0.03 is used. This must be
     a single value between 0 and 1. Only training subjects with a
@@ -209,30 +212,29 @@ tapas_predict(pmap,
 **Description**:
 
 This function takes a probability map for a single subject and predicts
-the subject specific threshold to apply based on the TAPAS model
-generated from \`tapas\_train\`\`. The function will return a list of
+the subject-specific threshold to apply based on the TAPAS model
+generated from `tapas_train`. The function will return a `list` of
 objects including the TAPAS predicted subject-specific threshold, the
-lesion mask produced from applying this threshold, as well as the lesion
-mask produced from using the group threshold.
+lesion mask produced from applying this threshold, and the lesion mask
+produced from using the group threshold.
 
 **Usage**:
 
-  - `pmap` A `character` file path to probability map images or an
+  - `pmap` A `character` file path to a probability map image or an
     object of class `nifti`.
-  - `model` The TAPAS model fit from `tapas_train`` of class`gam\`. This
+  - `model` The TAPAS model fit from `tapas_train` of class `gam`. This
     model will be used to make subject-specific threshold predictions.
-  - `clamp` A `logical` object that is `TRUE` by default. This setting
+  - `clamp` A `logical` object set to `TRUE` by default. This setting
     uses the clamped subject-specific threshold prediction rather than
-    the prediction fit by the TAPAS `model`. This only applied to
+    the prediction fit by the TAPAS `model`. This only applies to
     volumes exceeding those at the 10th and 90th percentile calculated
     using the training data. Using the clamp data avoids extrapolation
     when the naive volume estimate falls in the tails of the TAPAS
     model. If `FALSE` then the the TAPAS `model` predicted threshold
-    will be used for segmentation rather than the clamped threshold. The
-    clamping method was used in published work.
+    will be used for segmentation rather than the clamped threshold.
   - `k` The minimum number of voxels for a cluster/component. Passed to
-    `label_mask`. Segmentation clusters of size less than k are removed
-    from the mask, volume estimation, the and Sørensen’s–Dice
+    `extrantsr::label_mask`. Segmentation clusters of size less than k
+    are removed from the mask, volume estimation, and Sørensen’s–Dice
     coefficient (DSC) calculation.
   - `verbose` A `logical` argument to print messages. Set to `TRUE` by
     default.
@@ -262,7 +264,7 @@ tapas_predict_par(cores = 1,
 **Description**:
 
 This function wraps `tapas_predict` to run in parallel. This function
-takes probability maps across subjects and predicts the subject specific
+takes probability maps across subjects and predicts the subject-specific
 threshold to apply based on the TAPAS model generated from
 `tapas_train`. The function will return or save a list of objects for
 each subject including the TAPAS predicted subject-specific threshold,
@@ -276,26 +278,25 @@ lesion mask produced from using the group threshold.
     set to 1.
   - `pmap` A `vector` of `character` file paths to probability map
     images or a `list` object with elements of class `nifti`.
-  - `subject_id` A  of subject IDs of class . By default this is set to 
-    but users must provide an ID.
+  - `subject_id` A `vector` of subject IDs of class `character`. By
+    default this is set to `NULL` but users must provide an ID.
   - `model` The TAPAS model fit from `tapas_train` of class `gam`. This
     model will be used to make subject-specific threshold predictions.
-  - `clamp` A `logical` object that is `TRUE` by default. This setting
+  - `clamp` A `logical` object set to `TRUE` by default. This setting
     uses the clamped subject-specific threshold prediction rather than
-    the prediction fit by the TAPAS `model`. This only applied to
+    the prediction fit by the TAPAS `model`. This only applies to
     volumes exceeding those at the 10th and 90th percentile calculated
     using the training data. Using the clamp data avoids extrapolation
     when the naive volume estimate falls in the tails of the TAPAS
     model. If `FALSE` then the the TAPAS `model` predicted threshold
-    will be used for segmentation rather than the clamped threshold. The
-    clamping method was used in published work.
+    will be used for segmentation rather than the clamped threshold.
   - `k` The minimum number of voxels for a cluster/component. Passed to
-    `\link[extrantsr]{label_mask``. Segmentation clusters of size less
-    than k are removed from the mask, volume estimation, the and
-    Sørensen's–Dice coefficient (DSC) calculation. @param ret
-    A`logical`argument set to`TRUE`by default. Returns a nested`list`of
-    objects from the function to the local R environement.
-    If`FALSE`then`outfile\` must be specified so subject data is saved.
+    `extrantsr::label_mask`. Segmentation clusters of size less than k
+    are removed from the mask, volume estimation, and Sørensen’s–Dice
+    coefficient (DSC) calculation.
+  - ret A `logical` argument set to `TRUE` by default. Returns a nested
+    `list` of objects from the function to the local R environement. If
+    `FALSE` then `outfile` must be specified so subject data is saved.
   - `outfile` Is set to `NULL` by default which only returns the
     subject-level `tibble` as a list in the local R environment. To save
     each subject-level `tibble` as an R object specify a `list` or
@@ -306,6 +307,5 @@ lesion mask produced from using the group threshold.
 
 **Return**:
 
-A nested `list`. Each element in the list contains data from a subject.
-The subject data is a `list` object containing the objects returned from
-`tapas_predict`.
+A nested `list`. Each element in the list contains subject-level data
+returned from `tapas_predict`.

@@ -7,14 +7,14 @@
 #' @param thresholds A \code{vector} of thresholds to apply to the probability map. The default
 #' \code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be
 #' between 0 and 1.
-#' @param pmap A \code{character} file path to probability map images or an object of
+#' @param pmap A \code{character} file path to a probability map image or an object of
 #' class \code{nifti}.
 #' @param gold_standard A \code{character} file path to a gold standard image (normally a manual
 #' segmentation) or an object of class \code{nifti}. The gold standard segmentation is used to compare the
 #' thresholded probability map image using Sørensen's–Dice coefficient (DSC).
 #' @param mask A \code{character} file path to a brain mask image or an object of class \code{nifti}.
 #' @param k The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-#' Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+#' Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 #' Sørensen's–Dice coefficient (DSC) calculation.
 #' @param subject_id A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
 #' provide an ID.
@@ -26,7 +26,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom neurobase check_nifti check_mask
 #' @importFrom tibble tibble
-#' @return A \code{tibble} containing the training data. The data contains columns \code{threshold},
+#' @return A \code{tibble} containing the training data for a single subject. The data contains columns \code{threshold},
 #' Sørensen's–Dice coefficient (\code{dsc}), and \code{volume}.
 #' @examples \dontrun{
 #' tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),

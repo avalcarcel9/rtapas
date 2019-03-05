@@ -12,7 +12,7 @@ tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01), pmap,
 \code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be
 between 0 and 1.}
 
-\item{pmap}{A \code{character} file path to probability map images or an object of
+\item{pmap}{A \code{character} file path to a probability map image or an object of
 class \code{nifti}.}
 
 \item{gold_standard}{A \code{character} file path to a gold standard image (normally a manual
@@ -22,7 +22,7 @@ thresholded probability map image using Sørensen's–Dice coefficient (DSC).}
 \item{mask}{A \code{character} file path to a brain mask image or an object of class \code{nifti}.}
 
 \item{k}{The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 Sørensen's–Dice coefficient (DSC) calculation.}
 
 \item{subject_id}{A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
@@ -31,14 +31,14 @@ provide an ID.}
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
 \value{
-A \code{tibble} containing the training data. The data contains columns \code{threshold},
+A \code{tibble} containing the training data for a single subject. The data contains columns \code{threshold},
 Sørensen's–Dice coefficient (\code{dsc}), and \code{volume}.
 }
 \description{
 This function creates the training vectors for a single subject from a probability map,
 a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided
 and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic
-volume and the gold standard volume. The function also calculates the automatic volume associated with thresholding
+image and the gold standard image. The function also calculates the volume associated with thresholding
 at each respective threshold.
 }
 \examples{

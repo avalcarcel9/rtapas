@@ -20,13 +20,12 @@ provide an ID.}
 \item{model}{The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
 used to make subject-specific threshold predictions.}
 
-\item{clamp}{A \code{logical} object that is \code{TRUE} by default. This setting uses the clamped
+\item{clamp}{A \code{logical} object set to \code{TRUE} by default. This setting uses the clamped
 subject-specific threshold prediction rather than the prediction fit by the
-TAPAS \code{model}. This only applied to volumes exceeding those at the 10th and 90th percentile
+TAPAS model. This only applies to volumes exceeding those at the 10th and 90th percentile
 calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate
 falls in the tails of the TAPAS model. If \code{FALSE} then the the TAPAS \code{model} predicted threshold
-will be used for segmentation rather than the clamped threshold. The clamping method was
-used in published work.}
+will be used for segmentation rather than the clamped threshold.}
 
 \item{k}{The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
 Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
@@ -43,12 +42,11 @@ specify a \code{list} or \code{vector} of file paths to save with either .rds or
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
 \value{
-A nested \code{list}. Each element in the list contains data from a subject. The subject data
-is a \code{list} object containing the objects returned from \code{\link{tapas_predict}}.
+A nested \code{list}. Each element in the list contains subject-level data returned from \code{\link{tapas_predict}}.
 }
 \description{
 This function wraps \code{\link{tapas_predict}} to run in parallel. This function takes
-probability maps across subjects and predicts the subject specific threshold to apply based on the
+probability maps across subjects and predicts the subject-specific threshold to apply based on the
 TAPAS model generated from \code{\link{tapas_train}}. The function will return or save a list of objects
 for each subject including the TAPAS predicted subject-specific threshold, the lesion mask produced from
 applying this threshold, as well as the lesion mask produced from using the group threshold.

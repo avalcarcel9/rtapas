@@ -1,22 +1,21 @@
 #' @title TAPAS Prediction
-#' @description This function takes a probability map for a single subject and predicts the subject
-#' specific threshold to apply based on the TAPAS model generated from \code{\link{tapas_train}}.
-#' The function will return a list of objects including the TAPAS predicted subject-specific threshold,
-#' the lesion mask produced from applying this threshold, as well as the lesion mask
+#' @description This function takes a probability map for a single subject and predicts the subject-specific
+#' threshold to apply based on the TAPAS model generated from \code{\link{tapas_train}}.
+#' The function will return a \code{list} of objects including the TAPAS predicted subject-specific threshold,
+#' the lesion mask produced from applying this threshold, and the lesion mask
 #' produced from using the group threshold.
-#' @param pmap A \code{character} file path to probability map images or an object of
+#' @param pmap A \code{character} file path to a probability map image or an object of
 #' class \code{nifti}.
 #' @param model The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
 #' used to make subject-specific threshold predictions.
-#' @param clamp A \code{logical} object that is \code{TRUE} by default. This setting uses the clamped
+#' @param clamp A \code{logical} object set to \code{TRUE} by default. This setting uses the clamped
 #' subject-specific threshold prediction rather than the prediction fit by the
-#' TAPAS \code{model}. This only applied to volumes exceeding those at the 10th and 90th percentile
+#' TAPAS \code{model}. This only applies to volumes exceeding those at the 10th and 90th percentile
 #' calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate
-#' falls in the tails of the TAPAS model. If \code{FALSE} then the the TAPAS \code{model} predicted threshold
-#' will be used for segmentation rather than the clamped threshold. The clamping method was
-#' used in published work.
+#' falls in the tails of the TAPAS model. If \code{FALSE} then the the TAPAS model predicted threshold
+#' will be used for segmentation rather than the clamped threshold.
 #' @param k The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-#' Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+#' Segmentation clusters of size less than k are removed from the mask, volume estimation, and
 #' Sørensen's–Dice coefficient (DSC) calculation.
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export

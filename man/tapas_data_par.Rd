@@ -32,7 +32,7 @@ Segmentation clusters of size less than k are removed from the mask, volume esti
 Sørensen's–Dice coefficient (DSC) calculation.}
 
 \item{subject_id}{A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
-provide an ID.}
+provide an ID \code{vector}.}
 
 \item{ret}{A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the
 function as a \code{list} in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
@@ -40,19 +40,22 @@ saved.}
 
 \item{outfile}{Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
 in the local R environment. To save each subject-level \code{tibble} as an R object
-specify a \code{list} or \code{vector} of file paths to save with either .rds or .RData extensions included.}
+specify a \code{vector} or \code{list} of file paths to save with either .rds or .RData extensions included.}
 
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
 \value{
-A list of the \code{tibble} object returned from \code{\link{tapas_data}} for each subject.
+A \code{list} with the subject-level \code{tibble} object in each element returned from \code{\link{tapas_data}} for each
+subject. \code{ret} must be \code{TRUE} to return objects locally. To save objects a \code{vector} of code{outfile}
+file paths must be provided.
 }
 \description{
-This function wraps \code{\link{tapas_data}} to run in parallel. We create the
-training vectors for subjects from a probability map, gold standard mask (normally
-manual segmentation), and brain mask. For a grid of thresholds provided and applied to the
-probability map it calculates Sørensen's–Dice coefficient between the automatic volume and the
-gold standard volume as well as the automatic volume estimation for each threshold.
+This function wraps \code{\link{tapas_data}} to run in parallel. This function creates
+the training vectors for all subjects from a probability map,
+a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided
+and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic
+image and the gold standard image. The function also calculates the volume associated with thresholding
+at each respective threshold.
 }
 \examples{
 \dontrun{
