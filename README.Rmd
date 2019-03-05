@@ -8,7 +8,7 @@ output: github_document
 
 [![Build Status](https://travis-ci.org/avalcarcel9/rtapas.svg?branch=master)](https://travis-ci.org/avalcarcel9/rtapas)[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/avalcarcel9/rtapas?branch=master&svg=true)](https://ci.appveyor.com/project/avalcarcel9/rtapas)[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/rtapas)](https://cran.r-project.org/package=rtapas)
 
-The goal of `rtapas` is to determine a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific thresholds to use on probability maps for automatic lesion segmentation.
+The goal of `rtapas` is to determine a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific thresholds to use on probability maps for automatic lesion segmentation. Methods can be extended outside of multiple sclerosis lesion segmentation but have not been validated.
 
 ## Installation
 
@@ -84,9 +84,9 @@ __Usage__:
 - `gold_standard` A `vector` of `character` file paths to gold standard images (normally a manual segmentation) or a `list` object with elements of class `nifti`. The gold standard segmentation is used to compare the thresholded probability map image using Sørensen's–Dice coefficient (DSC).
 - `mask` A `vector` of `character` file paths to brain mask images or a `list` object with elements of class `nifti`.  
 - `k` The minimum number of voxels for a cluster/component. Passed to `extrantsr::label_mask`.
- Segmentation clusters of size less than k are removed from the mask, volume estimation, the and Sørensen's–Dice coefficient (DSC) calculation.  
+ Segmentation clusters of size less than k are removed from the mask, volume estimation, and the Sørensen's–Dice coefficient (DSC) calculation.  
 - `subject_id` A `vector` of subject IDs of class `character`. By default this is set to `NULL` but users must provide an ID `vector`.
-- `ret` A `logical` argument set to `TRUE` by default. Return the `tibble` objects from the function as a `list` in the local R environment. If `FALSE` then `outfile` must be specified so subject data is saved.  
+- `ret` A `logical` argument set to `TRUE` by default. Return the `tibble` objects from the function as a `list` in the local R environment. If `FALSE` then `outfile` must be specified so subject data is saved.
 - `outfile` Is set to `NULL` by default which only returns the subject-level `tibble` as a list in the local R environment. To save each subject-level `tibble` as an R object specify a `vector` or `list` of file paths to save with either .rds or .RData extensions included.
 - `verbose` A `logical` argument to print messages. Set to `TRUE` by default.  
 
@@ -135,7 +135,7 @@ __Usage__:
 - `pmap` A `character` file path to a probability map image or an object of class `nifti`.
 - `model` The TAPAS model fit from `tapas_train` of class `gam`. This model will be used to make subject-specific threshold predictions.
 - `clamp` A `logical` object set to `TRUE` by default. This setting uses the clamped subject-specific threshold prediction rather than the prediction fit by the TAPAS `model`. This only applies to volumes exceeding those at the 10th and 90th percentile calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate falls in the tails of the TAPAS model. If `FALSE` then the the TAPAS model predicted threshold will be used for segmentation rather than the clamped threshold. 
-- `k` The minimum number of voxels for a cluster/component. Passed to `extrantsr::label_mask`. Segmentation clusters of size less than k are removed from the mask, volume estimation, and Sørensen's–Dice coefficient (DSC) calculation.
+- `k` The minimum number of voxels for a cluster/component. Passed to `extrantsr::label_mask`. Segmentation clusters of size less than k are removed from the mask, volume estimation, and the Sørensen's–Dice coefficient (DSC) calculation.
 - `verbose` A `logical` argument to print messages. Set to `TRUE` by default.
 
 __Return__:
@@ -168,7 +168,7 @@ __Usage__:
 - `model` The TAPAS model fit from `tapas_train` of class `gam`. This model will be used to make subject-specific threshold predictions.
 - `clamp` A `logical` object set to `TRUE` by default. This setting uses the clamped subject-specific threshold prediction rather than the prediction fit by the TAPAS model. This only applies to volumes exceeding those at the 10th and 90th percentile calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate falls in the tails of the TAPAS model. If `FALSE` then the the TAPAS `model` predicted threshold will be used for segmentation rather than the clamped threshold. 
 - `k` The minimum number of voxels for a cluster/component. Passed to `extrantsr::label_mask`. Segmentation clusters of size less than k are removed from the mask, volume estimation, and Sørensen's–Dice coefficient (DSC) calculation.
-- ret A `logical` argument set to `TRUE` by default. Returns a nested `list` of objects from the function to the local R environement. If `FALSE` then `outfile` must be specified so subject data is saved.
+- `ret` A `logical` argument set to `TRUE` by default. Returns a nested `list` of objects from the function to the local R environement. If `FALSE` then `outfile` must be specified so subject data is saved.
 - `outfile` Is set to `NULL` by default which only returns the subject-level `tibble` as a list in the local R environment. To save each subject-level `tibble` as an R object specify a `list` or `vector` of file paths to save with either .rds or .RData extensions included.
 - `verbose` A `logical` argument to print messages. Set to `TRUE` by default.
 

@@ -15,7 +15,7 @@
 #' falls in the tails of the TAPAS model. If \code{FALSE} then the the TAPAS model predicted threshold
 #' will be used for segmentation rather than the clamped threshold.
 #' @param k The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-#' Segmentation clusters of size less than k are removed from the mask, volume estimation, and
+#' Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 #' Sørensen's–Dice coefficient (DSC) calculation.
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export

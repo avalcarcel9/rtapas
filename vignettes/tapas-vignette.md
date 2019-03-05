@@ -243,6 +243,12 @@ oro.nifti::image(train_gold_standard_masks$gs7) + oro.nifti::image(train_gold_st
 oro.nifti::image(train_gold_standard_masks$gs9) + oro.nifti::image(train_gold_standard_masks$gs10) 
 ```
 
+![](tapas-vignette_files/figure-html/unnamed-chunk-8-1.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-2.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-3.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-4.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-5.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-6.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-7.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-8.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-9.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-8-10.png)<!-- -->
+
+```
+#> integer(0)
+```
+
 ### Training Probability Maps
 
 
@@ -272,6 +278,12 @@ oro.nifti::image(train_probability_maps$pmap1, col = heat.colors(100)) +
   oro.nifti::image(train_probability_maps$pmap8, col = heat.colors(100)) +
   oro.nifti::image(train_probability_maps$pmap9, col = heat.colors(100)) +
   oro.nifti::image(train_probability_maps$pmap10, col = heat.colors(100)) 
+```
+
+![](tapas-vignette_files/figure-html/unnamed-chunk-9-1.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-2.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-3.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-4.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-5.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-6.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-7.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-8.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-9.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-9-10.png)<!-- -->
+
+```
+#> integer(0)
 ```
 
 ### Training Brain Mask
@@ -358,6 +370,7 @@ train_data1 = dplyr::bind_rows(train_data1)
 train_data2 = dplyr::bind_rows(train_data2)
 # Check that datasets are equal
 all.equal(train_data1, train_data2)
+#> [1] TRUE
 ```
 
 The data returned from either of these functions is needed to train the TAPAS model. The `tapas_data` function returns a single subject level tibble while the `tapas_data_par` returns a list with each subject-level tibble as an element in the list (only if `ret = TRUE`). Each subject-level tibble contains the following columns: `threshold`, `dsc`, `volume`, and `subject_id`. The first and last 5 rows of `train_data1` are shown below:
@@ -365,7 +378,25 @@ The data returned from either of these functions is needed to train the TAPAS mo
 
 ```r
 head(train_data1)
+#> # A tibble: 6 x 4
+#>   threshold    dsc volume subject_id
+#>       <dbl>  <dbl>  <dbl> <chr>     
+#> 1      0    0.0325  16282 subject_1 
+#> 2      0.01 0.124    4056 subject_1 
+#> 3      0.02 0.165    2997 subject_1 
+#> 4      0.03 0.210    2296 subject_1 
+#> 5      0.04 0.258    1817 subject_1 
+#> 6      0.05 0.314    1437 subject_1
 tail(train_data1)
+#> # A tibble: 6 x 4
+#>   threshold   dsc volume subject_id
+#>       <dbl> <dbl>  <dbl> <chr>     
+#> 1      0.95     0      0 subject_10
+#> 2      0.96     0      0 subject_10
+#> 3      0.97     0      0 subject_10
+#> 4      0.98     0      0 subject_10
+#> 5      0.99     0      0 subject_10
+#> 6      1        0      0 subject_10
 ```
 
 # Fit the TAPAS Model
@@ -383,10 +414,37 @@ The return object from running `tapas_train` includes a list with the model in t
 ```r
 # The TAPAS GAM model
 summary(tapas_model$tapas_model)
+#> 
+#> Family: gaussian 
+#> Link function: identity 
+#> 
+#> Formula:
+#> gtools::logit(threshold) ~ s(volume)
+#> 
+#> Parametric coefficients:
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) -2.07312    0.08166  -25.39 7.71e-09 ***
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> Approximate significance of smooth terms:
+#>             edf Ref.df     F p-value  
+#> s(volume) 1.122  1.233 7.126  0.0286 *
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> R-sq.(adj) =  0.448   Deviance explained = 51.7%
+#> GCV = 0.084654  Scale est. = 0.066687  n = 10
 # The threshold that optimizes group-level DSC
 tapas_model$group_threshold
+#> [1] 0.09
 # The lower and uppber bound clamps to avoid extrapolation
 tapas_model$clamp_data
+#> # A tibble: 2 x 3
+#>   bound volume pred_threshold
+#>   <chr>  <dbl>          <dbl>
+#> 1 lower   154.         0.0868
+#> 2 upper  2280.         0.153
 ```
 
 With this model, we can use this model to predict on subjects that are not included in the training data set.
@@ -417,6 +475,12 @@ oro.nifti::image(test_gold_standard_masks$gs13) + oro.nifti::image(test_gold_sta
 oro.nifti::image(test_gold_standard_masks$gs15)
 ```
 
+![](tapas-vignette_files/figure-html/unnamed-chunk-18-1.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-18-2.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-18-3.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-18-4.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-18-5.png)<!-- -->
+
+```
+#> integer(0)
+```
+
 ### Testing Probability Maps
 
 
@@ -437,6 +501,12 @@ oro.nifti::image(test_probability_maps$pmap12, col = heat.colors(100)) +
 oro.nifti::image(test_probability_maps$pmap13, col = heat.colors(100)) +
 oro.nifti::image(test_probability_maps$pmap14, col = heat.colors(100)) +
 oro.nifti::image(test_probability_maps$pmap15, col = heat.colors(100))
+```
+
+![](tapas-vignette_files/figure-html/unnamed-chunk-19-1.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-19-2.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-19-3.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-19-4.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-19-5.png)<!-- -->
+
+```
+#> integer(0)
 ```
 
 ### Testing Brain Masks
@@ -510,8 +580,11 @@ The data produced using these functions is exactly the same. The only difference
 
 ```r
 all.equal(test_data1[[1]]$subject_threshold, test_data2[[1]]$subject_threshold)
+#> [1] TRUE
 all.equal(sum(test_data1[[1]]$tapas_binary_mask), sum(test_data2[[1]]$tapas_binary_mask))
+#> [1] TRUE
 all.equal(sum(test_data1[[1]]$group_binary_mask), sum(test_data2[[1]]$group_binary_mask))
+#> [1] TRUE
 ```
 
 The `tapas_predict` function returns a list containing the TAPAS predicted `subject_threshold`, the binary segmentation mask produced by applying the TAPAS predicted `subject_threshold` called `tapas_binary_mask`, and the binary segmentation mask produced by applying the group threshold `group_binary_mask`.
@@ -519,6 +592,7 @@ The `tapas_predict` function returns a list containing the TAPAS predicted `subj
 
 ```r
 names(test_data1[[1]])
+#> [1] "subject_threshold" "tapas_binary_mask" "group_binary_mask"
 ```
 
 
@@ -536,6 +610,12 @@ oro.nifti::image(test_data1[[1]]$tapas_binary_mask) +
   oro.nifti::image(test_data1[[5]]$tapas_binary_mask)
 ```
 
+![](tapas-vignette_files/figure-html/unnamed-chunk-26-1.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-26-2.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-26-3.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-26-4.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-26-5.png)<!-- -->
+
+```
+#> integer(0)
+```
+
 Now we will look at the group threshold produced binary segmentation masks.
 
 
@@ -546,6 +626,12 @@ oro.nifti::image(test_data1[[1]]$group_binary_mask) +
   oro.nifti::image(test_data1[[3]]$group_binary_mask) + 
   oro.nifti::image(test_data1[[4]]$group_binary_mask) +
   oro.nifti::image(test_data1[[5]]$group_binary_mask)
+```
+
+![](tapas-vignette_files/figure-html/unnamed-chunk-27-1.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-27-2.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-27-3.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-27-4.png)<!-- -->![](tapas-vignette_files/figure-html/unnamed-chunk-27-5.png)<!-- -->
+
+```
+#> integer(0)
 ```
 
 With these masks we can calculate DSC to compare the TAPAS and group threshold masks.
@@ -566,6 +652,14 @@ dsc = tibble::tibble(
                 aliviateR::dsc(test_gold_standard_masks[[5]], test_data1[[5]]$group_binary_mask)))
 # Print DSC
 dsc
+#> # A tibble: 5 x 2
+#>   tapas_dsc group_dsc
+#>       <dbl>     <dbl>
+#> 1     0.528     0.424
+#> 2     0.518     0.515
+#> 3     0         0    
+#> 4     0.502     0.469
+#> 5     0.408     0.410
 ```
 
 # Thank you
@@ -576,6 +670,8 @@ Thank you all for the time and I hope you enjoyed the training vignette. If you 
 ```r
 knitr::include_graphics("end.jpg")
 ```
+
+<img src="end.jpg" width="600" style="display: block; margin: auto;" />
 
 
 

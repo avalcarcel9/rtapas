@@ -19,7 +19,7 @@
 #' @param mask A \code{vector} of \code{character} file paths to brain mask images or a \code{list} object
 #' with elements of class \code{nifti}.
 #' @param k The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-#' Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+#' Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 #' Sørensen's–Dice coefficient (DSC) calculation.
 #' @param subject_id A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
 #' provide an ID \code{vector}.
