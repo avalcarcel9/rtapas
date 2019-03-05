@@ -26,6 +26,7 @@ To get the latest development version from GitHub:
 
 ``` r
 # install.packages('remotes')
+library(remotes)
 remotes::install_github('avalcarcel9/rtapas')
 ```
 
@@ -38,6 +39,8 @@ The TAPAS package contains a number of functions to generate data
 required for training, train the model, and predict subject-specific
 thresholds based on the trained model. The functions, defaults, and
 usage are provided below.
+
+### `tapas_data`
 
 ``` r
 tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
@@ -87,6 +90,8 @@ thresholding at each respective threshold.
 A `tibble` containing the training data. The data contains columns
 `threshold`, Sørensen’s–Dice coefficient (`dsc`), and `volume`.
 
+### `tapas_data_par`
+
 ``` r
 tapas_data_par(cores = 1,
                thresholds = seq(from = 0, to = 1, by = 0.01),
@@ -102,12 +107,13 @@ tapas_data_par(cores = 1,
 
 **Description**:
 
-This function wraps `tapas_data` to run in parallel. We create the
-training vectors for subjects from a probability map, gold standard mask
-(normally manual segmentation), and brain mask. For a grid of thresholds
-provided and applied to the probability map it calculates
-Sørensen’s–Dice coefficient between the automatic volume and the
-gold standard volume as well as the automatic volume estimation for each
+This function wraps `tapas_data` to run in parallel. This function
+creates the training vectors for a single subject from a probability
+map, a gold standard mask (normally a manual segmentation), and a brain
+mask. For a grid of thresholds provided and applied to the probability
+map the function calculates Sørensen’s–Dice coefficient (DSC) between
+the automatic image and the gold standard image. The function also
+calculates the volume associated with thresholding at each respective
 threshold.
 
 **Usage**:
@@ -136,12 +142,12 @@ threshold.
     set to `NULL` but users must provide an ID.  
   - `ret` A `logical` argument set to `TRUE` by default. Return the
     `tibble` objects from the function as a `list` in the local R
-    environement. If `FALSE` then `outfile` must be specified so subject
+    environment. If `FALSE` then `outfile` must be specified so subject
     data is saved.  
   - `outfile` Is set to `NULL` by default which only Return the
     subject-level `tibble` as a list in the local R environment. To save
     each subject-level `tibble` as an R object specify a `list` or
-    `vector` of file paths to save with either .rds or .RData exentions
+    `vector` of file paths to save with either .rds or .RData extensions
     included.  
   - `verbose` A `logical` argument to print messages. Set to `TRUE` by
     default.
@@ -150,6 +156,8 @@ threshold.
 
 A list of the `tibble` object returned from `tapas_data` for each
 subject.
+
+### `tapas_train`
 
 ``` r
 tapas_train(data, 
@@ -187,6 +195,8 @@ A `list` with the TAPAS model (`tapas_model`) of class `gam` and the a
 information contains the TAPAS-predicted smallest and largest threshold
 to be applied by using estimates related to the volume at the 10th and
 90th percentile.
+
+### `tapas_predict`
 
 ``` r
 tapas_predict(pmap, 
@@ -234,6 +244,8 @@ A `list` containing the TAPAS predicted subject-specific threshold
 TAPAS predicted subject-specific threshold (`tapas_binary_mask`), and
 the lesion segmentation mask obtained using the group threshold
 (`group_binary_mask`).
+
+### `tapas_predict_par`
 
 ``` r
 tapas_predict_par(cores = 1,
@@ -287,7 +299,7 @@ lesion mask produced from using the group threshold.
   - `outfile` Is set to `NULL` by default which only returns the
     subject-level `tibble` as a list in the local R environment. To save
     each subject-level `tibble` as an R object specify a `list` or
-    `vector` of file paths to save with either .rds or .RData exentions
+    `vector` of file paths to save with either .rds or .RData extensions
     included.
   - `verbose` A `logical` argument to print messages. Set to `TRUE` by
     default.

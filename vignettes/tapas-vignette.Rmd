@@ -14,7 +14,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  eval = FALSE,
+  # eval = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 # Overview
 
-The `rtapas` package determines a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates the data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific threhsolds to use on probability maps for automatic lesion segmentation.
+The `rtapas` package determines a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates the data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific thresholds to use on probability maps for automatic lesion segmentation.
 
 # Installation
 
@@ -34,7 +34,7 @@ To get the latest development version from GitHub:
 ```{r, eval = FALSE}
 # install.packages("remotes")
 library(remotes)
-remotes::insttrain_github('avalcarcel9/rtapas')
+remotes::install_github('avalcarcel9/rtapas')
 ```
 
 We are currently working to get the package on [Neuroconductor](www.neuroconductor.org).
@@ -42,6 +42,8 @@ We are currently working to get the package on [Neuroconductor](www.neuroconduct
 # Function Documentation
 
 The TAPAS package contains a number of functions to generate data required for training, train the model, and predict subject-specific thresholds based on the trained model. The functions, defaults, and usage are provided below.
+
+## `tapas_data`
 
 ```{r, eval = FALSE}
 tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
@@ -55,7 +57,7 @@ tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
 
 __Description__: 
 
-This function creates the training vectors for a single subject from a probability map, a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic volume and the gold standard volume. The function also calculates the automatic volume associated with thresholding at each respective threshold.
+This function creates the training vectors for a single subject from a probability map, a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic image and the gold standard image. The function also calculates the volume associated with thresholding at each respective threshold.
 
 __Usage__:
 
@@ -71,6 +73,8 @@ __Usage__:
 __Return__: 
 
 A `tibble` containing the training data. The data contains columns `threshold`, Sørensen's–Dice coefficient (`dsc`), and `volume`.
+
+## `tapas_data_par`
 
 ```{r, eval = FALSE}
 tapas_data_par(cores = 1,
@@ -107,6 +111,8 @@ __Return__:
 
 A list of the `tibble` object returned from `tapas_data` for each subject.
 
+## `tapas_train`
+
 ```{r, eval = FALSE}
 tapas_train(data, 
             dsc_cutoff = 0.03, 
@@ -126,6 +132,8 @@ __Usage__:
 __Return__: 
 
 A `list` with the TAPAS model (`tapas_model`) of class `gam` and the a `tibble` with the clamp information (`clamp_data`). The clamp information contains the TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the 10th and 90th percentile.
+
+## `tapas_predict`
 
 ```{r, eval = FALSE}
 tapas_predict(pmap, 
@@ -150,6 +158,8 @@ __Usage__:
 __Return__:
 
 A `list` containing the TAPAS predicted subject-specific threshold (`subject_threshold`), the lesion segmentation mask obtained using the TAPAS predicted subject-specific threshold (`tapas_binary_mask`), and the lesion segmentation mask obtained using the group threshold (`group_binary_mask`).
+
+## `tapas_predict_par`
 
 ```{r, eval = FALSE}
 tapas_predict_par(cores = 1,
@@ -190,6 +200,7 @@ The packages you will need to load for use with this tutorial are below:
 library(rtapas)
 library(neurobase)
 library(oro.nifti)
+library(aliviateR)
 ```
 
 # Tutorial Data
@@ -287,12 +298,12 @@ train_brain_masks = lapply(train_brain_masks, oro.nifti::nifti)
 We will also need a vector of subject IDs to include. We simply create an ID vector below:
 
 ```{r}
-ids = paste0('subject_', 1:length(train_gold_standard_masks))
+train_ids = paste0('subject_', 1:length(train_gold_standard_masks))
 ```
 
 # Generating TAPAS Model Data
 
-Before we can fit the TAPAS model, we have to generate the threshold data required for model input. The model requires the Sørensen–Dice coefficient value evaluated across all `thresholds` values for each subject in the training set. We suggest evaluating threhsolds from 0 to 1 by 1% increments. This can be carried out using two functions: `tapas_data` and `tapas_data_par`. The `tapas_data` function will produce the model data for a single subject whereas `tapas_data_par` is a wrapper around `tapas_data` and will run in parallel for multiple subjects.
+Before we can fit the TAPAS model, we have to generate the threshold data required for model input. The model requires the Sørensen–Dice coefficient value evaluated across all `thresholds` values for each subject in the training set. We suggest evaluating thresholds from 0 to 1 by 1% increments. This can be carried out using two functions: `tapas_data` and `tapas_data_par`. The `tapas_data` function will produce the model data for a single subject whereas `tapas_data_par` is a wrapper around `tapas_data` and will run in parallel for multiple subjects.
 
 Below we will calculate the TAPAS model input data using the example data subject by subject using `tapas_data`. We implement a `for` loop for simplicity. The `pmap`,  `gold_standard`, and `mask` inputs must be either a local object of class `nifti` or a vector of file paths to a `nifti` object. The `subject_id` is simply a vector of subject IDs. These can be character or numeric. For this example we set `k = 0` since the data is only a single slice of segmented values and probability maps were randomly generated from a uniform. The `thresholds` and `verbose` inputs are all set to the default. 
 
@@ -307,7 +318,7 @@ for(i in 1:length(train_probability_maps)){
                          gold_standard = train_gold_standard_masks[[i]],
                          mask = train_brain_masks[[i]],
                          k = 0,
-                         subject_id = ids[[i]],
+                         subject_id = train_ids[[i]],
                          verbose = TRUE)
 }
 ```
@@ -325,7 +336,7 @@ train_data2 = tapas_data_par(cores = 2,
                        gold_standard = train_gold_standard_masks, 
                        mask = train_brain_masks, 
                        k = 0, 
-                       subject_id = ids,
+                       subject_id = train_ids,
                        ret = TRUE, 
                        outfile = NULL, 
                        verbose = TRUE)
@@ -437,7 +448,7 @@ test_brain_masks = lapply(test_brain_masks, oro.nifti::nifti)
 We will also need a vector of subject IDs to include. We simply create an ID vector below:
 
 ```{r}
-ids = paste0('subject_', (10 + 1:length(test_gold_standard_masks)))
+test_ids = paste0('subject_', (10 + 1:length(test_gold_standard_masks)))
 ```
 
 # Predicting Thresholds and Segmentation Masks
@@ -469,7 +480,7 @@ The inputs for `tapas_data_par` are similar to the `tapas_data` function but ins
 # Run tapas_predict_par function
 test_data2 = tapas_predict_par(cores = 2, 
                                pmap = test_probability_maps, 
-                               subject_id = ids, 
+                               subject_id = test_ids, 
                                model = tapas_model, 
                                clamp = TRUE,
                                k = 0, 
@@ -485,12 +496,67 @@ all.equal(test_data1[[1]]$subject_threshold, test_data2[[1]]$subject_threshold)
 all.equal(sum(test_data1[[1]]$tapas_binary_mask), sum(test_data2[[1]]$tapas_binary_mask))
 all.equal(sum(test_data1[[1]]$group_binary_mask), sum(test_data2[[1]]$group_binary_mask))
 ```
-#### SHOW THE TAPAS MASKS AND THEN
-#### CALCULATE DSC FOR EACH GROUP AND TAPAS MASK
+
+The `tapas_predict` function returns a list containing the TAPAS predicted `subject_threshold`, the binary segmentation mask produced by applying the TAPAS predicted `subject_threshold` called `tapas_binary_mask`, and the binary segmentation mask produced by applying the group threshold `group_binary_mask`.
+
+```{r}
+names(test_data1[[1]])
+```
 
 
+## Evaluate Performance
+
+Let's visualize and quantify the masks produced by the `tapas_predict` and `tapas_predict_par` functions. First we will look at the TAPAS produced binary segmentations.
+
+```{r}
+# The TAPAS binary masks
+oro.nifti::image(test_data1[[1]]$tapas_binary_mask) + 
+  oro.nifti::image(test_data1[[2]]$tapas_binary_mask) +
+  oro.nifti::image(test_data1[[3]]$tapas_binary_mask) + 
+  oro.nifti::image(test_data1[[4]]$tapas_binary_mask) +
+  oro.nifti::image(test_data1[[5]]$tapas_binary_mask)
+```
+
+Now we will look at the group threshold produced binary segmentation masks.
+
+```{r}
+# The group threshold binary masks
+oro.nifti::image(test_data1[[1]]$group_binary_mask) + 
+  oro.nifti::image(test_data1[[2]]$group_binary_mask) +
+  oro.nifti::image(test_data1[[3]]$group_binary_mask) + 
+  oro.nifti::image(test_data1[[4]]$group_binary_mask) +
+  oro.nifti::image(test_data1[[5]]$group_binary_mask)
+```
+
+With these masks we can calculate DSC to compare the TAPAS and group threshold masks.
+
+```{r}
+# Calculate DSC in each mask
+dsc = tibble::tibble(
+  tapas_dsc = c(aliviateR::dsc(test_gold_standard_masks[[1]], test_data1[[1]]$tapas_binary_mask),
+                aliviateR::dsc(test_gold_standard_masks[[2]], test_data1[[2]]$tapas_binary_mask),
+                aliviateR::dsc(test_gold_standard_masks[[3]], test_data1[[3]]$tapas_binary_mask),
+                aliviateR::dsc(test_gold_standard_masks[[4]], test_data1[[4]]$tapas_binary_mask),
+                aliviateR::dsc(test_gold_standard_masks[[5]], test_data1[[5]]$tapas_binary_mask)),
+  group_dsc = c(aliviateR::dsc(test_gold_standard_masks[[1]], test_data1[[1]]$group_binary_mask),
+                aliviateR::dsc(test_gold_standard_masks[[2]], test_data1[[2]]$group_binary_mask),
+                aliviateR::dsc(test_gold_standard_masks[[3]], test_data1[[3]]$group_binary_mask),
+                aliviateR::dsc(test_gold_standard_masks[[4]], test_data1[[4]]$group_binary_mask),
+                aliviateR::dsc(test_gold_standard_masks[[5]], test_data1[[5]]$group_binary_mask)))
+# Print DSC
+dsc
+```
+
+# Thank you
+
+Thank you all for the time and I hope you enjoyed the training vignette. If you have comments, questions, or suggestions please feel free to contact me by submitting an issue.
+
+```{r, fig.align="center"}
+knitr::include_graphics("end.jpg")
+```
 
 
+<!-- put knit option down here to save out as github md with code run and another to knit without running code for neuroconductor. -->
 
 
 

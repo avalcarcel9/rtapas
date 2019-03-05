@@ -2,7 +2,7 @@
 #' @description This function creates the training vectors for a single subject from a probability map,
 #' a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided
 #' and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic
-#' volume and the gold standard volume. The function also calculates the automatic volume associated with thresholding
+#' image and the gold standard image. The function also calculates the volume associated with thresholding
 #' at each respective threshold.
 #' @param thresholds A \code{vector} of thresholds to apply to the probability map. The default
 #' \code{vector} applied is 0 to 1 by 0.01 increments which matches the published work. Threshold values must be

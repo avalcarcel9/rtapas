@@ -1,9 +1,9 @@
 #' @title Generates The TAPAS Training Data in Parallel
-#' @description This function wraps \code{\link{tapas_data}} to run in parallel. We create the
-#' training vectors for subjects from a probability map, gold standard mask (normally
-#' manual segmentation), and brain mask. For a grid of thresholds provided and applied to the
-#' probability map it calculates Sørensen's–Dice coefficient between the automatic volume and the
-#' gold standard volume as well as the automatic volume estimation for each threshold.
+#' @description This function wraps \code{\link{tapas_data}} to run in parallel. This function creates the training vectors for a single subject from a probability map,
+#' a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided
+#' and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic
+#' image and the gold standard image. The function also calculates the volume associated with thresholding
+#' at each respective threshold.
 #' @param cores The number of cores to use. This argument controls at most how many child processes will
 #' be run simultaneously. The default is set to 1.
 #' @param thresholds A \code{vector} of thresholds to apply to the probability maps. The default
