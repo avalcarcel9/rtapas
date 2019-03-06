@@ -28,7 +28,7 @@ falls in the tails of the TAPAS model. If \code{FALSE} then the the TAPAS \code{
 will be used for segmentation rather than the clamped threshold.}
 
 \item{k}{The minimum number of voxels for a cluster/component. Passed to \code{\link[extrantsr]{label_mask}}.
-Segmentation clusters of size less than k are removed from the mask, volume estimation, the and
+Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 Sørensen's–Dice coefficient (DSC) calculation.}
 
 \item{ret}{A \code{logical} argument set to \code{TRUE} by default. Returns a nested \code{list} of objects from the
