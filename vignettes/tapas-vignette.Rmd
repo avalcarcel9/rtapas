@@ -17,6 +17,7 @@ vignette: >
 # Other machines do not compile vignettes with eval set to FALSE
 if(stringr::str_detect(getwd(), "alval")){
   eval = TRUE
+  # eval = FALSE
 } else {
   eval = FALSE
 }
@@ -27,7 +28,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   message = FALSE
 )
-
 ```
 
 # Overview
@@ -400,7 +400,7 @@ The return object from running `tapas_train` includes a list with the model in t
 summary(tapas_model$tapas_model)
 # The threshold that optimizes group-level DSC
 tapas_model$group_threshold
-# The lower and uppber bound clamps to avoid extrapolation
+# The lower and upper bound clamps to avoid extrapolation
 tapas_model$clamp_data
 ```
 

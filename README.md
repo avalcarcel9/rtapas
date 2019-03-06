@@ -4,9 +4,12 @@
 # rtapas
 
 [![Build
-Status](https://travis-ci.org/avalcarcel9/rtapas.svg?branch=master)](https://travis-ci.org/avalcarcel9/rtapas)[![AppVeyor
-Build
-Status](https://ci.appveyor.com/api/projects/status/github/avalcarcel9/rtapas?branch=master&svg=true)](https://ci.appveyor.com/project/avalcarcel9/rtapas)[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/rtapas)](https://cran.r-project.org/package=rtapas)
+Status](https://travis-ci.org/avalcarcel9/rtapas.svg?branch=master)](https://travis-ci.org/avalcarcel9/rtapas)
+[![AppVeyor Build
+Status](https://ci.appveyor.com/api/projects/status/github/avalcarcel9/rtapas?branch=master&svg=true)](https://ci.appveyor.com/project/avalcarcel9/rtapas)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/rtapas)](https://cran.r-project.org/package=rtapas)
+[![Coverage
+Status](https://img.shields.io/coveralls/avalcarcel9/rtapas.svg)](https://coveralls.io/r/avalcarcel9/rtapas?branch=master)
 
 The goal of `rtapas` is to determine a subject-specific threshold to
 apply to multiple sclerosis lesion probability maps for automatic
@@ -133,14 +136,14 @@ threshold.
     a `list` object with elements of class `nifti`.  
   - `k` The minimum number of voxels for a cluster/component. Passed to
     `extrantsr::label_mask`. Segmentation clusters of size less than k
-    are removed from the mask, volume estimation, the and
+    are removed from the mask, volume estimation, and the
     Sørensen’s–Dice coefficient (DSC) calculation.  
   - `subject_id` A `vector` of subject IDs of class `character`. By
     default this is set to `NULL` but users must provide an ID `vector`.
   - `ret` A `logical` argument set to `TRUE` by default. Return the
     `tibble` objects from the function as a `list` in the local R
     environment. If `FALSE` then `outfile` must be specified so subject
-    data is saved.  
+    data is saved.
   - `outfile` Is set to `NULL` by default which only returns the
     subject-level `tibble` as a list in the local R environment. To save
     each subject-level `tibble` as an R object specify a `vector` or
@@ -230,8 +233,8 @@ produced from using the group threshold.
     be used for segmentation rather than the clamped threshold.
   - `k` The minimum number of voxels for a cluster/component. Passed to
     `extrantsr::label_mask`. Segmentation clusters of size less than k
-    are removed from the mask, volume estimation, and Sørensen’s–Dice
-    coefficient (DSC) calculation.
+    are removed from the mask, volume estimation, and the
+    Sørensen’s–Dice coefficient (DSC) calculation.
   - `verbose` A `logical` argument to print messages. Set to `TRUE` by
     default.
 
@@ -290,9 +293,10 @@ lesion mask produced from using the group threshold.
     `extrantsr::label_mask`. Segmentation clusters of size less than k
     are removed from the mask, volume estimation, and Sørensen’s–Dice
     coefficient (DSC) calculation.
-  - ret A `logical` argument set to `TRUE` by default. Returns a nested
-    `list` of objects from the function to the local R environement. If
-    `FALSE` then `outfile` must be specified so subject data is saved.
+  - `ret` A `logical` argument set to `TRUE` by default. Returns a
+    nested `list` of objects from the function to the local R
+    environement. If `FALSE` then `outfile` must be specified so subject
+    data is saved.
   - `outfile` Is set to `NULL` by default which only returns the
     subject-level `tibble` as a list in the local R environment. To save
     each subject-level `tibble` as an R object specify a `list` or

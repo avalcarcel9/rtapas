@@ -29,12 +29,25 @@
 #' @return A \code{tibble} containing the training data for a single subject. The data contains columns \code{threshold},
 #' Sørensen's–Dice coefficient (\code{dsc}), and \code{volume}.
 #' @examples \dontrun{
-#' tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
-#' pmap = 'probability_map_subject_1.nii.gz',
-#' gold_standard = 'manual_segmentation_subject_1.nii.gz',
-#' mask = 'brain_mask_subject_1.nii.gz',
-#' k = 8,
-#' subject_id = 'subject_1')
+#' # Data is provided in the rtapas package as arrays. Below we will convert them to nifti objects.
+#' library(oro.nifti)
+#' # Gold standard manual segmentation
+#' gs1 = oro.nifti::nifti(gs1)
+#' # Probability map for subject 1
+#' pmap1 = oro.nifti::nifti(pmap1)
+#' # Brain mask
+#' brain_mask = oro.nifti::nifti(brain_mask)
+#'
+#' # Run the tapas_data function for subject 1
+#' data = tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
+#'                   pmap = pmap1,
+#'                   gold_standard = gs1,
+#'                   mask = brain_mask,
+#'                   k = 8,
+#'                   subject_id = "subject_1",
+#'                   verbose = TRUE)
+#' # Visualize data returned from the tapas_data function
+#' head(data)
 #' }
 
 tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),

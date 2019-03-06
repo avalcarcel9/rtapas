@@ -40,8 +40,91 @@ produced from using the group threshold.
 }
 \examples{
 \dontrun{
-# Put the code from other examples in here
-tapas_predict(pmap, model, clamp = TRUE, k = 8, verbose = TRUE)
+# Data is provided in the rtapas package as arrays. Below we will convert them to nifti objects.
+# Before we can implement the train_tapas function we have to generate the training data
+library(oro.nifti)
+# Create a list of gold standard manual segmentation
+train_gold_standard_masks = list(gs1 = gs1,
+                                 gs2 = gs2,
+                                 gs3 = gs3,
+                                 gs4 = gs4,
+                                 gs5 = gs5,
+                                 gs6 = gs6,
+                                 gs7 = gs7,
+                                 gs8 = gs8,
+                                 gs9 = gs9,
+                                 gs10 = gs10)
+# Convert the gold standard masks to nifti objects
+train_gold_standard_masks = lapply(train_gold_standard_masks, oro.nifti::nifti)
 
+# Make a list of the training probability maps
+train_probability_maps = list(pmap1 = pmap1,
+                             pmap2 = pmap2,
+                             pmap3 = pmap3,
+                             pmap4 = pmap4,
+                             pmap5 = pmap5,
+                             pmap6 = pmap6,
+                             pmap7 = pmap7,
+                             pmap8 = pmap8,
+                             pmap9 = pmap9,
+                             pmap10 = pmap10)
+
+# Convert the probability maps to nifti objects
+train_probability_maps = lapply(train_probability_maps, oro.nifti::nifti)
+# Make a list of the brain masks
+train_brain_masks = list(brain_mask1 = brain_mask,
+                         brain_mask2 = brain_mask,
+                         brain_mask3 = brain_mask,
+                         brain_mask4 = brain_mask,
+                         brain_mask5 = brain_mask,
+                         brain_mask6 = brain_mask,
+                         brain_mask7 = brain_mask,
+                         brain_mask8 = brain_mask,
+                         brain_mask9 = brain_mask,
+                         brain_mask10 = brain_mask)
+
+# Convert the brain masks to nifti objects
+train_brain_masks = lapply(train_brain_masks, oro.nifti::nifti)
+
+# Specify training IDs
+train_ids = paste0('subject_', 1:length(train_gold_standard_masks))
+
+# The function below runs on 2 cores. Be sure your machine has 2 cores available or switch to 1.
+# Run tapas_data_par function
+# You can also use the tapas_data function and generate each subjects data
+data = tapas_data_par(cores = 2,
+                      thresholds = seq(from = 0, to = 1, by = 0.01),
+                      pmap = train_probability_maps,
+                      gold_standard = train_gold_standard_masks,
+                      mask = train_brain_masks,
+                      k = 0,
+                      subject_id = train_ids,
+                      ret = TRUE,
+                      outfile = NULL,
+                      verbose = TRUE)
+
+# We can now implement the train_tapas function using the data from tapas_data_par
+tapas_model = tapas_train(data = train_data1,
+                          dsc_cutoff = 0.03,
+                          verbose = TRUE)
+
+# Load a subject reserved for testing and convert to a nifti
+# Probability map
+pmap11 = oro.nifti::nifti(pmap11)
+# Brain mask
+brain_mask = oro.nifti::nifti(brain_mask)
+
+# Use TAPAS to predict on a new subject
+test_subject_prediction = tapas_predict(pmap = pmap11,
+                                        model = tapas_model,
+                                        clamp = TRUE,
+                                        k = 0,
+                                        verbose = TRUE)
+# Show subject-specific TAPAS threshold
+test_subject_prediction$subject_threshold
+# Look at TAPAS binary segmentation from applying the TAPAS threshold
+oro.nifti::image(test_subject_prediction$tapas_binary_mask)
+# Look at group threshold binary segmentation from applying the group threshold
+oro.nifti::image(test_subject_prediction$group_binary_threshold)
 }
 }
