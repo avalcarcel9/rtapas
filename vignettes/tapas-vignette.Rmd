@@ -6,6 +6,7 @@ output:
     rmarkdown::html_document:
       base_format: rmarkdown::html_vignette
       keep_md: true
+    rmarkdown::pdf_document:
 vignette: >
   %\VignetteIndexEntry{rtapas}
   %\VignetteEncoding{UTF-8}
