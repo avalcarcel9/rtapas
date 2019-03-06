@@ -1,6 +1,5 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-install: travis_wait 30 mvn install
 language: R
 sudo: false
 cache: packages
@@ -42,6 +41,9 @@ before_install:
   - install_remotes_no_dep
   - cat DESCRIPTION
   - export PACKAGE_NAME=`package_name`
+
+script:
+  - travis_wait 30 mvn package -Dtestng=test.xml
 
 after_success:
   - Rscript -e 'covr::coveralls(type = "all")'
