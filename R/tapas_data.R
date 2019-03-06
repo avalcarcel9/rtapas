@@ -60,7 +60,7 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){
-    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# ERROR: verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   if(verbose == TRUE){
@@ -73,12 +73,12 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
 
   # Check gold_standard and mask are both binary 0/1
   if(neurobase::check_mask(gold_standard) == FALSE | neurobase::check_mask(mask) == FALSE){
-    stop('# gold_standard or mask is not binary.')
+    stop('# ERROR: gold_standard or mask is not binary.')
   }
 
   # Check that grid is a vector from 0 to 1
   if(base::is.numeric(thresholds) == FALSE | base::any(thresholds < 0) == TRUE | base::any(thresholds > 1) == TRUE){
-    stop('# thresholds must be a vector between 0 and 1.')
+    stop('# ERROR: thresholds must be a vector between 0 and 1.')
   }
 
   # Make pmap a vector to sapply over

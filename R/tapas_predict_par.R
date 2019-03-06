@@ -153,26 +153,30 @@ tapas_predict_par <- function(cores = 1,
                               outfile = NULL,
                               verbose = TRUE){
 
+  if(verbose == TRUE){
+    base::message('# Validating parameter inputs.')
+  }
+
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){
-    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# ERROR: verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   # Check that ret is TRUE or FALSE
   if(base::is.logical(ret) == FALSE){
-    base::stop('# ret must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# ERROR: ret must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   # Check that files exists for pmap
   if(base::is.list(pmap) == FALSE){
     if(base::any(base::file.exists(pmap)) == FALSE){
-      base::stop('# At least one pmap file path does not exist.')
+      base::stop('# ERROR: At least one pmap file path does not exist.')
     }
   }
 
   # Check that outfile is character
   if(base::any(base::is.character(outfile)) == FALSE & base::is.null(outfile) == FALSE){
-    base::stop('# At least one outfile is not character. Must be character or NULL.')
+    base::stop('# ERROR: At least one outfile is not character. Must be character or NULL.')
   }
 
   predict_parallel <- function(i){
@@ -195,7 +199,7 @@ tapas_predict_par <- function(cores = 1,
       } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
         base::save(subject_data, file = outfile[[i]])
       } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
-        base::stop('# outfile must have .rds or .RData extension.')
+        base::stop('# ERROR: outfile must have .rds or .RData extension.')
       }
     }
 
@@ -206,7 +210,7 @@ tapas_predict_par <- function(cores = 1,
       } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
         base::save(subject_data, file = outfile[[i]])
       } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
-        base::stop('# outfile must have .rds or .RData extension.')
+        base::stop('# ERROR: outfile must have .rds or .RData extension.')
       }
       base::return(subject_data)
     }
@@ -217,6 +221,10 @@ tapas_predict_par <- function(cores = 1,
     }
 
 
+  }
+
+  if(verbose == TRUE){
+    base::message('# Running tapas_predict in parallel.')
   }
 
   if(Sys.info()["sysname"] == "Windows"){

@@ -122,11 +122,11 @@ tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){
-    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# ERROR: verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
   # Check clamp is TRUE or FALSE
   if(base::is.logical(clamp) == FALSE){
-    base::stop('# clamp must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# ERROR: clamp must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   if(verbose == TRUE){

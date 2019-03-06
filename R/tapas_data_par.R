@@ -115,43 +115,43 @@ tapas_data_par <- function(cores = 1,
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){
-    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# ERROR: verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   # Check that ret is TRUE or FALSE
   if(base::is.logical(ret) == FALSE){
-    base::stop('# ret must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# ERROR: ret must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   # Check that files exists for pmap
   if(base::is.list(pmap) == FALSE){
     if(base::any(base::file.exists(pmap)) == FALSE){
-      base::stop('# At least one pmap file path does not exist.')
+      base::stop('# ERROR: At least one pmap file path does not exist.')
     }
   }
 
   # Check that files exists for gold_standard
   if(base::is.list(gold_standard) == FALSE){
     if(base::any(base::file.exists(gold_standard)) == FALSE){
-      base::stop('# At least one gold_standard file path does not exist.')
+      base::stop('# ERROR: At least one gold_standard file path does not exist.')
     }
   }
 
   # Check that files exists for mask
   if(base::is.list(mask) == FALSE){
     if(base::any(base::file.exists(mask)) == FALSE){
-      base::stop('# At least one mask file path does not exist.')
+      base::stop('# ERROR: At least one mask file path does not exist.')
     }
   }
 
   # Check that outfile is character or NULL
   if(base::any(base::is.character(outfile)) == FALSE & base::is.null(outfile) == FALSE){
-    base::stop('# At least one outfile is not character. Must be character or NULL.')
+    base::stop('# ERROR: At least one outfile is not character. Must be character or NULL.')
   }
 
   # Check that pmap, gold_standard, mask, and subject_id are all the same length
   if(base::length(pmap) != base::length(gold_standard) | base::length(pmap) != base::length(mask) | base::length(pmap) != base::length(subject_id)){
-    base::stop("# pmap, gold_standard, mask, or subject_id are not of equal lengths.")
+    base::stop("# ERROR: pmap, gold_standard, mask, or subject_id are not of equal lengths.")
   }
 
   data_parallel <- function(i){
@@ -170,7 +170,7 @@ tapas_data_par <- function(cores = 1,
       } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
         base::save(subject_data, file = outfile[[i]])
       } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
-        base::stop('# outfile must have .rds or .RData extension.')
+        base::stop('# ERROR: outfile must have .rds or .RData extension.')
       }
     }
     # Return the tibble and save to the outfile
@@ -180,14 +180,13 @@ tapas_data_par <- function(cores = 1,
       } else if(stringr::str_detect(outfile[[i]], '.RData') == TRUE){
         base::save(subject_data, file = outfile[[i]])
       } else if(stringr::str_detect(outfile[[i]], '.rds|.RData') == FALSE){
-        base::stop('# outfile must have .rds or .RData extension.')
+        base::stop('# ERROR: outfile must have .rds or .RData extension.')
       }
       base::return(subject_data)
     }
     # Return the tibble and do not save outfile
     if(ret == TRUE & base::is.null(outfile) == TRUE){
       base::return(subject_data)
-      message('ret == TRUE & base::is.null(outfile) == TRUE')
     }
   }
 

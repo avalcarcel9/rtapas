@@ -102,12 +102,12 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(is.logical(verbose) == FALSE){
-    base::stop('# verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
+    base::stop('# ERROR: verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
   }
 
   # Check that dsc_cutoff is between 0 and 1
   if(dsc_cutoff < 0 | dsc_cutoff > 1){
-    base::stop('# dsc_cutoff must be a single value between 0 and 1.')
+    base::stop('# ERROR: dsc_cutoff must be a single value between 0 and 1.')
   }
 
   if(verbose == TRUE){
@@ -118,7 +118,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   if(base::is.list(data) == TRUE){
     data = dplyr::bind_rows(data)
   } else if (base::is.data.frame(data) == FALSE & tibble::is_tibble(data) == FALSE){
-    base::stop('# data must be a list, data.frame, or tibble of stacked subject data objects from rtapas::tapas_data(). \n
+    base::stop('# ERROR: data must be a list, data.frame, or tibble of stacked subject data objects from rtapas::tapas_data(). \n
           # The rtapas::tapas_data() function returns a tibble by default.')
   }
 
