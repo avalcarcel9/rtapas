@@ -42,10 +42,5 @@ before_install:
   - cat DESCRIPTION
   - export PACKAGE_NAME=`package_name`
 
-install: mvn
-dependency: resolve
-
-script: "travis_wait mvn -T4 -pl quickfixj-codegenerator install"
-
 after_success:
   - Rscript -e 'covr::coveralls(type = "all")'
