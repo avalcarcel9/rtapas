@@ -1,3 +1,7 @@
+^inst/icon\.png$
+^inst/icon\.ai$
+^inst/sticker\.R$
+^inst/sticker\.png$
 ^rtapas\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
