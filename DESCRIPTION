@@ -32,6 +32,7 @@ Suggests:
     remotes,
     bookdown,
     oro.nifti,
+    rmarkdown,
     testthat
 Remotes:
     avalcarcel9/aliviateR,
