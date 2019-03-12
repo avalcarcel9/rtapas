@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Overview <img src="inst/sticker.png" width = "150" align="right" />
+# Overview <img src="../inst/sticker.png" width = "150" align="right" />
 
 The `rtapas` package determines a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates the data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific thresholds to use on probability maps for automatic lesion segmentation. Methods can be extended outside of multiple sclerosis lesion segmentation but have not been validated.
 
@@ -581,10 +581,17 @@ dsc
 Thank you all for the time and I hope you enjoyed the training vignette. If you have comments, questions, or suggestions please feel free to contact me by submitting an issue.
 
 ```{r, fig.align="center"}
-knitr::include_graphics("end.jpg")
+knitr::include_graphics("../inst/end.jpg")
 ```
 
 
+```{r, eval = FALSE}
+# Run this in console. Knit does not work properly. Saves to wrong directory
+rmarkdown::render("vignettes/tapas-vignette.Rmd",
+                  c("html_vignette", 
+                    "pdf_document", 
+                    "github_document"))
+```
 
 
 
