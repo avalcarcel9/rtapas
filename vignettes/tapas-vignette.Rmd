@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Overview <img src="https://github.com/avalcarcel9/rtapas/blob/master/inst/icon.png" width = "150" align="right" />
+# Overview <img src="https://github.com/avalcarcel9/rtapas/blob/master/inst/sticker.png" width = "150" align="right" />
 
 The `rtapas` package determines a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates the data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific thresholds to use on probability maps for automatic lesion segmentation. Methods can be extended outside of multiple sclerosis lesion segmentation but have not been validated.
 

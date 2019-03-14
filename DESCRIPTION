@@ -36,7 +36,6 @@ Suggests:
     testthat
 Remotes:
     avalcarcel9/aliviateR,
-    muschellij2/extrantsr,
     RMHogervorst/badgecreatr,
     stnava/ITKR
 VignetteBuilder: knitr
