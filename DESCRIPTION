@@ -37,6 +37,7 @@ Suggests:
 Remotes:
     avalcarcel9/aliviateR,
     RMHogervorst/badgecreatr,
+    bhaskarvk/colormap,
     muschellij2/extrantsr@1bcd134be9d96d91facd70f4c1b6693fd52fce90,
     stnava/ITKR
 VignetteBuilder: knitr
