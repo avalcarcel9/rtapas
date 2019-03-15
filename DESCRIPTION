@@ -37,7 +37,7 @@ Suggests:
 Remotes:
     avalcarcel9/aliviateR,
     RMHogervorst/badgecreatr,
-    neuroconductor/extrantsr@43775fddaa1600d32042d4b986fcaec6156ef017,
+    muschellij2/extrantsr@1bcd134be9d96d91facd70f4c1b6693fd52fce90,
     stnava/ITKR
 VignetteBuilder: knitr
 ByteCompile: true
