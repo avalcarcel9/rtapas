@@ -27,7 +27,6 @@ Imports:
     stringr (>= 1.3.0),
     tibble (>= 1.7.0)
 Suggests:
-    colormap,
     covr,
     knitr,
     remotes,
@@ -38,7 +37,7 @@ Suggests:
 Remotes:
     avalcarcel9/aliviateR,
     RMHogervorst/badgecreatr,
-    muschellij2/extrantsr@1bcd134be9d96d91facd70f4c1b6693fd52fce90,
+    muschellij2/extrantsr,
     stnava/ITKR
 VignetteBuilder: knitr
 ByteCompile: true
