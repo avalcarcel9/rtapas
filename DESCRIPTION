@@ -23,7 +23,7 @@ Imports:
     mgcv (>= 1.8-24),
     neurobase (>= 1.13.2),
     neuroim (>= 0.0.6),
-    oro.nifti(>= 0.9.11),
+    oro.nifti(>= 0.9.1),
     parallel (>= 3.5.0),
     rlang (>= 0.3.0.1),
     stringr (>= 1.3.0),
