@@ -27,7 +27,7 @@ coefficient (DSC).}
 \item{mask}{A \code{vector} of \code{character} file paths to brain mask images or a \code{list} object
 with elements of class \code{nifti}.}
 
-\item{k}{The minimum number of voxels for a cluster/component. Passed to \link[extrantsr]{label_mask}.
+\item{k}{The minimum number of voxels for a cluster/component.
 Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 Sørensen's–Dice coefficient (DSC) calculation.}
 

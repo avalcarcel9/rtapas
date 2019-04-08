@@ -21,7 +21,7 @@ thresholded probability map image using Sørensen's–Dice coefficient (DSC).}
 
 \item{mask}{A \code{character} file path to a brain mask image or an object of class \code{nifti}.}
 
-\item{k}{The minimum number of voxels for a cluster/component. Passed to \link[extrantsr]{label_mask}.
+\item{k}{The minimum number of voxels for a cluster/component.
 Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 Sørensen's–Dice coefficient (DSC) calculation.}
 

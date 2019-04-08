@@ -13,7 +13,7 @@
 #' segmentation) or an object of class \code{nifti}. The gold standard segmentation is used to compare the
 #' thresholded probability map image using Sørensen's–Dice coefficient (DSC).
 #' @param mask A \code{character} file path to a brain mask image or an object of class \code{nifti}.
-#' @param k The minimum number of voxels for a cluster/component. Passed to \link[extrantsr]{label_mask}.
+#' @param k The minimum number of voxels for a cluster/component.
 #' Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 #' Sørensen's–Dice coefficient (DSC) calculation.
 #' @param subject_id A subject ID of class \code{character}. By default this is set to \code{NULL} but users must
