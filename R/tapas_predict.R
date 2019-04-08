@@ -20,10 +20,12 @@
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
 #' @importFrom dplyr filter
-#' @importFrom extrantsr label_mask
 #' @importFrom gtools inv.logit
+#' @importFrom methods as
 #' @importFrom mgcv predict.gam
-#' @importFrom neurobase check_nifti
+#' @importFrom neurobase check_nifti niftiarr
+#' @importFrom neuroim connComp3D
+#' @importFrom oro.nifti is.nifti
 #' @importFrom rlang .data
 #' @importFrom tibble tibble
 #' @return A \code{list} containing the TAPAS predicted subject-specific threshold (\code{subject_threshold}), the lesion
@@ -145,9 +147,23 @@ tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
   group_binary_mask[pmap >= model$group_threshold] = 1
   group_binary_mask[pmap < model$group_threshold] = 0
 
+  # Function comes from extrantsr::label_mask
+  # Copy and pasted to stabilize package while extrantsr and ANTsX content is being worked on
+  # https://github.com/muschellij2/extrantsr/blob/master/R/label_mask.R
+  label_mask = function(img, k = k){
+    bin_mask = methods::as(img > 0, "array")
+    cc = neuroim::connComp3D(bin_mask)
+    cc$index[cc$size < k] = 0
+    les_xyz = cc$index
+    if (oro.nifti::is.nifti(img)) {
+      les_xyz = neurobase::niftiarr(img, les_xyz)
+    }
+    return(les_xyz)
+  }
+
   # Remove connected components less than k then return mask to binary 0/1 after counted components
   if(sum(group_binary_mask) > 0){
-    group_binary_mask = extrantsr::label_mask(group_binary_mask, k = k)
+    group_binary_mask = label_mask(group_binary_mask, k = k)
     group_binary_mask[group_binary_mask > 0] = 1
   }
 
@@ -190,7 +206,7 @@ tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
 
   # Remove connected components less than k then return mask to binary 0/1 after counted components
   if(sum(tapas_binary_mask) > 0){
-    tapas_binary_mask = extrantsr::label_mask(tapas_binary_mask, k = k)
+    tapas_binary_mask = label_mask(tapas_binary_mask, k = k)
     tapas_binary_mask[tapas_binary_mask > 0] = 1
   }
 

@@ -22,9 +22,11 @@
 #' @export
 #' @importFrom aliviateR dsc
 #' @importFrom dplyr bind_rows
-#' @importFrom extrantsr label_mask
 #' @importFrom magrittr "%>%"
-#' @importFrom neurobase check_nifti check_mask
+#' @importFrom methods as
+#' @importFrom neurobase check_nifti check_mask niftiarr
+#' @importFrom neuroim connComp3D
+#' @importFrom oro.nifti is.nifti
 #' @importFrom tibble tibble
 #' @return A \code{tibble} containing the training data for a single subject. The data contains columns \code{threshold},
 #' Sørensen's–Dice coefficient (\code{dsc}), and \code{volume}.
@@ -97,6 +99,20 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
     base::message('# Obtaining threshold level information.')
   }
 
+  # Function comes from extrantsr::label_mask
+  # Copy and pasted to stabilize package while extrantsr and ANTsX content is being worked on
+  # https://github.com/muschellij2/extrantsr/blob/master/R/label_mask.R
+  label_mask = function(img, k = k){
+    bin_mask = methods::as(img > 0, "array")
+    cc = neuroim::connComp3D(bin_mask)
+    cc$index[cc$size < k] = 0
+    les_xyz = cc$index
+    if (oro.nifti::is.nifti(img)) {
+      les_xyz = neurobase::niftiarr(img, les_xyz)
+    }
+    return(les_xyz)
+  }
+
   # function to calculate the volume and DSC at each threshold
   calc_dv <- function(j, temp_lmask = mask, subject_id = subject_id){
     # Fill in the predicted lesion values from threshold j to a temporary mask
@@ -105,7 +121,7 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
     if(base::sum(temp_lmask) != 0){
       # Label the lesion connected components
       # Remove any lesion smaller than k connected components
-      temp_lmask = extrantsr::label_mask(temp_lmask, k = k)
+      temp_lmask = label_mask(temp_lmask, k = k)
     }
     # Return temp_lmask to binary 0/1
     temp_lmask[temp_lmask > 0] = 1
