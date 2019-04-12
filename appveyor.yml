@@ -109,4 +109,6 @@ artifacts:
   - path: '\*_*.zip'
     name: Bits
 
-image: Visual Studio 2017
+image:
+  - Visual studio 2015
+  - Ubuntu
