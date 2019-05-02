@@ -155,7 +155,7 @@ tapas_data_par <- function(cores = 1,
   }
 
   data_parallel <- function(i){
-    subject_data = tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
+    subject_data = tapas_data(thresholds = thresholds,
                               pmap = pmap[[i]],
                               gold_standard = gold_standard[[i]],
                               mask = mask[[i]],

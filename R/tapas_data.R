@@ -118,7 +118,7 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
     # Fill in the predicted lesion values from threshold j to a temporary mask
     temp_lmask[mask == 1] = pred_lesion[,j]
 
-    if(base::sum(temp_lmask) != 0){
+    if(base::sum(temp_lmask, na.rm = TRUE) != 0){
       # Label the lesion connected components
       # Remove any lesion smaller than k connected components
       temp_lmask = label_mask(temp_lmask, k = k)
