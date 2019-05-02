@@ -1,7 +1,6 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
-sudo: false
 cache: packages
 warnings_are_errors: true
 os:
@@ -19,6 +18,7 @@ before_install:
   - rm travis_helpers.sh
   - PACKAGE_NAME=`package_name`
   - PACKAGE_DIRECTORY=`basename ${PWD}`
+  - sudo apt-get install texinfo
 
 after_success:
   - Rscript -e 'covr::coveralls(type = "all")'
