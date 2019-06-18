@@ -16,7 +16,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom mgcv gam predict.gam
 #' @importFrom rlang .data
-#' @importFrom stats quantile
+#' @importFrom stats median quantile
 #' @importFrom tibble tibble is_tibble
 #' @return A \code{list} with the TAPAS model (\code{tapas_model}) of class \code{gam} and
 #' a \code{tibble} with the clamp information (\code{clamp_data}). The clamp information contains the
@@ -129,7 +129,10 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   # Calculate subject level threshold that produces maximum DSC
   subject_thresholds = data %>%
     dplyr::group_by(.data$subject_id) %>%
-    dplyr::slice(base::which.max(dsc)) %>%
+  # Take all thresholds that equal max(dsc). May be ties.
+    dplyr::slice(base::which(.data$dsc == max(.data$dsc), arr.ind = TRUE)) %>%
+  # In the event of ties take the median
+    dplyr::summarise_all(median) %>%
     dplyr::ungroup() %>%
     dplyr::select(-.data$volume)
 
