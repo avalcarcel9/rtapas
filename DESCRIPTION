@@ -29,6 +29,7 @@ Imports:
     stringr (>= 1.3.0),
     tibble (>= 1.7.0)
 Suggests:
+    spelling,
     covr,
     knitr,
     remotes,
@@ -41,3 +42,4 @@ Remotes:
 VignetteBuilder: knitr
 ByteCompile: true
 RoxygenNote: 6.1.1
+Language: en-US

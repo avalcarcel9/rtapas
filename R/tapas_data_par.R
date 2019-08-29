@@ -24,7 +24,7 @@
 #' @param subject_id A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
 #' provide an ID \code{vector}.
 #' @param ret A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the
-#' function as a \code{list} in the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
+#' function as a \code{list} in the local R environment. If \code{FALSE} then \code{outfile} must be specified so subject data is
 #' saved.
 #' @param outfile Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
 #' in the local R environment. To save each subject-level \code{tibble} as an R object

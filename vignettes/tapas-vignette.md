@@ -1,7 +1,7 @@
 ---
 title: "rtapas: An R Package to Implement Thresholding Approach for Probability Map Automatic Segmentation (TAPAS)"
 author: "Alessandra Valcarcel"
-date: "2019-03-14"
+date: "2019-08-29"
 output: 
     rmarkdown::html_document:
       base_format: rmarkdown::html_vignette
@@ -183,7 +183,7 @@ __Usage__:
 - `model` The TAPAS model fit from `tapas_train` of class `gam`. This model will be used to make subject-specific threshold predictions.
 - `clamp` A `logical` object set to `TRUE` by default. This setting uses the clamped subject-specific threshold prediction rather than the prediction fit by the TAPAS model. This only applies to volumes exceeding those at the 10th and 90th percentile calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate falls in the tails of the TAPAS model. If `FALSE` then the the TAPAS `model` predicted threshold will be used for segmentation rather than the clamped threshold. 
 - `k` The minimum number of voxels for a cluster/component. Passed to `extrantsr::label_mask`. Segmentation clusters of size less than k are removed from the mask, volume estimation, and the Sørensen's–Dice coefficient (DSC) calculation.
-- `ret` A `logical` argument set to `TRUE` by default. Returns a nested `list` of objects from the function to the local R environement. If `FALSE` then `outfile` must be specified so subject data is saved.
+- `ret` A `logical` argument set to `TRUE` by default. Returns a nested `list` of objects from the function to the local R environment. If `FALSE` then `outfile` must be specified so subject data is saved.
 - `outfile` Is set to `NULL` by default which only returns the subject-level `tibble` as a list in the local R environment. To save each subject-level `tibble` as an R object specify a `list` or `vector` of file paths to save with either .rds or .RData extensions included.
 - `verbose` A `logical` argument to print messages. Set to `TRUE` by default.
 
@@ -202,7 +202,6 @@ library(neurobase)
 library(oro.nifti)
 library(aliviateR)
 library(dplyr)
-#> Warning: package 'dplyr' was built under R version 3.5.2
 library(tibble)
 library(knitr)
 ```

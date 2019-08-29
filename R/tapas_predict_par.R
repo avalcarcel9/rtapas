@@ -16,13 +16,13 @@
 #' subject-specific threshold prediction rather than the prediction fit by the
 #' TAPAS model. This only applies to volumes exceeding those at the 10th and 90th percentile
 #' calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate
-#' falls in the tails of the TAPAS model. If \code{FALSE} then the the TAPAS \code{model} predicted threshold
+#' falls in the tails of the TAPAS model. If \code{FALSE} then the TAPAS \code{model} predicted threshold
 #' will be used for segmentation rather than the clamped threshold.
 #' @param k The minimum number of voxels for a cluster/component.
 #' Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 #' Sørensen's–Dice coefficient (DSC) calculation.
 #' @param ret A \code{logical} argument set to \code{TRUE} by default. Returns a nested \code{list} of objects from the
-#' function to the local R environement. If \code{FALSE} then \code{outfile} must be specified so subject data is
+#' function to the local R environment. If \code{FALSE} then \code{outfile} must be specified so subject data is
 #' saved.
 #' @param outfile Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
 #' in the local R environment. To save each subject-level \code{tibble} as an R object

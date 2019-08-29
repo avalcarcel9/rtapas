@@ -295,7 +295,7 @@ lesion mask produced from using the group threshold.
     coefficient (DSC) calculation.
   - `ret` A `logical` argument set to `TRUE` by default. Returns a
     nested `list` of objects from the function to the local R
-    environement. If `FALSE` then `outfile` must be specified so subject
+    environment. If `FALSE` then `outfile` must be specified so subject
     data is saved.
   - `outfile` Is set to `NULL` by default which only returns the
     subject-level `tibble` as a list in the local R environment. To save
