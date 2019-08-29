@@ -19,13 +19,6 @@ before_install:
   - PACKAGE_NAME=`package_name`
   - PACKAGE_DIRECTORY=`basename ${PWD}`
 
-install:
- - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test;
-      sudo apt-get update;
-      sudo apt-get install -qq build-essential xorg-dev libgl1-mesa-dev libglu1-mesa-dev libglew-dev libglm-dev;
-   fi
-
 apt_packages:
   - texinfo
 
