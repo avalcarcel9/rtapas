@@ -15,6 +15,13 @@ r_check_args: "--as-cran --install-args=--build"
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ];
       then
+        sudo apt-get update -qq ;
+        sudo apt-get install -y libmng2 ;
+        sudo apt-get install -y libmng1 ;
+        sudo updatedb;
+    fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ];
+      then
         sudo apt-get install -y r-cran-rgl || echo "No install RGL" ;
     fi
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
