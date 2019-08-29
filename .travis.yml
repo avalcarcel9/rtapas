@@ -7,30 +7,29 @@ os:
   - linux
   - osx
 
-r_binary_packages: rgl
-
 env:
   global: RGL_USE_NULL=TRUE
 
 r_check_args: "--as-cran --install-args=--build"
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ];
-      then
-        sudo apt-get update -qq ;
-        sudo apt-get install -y libmng2 ;
-        sudo apt-get install -y libmng1 ;
-        sudo updatedb;
-    fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ];
-      then
-        sudo apt-get install -y r-cran-rgl || echo "No install RGL" ;
-    fi
   - wget -O travis_helpers.sh http://bit.ly/travis_helpers
   - source travis_helpers.sh
   - rm travis_helpers.sh
   - PACKAGE_NAME=`package_name`
   - PACKAGE_DIRECTORY=`basename ${PWD}`
+
+install:
+ - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test;
+      sudo apt-get update;
+      sudo apt-get install -qq build-essential xorg-dev libgl1-mesa-dev libglu1-mesa-dev libglew-dev libglm-dev;
+      sudo apt-get install -qq libusb-1.0-0-dev;
+      sudo apt-get install -qq libgtk-3-dev;
+      sudo apt-get install gcc-5 g++-5;
+      sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5;
+      sudo apt-get install libglfw3-dev libglfw3;
+    fi
 
 apt_packages:
   - texinfo
