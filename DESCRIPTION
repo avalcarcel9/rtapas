@@ -33,12 +33,10 @@ Suggests:
     covr,
     knitr,
     remotes,
-    bookdown,
     rmarkdown,
     testthat
 Remotes:
-    avalcarcel9/aliviateR,
-    RMHogervorst/badgecreatr,
+    avalcarcel9/aliviateR
 VignetteBuilder: knitr
 ByteCompile: true
 RoxygenNote: 6.1.1
