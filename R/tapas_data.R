@@ -86,7 +86,12 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
   pmap = c(pmap[mask == 1])
 
   # Obtain a matrix of 0/1 after threhsolding at each threshold value
-  pred_lesion = base::sapply(thresholds, function(x) {base::ifelse(pmap > x, 1, 0)})
+  # pred_lesion = base::sapply(thresholds, function(x) {base::ifelse(pmap > x, 1, 0)})
+  pred_lesion = base::sapply(thresholds, function(x) {
+    x = as.numeric(pmap > x)
+    x[!is.na(x)] = 0
+    x
+  })
 
   # initialize a results tibble
   results = tibble::tibble(threshold = thresholds,
@@ -94,7 +99,7 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
                            volume =  thresholds,
                            subject_id = subject_id)
 
-  if(verbose == TRUE){
+  if (verbose == TRUE){
     base::message('# Obtaining threshold level information.')
   }
 
@@ -140,7 +145,10 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
 
   }
 
-  results = base::lapply(1:length(thresholds), calc_dv, temp_lmask = mask, subject_id = subject_id) %>%
+  results = base::lapply(
+    1:length(thresholds),
+    calc_dv, temp_lmask = mask,
+    subject_id = subject_id) %>%
     dplyr::bind_rows()
 
   base::return(results)
