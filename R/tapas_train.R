@@ -99,7 +99,7 @@
 #' }
 
 tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
-
+  dsc = NULL; rm(list = "dsc")
   # Check that verbose is TRUE or FALSE
   if(is.logical(verbose) == FALSE){
     base::stop('# ERROR: verbose must be logical TRUE to return comments throughout the function or FALSE to silence comments.')
