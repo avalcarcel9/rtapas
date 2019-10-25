@@ -126,8 +126,14 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
     # Return temp_lmask to binary 0/1
     temp_lmask[temp_lmask > 0] = 1
 
+    if (requireNamespace("aliviateR", quietly = TRUE)) {
+      dice_value = aliviateR::dsc(gold_standard = gold_standard, comp_method = temp_lmask)
+    } else {
+      dice_value = neurobase::fast_dice(gold_standard, temp_lmask)
+    }
+
     results = tibble::tibble(threshold = thresholds[j],
-                             dsc = aliviateR::dsc(gold_standard = gold_standard, comp_method = temp_lmask),
+                             dsc = dice_value,
                              volume =  sum(temp_lmask),
                              subject_id = subject_id)
 
