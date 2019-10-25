@@ -20,11 +20,10 @@
 #' provide an ID.
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
-#' @importFrom aliviateR dsc
 #' @importFrom dplyr bind_rows
 #' @importFrom magrittr "%>%"
 #' @importFrom methods as
-#' @importFrom neurobase check_nifti check_mask niftiarr
+#' @importFrom neurobase check_nifti check_mask niftiarr fast_dice
 #' @importFrom neuroim connComp3D
 #' @importFrom oro.nifti is.nifti
 #' @importFrom tibble tibble
