@@ -16,13 +16,14 @@ testthat::test_that("Test tapas_data run on first subject sample data matches or
   pmap1 = oro.nifti::nifti(pmap1)
   brain_mask = oro.nifti::nifti(brain_mask)
 
-  train_data = rtapas::tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
-                                  pmap = pmap1,
-                                  gold_standard = gs1,
-                                  mask = brain_mask,
-                                  k = 0,
-                                  subject_id = 'subject_1',
-                                  verbose = FALSE)
+  train_data = rtapas::tapas_data(
+    thresholds = seq(from = 0, to = 1, by = grid),
+    pmap = pmap1,
+    gold_standard = gs1,
+    mask = brain_mask,
+    k = 0,
+    subject_id = 'subject_1',
+    verbose = FALSE)
 
   # The first run always succeeds
   expect_known_output(train_data, tmp, print = TRUE, update = FALSE)
