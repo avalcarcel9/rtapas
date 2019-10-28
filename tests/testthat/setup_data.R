@@ -6,7 +6,7 @@ in_ci <- function() {
 
 grid = 0.01
 if (in_ci()) {
-  grid = 0.1
+  grid = 0.05
 }
 
 
