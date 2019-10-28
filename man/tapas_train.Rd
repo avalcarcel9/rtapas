@@ -4,7 +4,7 @@
 \alias{tapas_train}
 \title{TAPAS Model Training}
 \usage{
-tapas_train(data, dsc_cutoff = 0.03, verbose = TRUE)
+tapas_train(data, dsc_cutoff = 0.03, verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{Data resulting from \code{\link{tapas_data}}. The \code{data} should be a \code{tibble} or
@@ -17,6 +17,8 @@ threshold estimate resulting in Sørensen's–Dice coefficient (DSC) greater tha
 will be included in training the TAPAS model.}
 
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
+
+\item{...}{additional arguments to pass to \code{\link[mgcv]{gam}}}
 }
 \value{
 A \code{list} with the TAPAS model (\code{tapas_model}) of class \code{gam} and
