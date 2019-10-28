@@ -89,7 +89,7 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
   # pred_lesion = base::sapply(thresholds, function(x) {base::ifelse(pmap > x, 1, 0)})
   pred_lesion = base::sapply(thresholds, function(x) {
     x = as.numeric(pmap > x)
-    x[!is.na(x)] = 0
+    x[is.na(x)] = 0
     x
   })
 

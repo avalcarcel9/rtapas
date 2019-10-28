@@ -10,6 +10,7 @@
 #' threshold estimate resulting in Sørensen's–Dice coefficient (DSC) greater than or equal to the \code{dsc_cutoff}
 #' will be included in training the TAPAS model.
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
+#' @param ... additional arguments to pass to \code{\link[mgcv]{gam}}
 #' @export
 #' @importFrom dplyr bind_rows filter group_by inner_join ungroup mutate select slice summarize
 #' @importFrom gtools inv.logit logit
@@ -98,7 +99,7 @@
 #' tapas_model$clamp_data
 #' }
 
-tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
+tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE, ...){
   dsc = NULL; rm(list = "dsc")
   # Check that verbose is TRUE or FALSE
   if(is.logical(verbose) == FALSE){
@@ -187,7 +188,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
   # Fit the TAPAS model
   tapas_model = mgcv::gam(formula = gtools::logit(threshold) ~ s(volume),
-                          data = data)
+                          data = data, ...)
 
   if(verbose == TRUE){
     base::message('# Calculating lower and upper bound clamps.')
