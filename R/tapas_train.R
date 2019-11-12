@@ -11,7 +11,7 @@
 #' will be included in training the TAPAS model.
 #' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
 #' @export
-#' @importFrom dplyr bind_rows filter group_by inner_join ungroup mutate select slice summarize
+#' @importFrom dplyr arrange bind_rows filter group_by inner_join ungroup mutate row_number select slice summarize
 #' @importFrom gtools inv.logit logit
 #' @importFrom magrittr "%>%"
 #' @importFrom mgcv gam predict.gam
@@ -129,20 +129,72 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
   # Calculate subject level threshold that produces maximum DSC
   subject_thresholds = data %>%
     dplyr::group_by(.data$subject_id) %>%
-  # Take all thresholds that equal max(dsc). May be ties.
-    dplyr::slice(base::which(.data$dsc == base::max(.data$dsc), arr.ind = TRUE)) %>%
-  # In the event of ties take the median
+    dplyr::arrange(.data$subject_id, .data$threshold) %>%
+    dplyr::mutate(row_id = dplyr::row_number()) %>%
+    # Take all thresholds that equal max(dsc). May be ties.
+    dplyr::slice(base::which(.data$dsc == base::max(.data$dsc), arr.ind = TRUE))
+
+  # Check if there are ties within the subject data
+  subject_ties  = subject_thresholds %>%
+    dplyr::mutate(subject_n = n()) %>%
+    dplyr::filter(subject_n > 1)  %>%
+    dplyr::mutate(diff = row_id-dplyr::lag(row_id)) %>%
+    dplyr::ungroup()
+
+  if(dim(subject_ties )[1]>0){
+    base::message('Ties detected at subject-level. Checking ties are adjacent.')
+
+    # Verify ties are adjacent if they are found
+    subject_ties  %<>% dplyr::filter(diff != 1,
+                            is.na(diff) == FALSE)
+
+    # If ties are adjacent use the median
+    if(dim(subject_ties )[1]==0){
+      base::message('Subject ties are adjacent using the median value for training.')
+    } else if (dim(ties)[1]>0){
+      stop('Subject ties are detected and they are not adjacent. Consider re-fining the threshold grid and re-fit.')
+    }
+  }
+
+  subject_thresholds %<>%
+    # In the event of ties take the median
     dplyr::summarise_all(median) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-.data$volume)
+    dplyr::select(-.data$volume, -.data$row_id)
 
   # Calculate the threshold that maximizes group level average DSC
   group_threshold = data %>%
     dplyr::group_by(.data$threshold) %>%
     dplyr::summarize(mean_dsc = base::mean(dsc)) %>%
-  # Take all thresholds that equal max(dsc). May be ties.
-    dplyr::slice(base::which(.data$mean_dsc == max(.data$mean_dsc), arr.ind = TRUE)) %>%
-  # In the event of ties take the median
+    dplyr::arrange(.data$threshold) %>%
+    dplyr::mutate(row_id = dplyr::row_number()) %>%
+    # Take all thresholds that equal max(dsc). May be ties.
+    dplyr::slice(base::which(.data$mean_dsc == max(.data$mean_dsc), arr.ind = TRUE))
+
+  # Check if there are ties within the group data
+  group_ties = group_thresholds %>%
+    dplyr::mutate(group_n = n()) %>%
+    dplyr::filter(group_n > 1)  %>%
+    dplyr::mutate(diff = row_id-dplyr::lag(row_id)) %>%
+    dplyr::ungroup()
+
+  if(dim(group_ties)[1]>0){
+    base::message('Ties detected at group-level. Checking ties are adjacent.')
+
+    # Verify ties are adjacent if they are found
+    group_ties  %<>% dplyr::filter(diff != 1,
+                                   is.na(diff) == FALSE)
+
+    # If ties are adjacent use the median
+    if(dim(group_ties )[1]==0){
+      base::message('Group ties are adjacent using the median value for training.')
+    } else if (dim(ties)[1]>0){
+      stop('Group ties are detected and they are not adjacent. Consider re-fining the threshold grid and re-fit.')
+    }
+  }
+
+  group_thresholds %>%
+    # In the event of ties take the median
     dplyr::summarize_all(median) %>%
     dplyr::select(.data$threshold)
 
