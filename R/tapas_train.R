@@ -13,7 +13,7 @@
 #' @export
 #' @importFrom dplyr arrange bind_rows filter group_by inner_join ungroup mutate row_number select slice summarize
 #' @importFrom gtools inv.logit logit
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr "%>%" "%<>%"
 #' @importFrom mgcv gam predict.gam
 #' @importFrom rlang .data
 #' @importFrom stats median quantile
@@ -172,7 +172,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
     dplyr::slice(base::which(.data$mean_dsc == max(.data$mean_dsc), arr.ind = TRUE))
 
   # Check if there are ties within the group data
-  group_ties = group_thresholds %>%
+  group_ties = group_threshold %>%
     dplyr::mutate(group_n = n()) %>%
     dplyr::filter(group_n > 1)  %>%
     dplyr::mutate(diff = row_id-dplyr::lag(row_id)) %>%
@@ -193,7 +193,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
     }
   }
 
-  group_thresholds %>%
+  group_threshold %>%
     # In the event of ties take the median
     dplyr::summarize_all(median) %>%
     dplyr::select(.data$threshold)
