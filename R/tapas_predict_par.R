@@ -148,7 +148,7 @@ tapas_predict_par <- function(cores = 1,
                               subject_id,
                               model,
                               clamp = TRUE,
-                              k = 8,
+                              k = 0,
                               ret = FALSE,
                               outfile = NULL,
                               verbose = TRUE){

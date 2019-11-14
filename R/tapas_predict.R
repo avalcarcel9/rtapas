@@ -120,7 +120,7 @@
 #' oro.nifti::image(test_subject_prediction$group_binary_threshold)
 #' }
 
-tapas_predict <- function(pmap, model, clamp = TRUE, k = 8, verbose = TRUE){
+tapas_predict <- function(pmap, model, clamp = TRUE, k = 0, verbose = TRUE){
 
   # Check that verbose is TRUE or FALSE
   if(base::is.logical(verbose) == FALSE){

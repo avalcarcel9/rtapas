@@ -1,7 +1,7 @@
 ---
 title: "rtapas: An R Package to Implement Thresholding Approach for Probability Map Automatic Segmentation (TAPAS)"
 author: "Alessandra Valcarcel"
-date: "2019-08-29"
+date: "2019-11-14"
 output: 
     rmarkdown::html_document:
       base_format: rmarkdown::html_vignette
@@ -44,7 +44,7 @@ tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
            pmap,
            gold_standard,
            mask,
-           k = 8,
+           k = 0,
            subject_id = NULL,
            verbose = TRUE)
 ```
@@ -77,7 +77,7 @@ tapas_data_par(cores = 1,
                pmap,
                gold_standard,
                mask,
-               k = 8,
+               k = 0,
                subject_id = NULL,
                ret = FALSE,
                outfile = NULL,
@@ -136,7 +136,7 @@ A `list` with the TAPAS model (`tapas_model`) of class `gam` and the a `tibble` 
 tapas_predict(pmap, 
               model, 
               clamp = TRUE, 
-              k = 8, 
+              k = 0, 
               verbose = TRUE){
 ```
 
@@ -165,7 +165,7 @@ tapas_predict_par(cores = 1,
                   subject_id,
                   model,
                   clamp = TRUE,
-                  k = 8,
+                  k = 0,
                   ret = FALSE,
                   outfile = NULL,
                   verbose = TRUE)
