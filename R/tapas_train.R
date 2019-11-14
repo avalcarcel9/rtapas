@@ -142,7 +142,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
     dplyr::ungroup()
 
   if(dim(subject_ties )[1]>0){
-    base::message('Ties detected at subject-level. Checking ties are adjacent.')
+    base::message('# Ties detected at subject-level. Checking ties are adjacent.')
 
     # Verify ties are adjacent if they are found
     subject_ties  %<>% dplyr::filter(diff != 1,
@@ -150,9 +150,9 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
     # If ties are adjacent use the median
     if(dim(subject_ties )[1]==0){
-      base::message('Subject ties are adjacent using the median value for training.')
-    } else if (dim(ties)[1]>0){
-      stop('Subject ties are detected and they are not adjacent. Consider re-fining the threshold grid and re-fit.')
+      base::message('# Subject ties are adjacent using the median value for training.')
+    } else if (dim(subject_ties)[1]>0){
+      stop('Subject ties are detected and they are not adjacent. Consider re-fining the threshold grid.')
     }
   }
 
@@ -179,7 +179,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
     dplyr::ungroup()
 
   if(dim(group_ties)[1]>0){
-    base::message('Ties detected at group-level. Checking ties are adjacent.')
+    base::message('# Ties detected at group-level. Checking ties are adjacent.')
 
     # Verify ties are adjacent if they are found
     group_ties  %<>% dplyr::filter(diff != 1,
@@ -187,8 +187,8 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
     # If ties are adjacent use the median
     if(dim(group_ties )[1]==0){
-      base::message('Group ties are adjacent using the median value for training.')
-    } else if (dim(ties)[1]>0){
+      base::message('# Group ties are adjacent using the median value for training.')
+    } else if (dim(group_ties)[1]>0){
       stop('Group ties are detected and they are not adjacent. Consider re-fining the threshold grid and re-fit.')
     }
   }
