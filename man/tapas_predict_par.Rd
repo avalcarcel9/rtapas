@@ -5,7 +5,7 @@
 \title{TAPAS Prediction in Parallel}
 \usage{
 tapas_predict_par(cores = 1, pmap, subject_id, model, clamp = TRUE,
-  k = 8, ret = FALSE, outfile = NULL, verbose = TRUE)
+  k = 0, ret = FALSE, outfile = NULL, verbose = TRUE)
 }
 \arguments{
 \item{cores}{The number of cores to use. This argument controls at most how many child processes will

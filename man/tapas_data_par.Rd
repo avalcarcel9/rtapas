@@ -5,7 +5,7 @@
 \title{Generates The TAPAS Training Data in Parallel}
 \usage{
 tapas_data_par(cores = 1, thresholds = seq(from = 0, to = 1, by =
-  0.01), pmap, gold_standard, mask, k = 8, subject_id = NULL,
+  0.01), pmap, gold_standard, mask, k = 0, subject_id = NULL,
   ret = FALSE, outfile = NULL, verbose = TRUE)
 }
 \arguments{

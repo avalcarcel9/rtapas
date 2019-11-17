@@ -5,7 +5,7 @@
 \title{Generates the TAPAS Training Data}
 \usage{
 tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01), pmap,
-  gold_standard, mask, k = 8, subject_id = NULL, verbose = TRUE)
+  gold_standard, mask, k = 0, subject_id = NULL, verbose = TRUE)
 }
 \arguments{
 \item{thresholds}{A \code{vector} of thresholds to apply to the probability map. The default
@@ -57,7 +57,7 @@ data = tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
                   pmap = pmap1,
                   gold_standard = gs1,
                   mask = brain_mask,
-                  k = 8,
+                  k = 0,
                   subject_id = "subject_1",
                   verbose = TRUE)
 # Visualize data returned from the tapas_data function

@@ -4,7 +4,7 @@
 \alias{tapas_predict}
 \title{TAPAS Prediction}
 \usage{
-tapas_predict(pmap, model, clamp = TRUE, k = 8, verbose = TRUE)
+tapas_predict(pmap, model, clamp = TRUE, k = 0, verbose = TRUE)
 }
 \arguments{
 \item{pmap}{A \code{character} file path to a probability map image or an object of

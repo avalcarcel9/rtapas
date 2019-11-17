@@ -2,11 +2,11 @@
 title: "rtapas: An R Package to Implement Thresholding Approach for Probability Map Automatic Segmentation (TAPAS)"
 author: "Alessandra Valcarcel"
 date: "`r Sys.Date()`"
-output: 
-    rmarkdown::html_document:
-      base_format: rmarkdown::html_vignette
-      keep_md: true
-    rmarkdown::github_document:
+output: rmarkdown::html_document
+    # rmarkdown::html_document:
+    #   base_format: rmarkdown::html_vignette
+    #   keep_md: true
+    # rmarkdown::github_document:
 vignette: >
   %\VignetteIndexEntry{rtapas}
   %\VignetteEncoding{UTF-8}
