@@ -3,10 +3,11 @@ title: "rtapas: An R Package to Implement Thresholding Approach for Probability 
 author: "Alessandra Valcarcel"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_document
-    # rmarkdown::html_document:
-    #   base_format: rmarkdown::html_vignette
-    #   keep_md: true
-    # rmarkdown::github_document:
+# output:
+#   rmarkdown::html_document:
+#     base_format: rmarkdown::html_vignette
+#     keep_md: true
+#   rmarkdown::github_document:
 vignette: >
   %\VignetteIndexEntry{rtapas}
   %\VignetteEncoding{UTF-8}
@@ -407,7 +408,21 @@ tapas_model$clamp_data
 tapas_model$train_data
 ```
 
-We can use this model to predict a subject-specific thresholds, create a segmentation mask using this threshold, and create a segmentation mask using the group-threshold for a subjects not included in model training.
+We can run some quality control on the TAPAS model fit by evaluating scatter plots and histograms of the subject-specific best threshold detected in the training data. We have included a function in the package `make_scattergram` which visualize the subject-specific thresholds selected using both a scatter plot of the subject-specific best threshold from training data on the subject ID with a marginal histogram of the thresholds. This function will help users re-fine the TAPAS threshold grid applied when running `tapas_data`.
+
+```{r}
+make_scattergram(tapas_model = tapas_model)
+```
+
+Recall when we implemented `tapas_data` or `tapas_data_par` we used a threshold grid of 0% to 100% in 1% increments. Using this scatter plot with a marginal histogram you'll notice the subject-specific thresholds selected from the training data range from about 6% to 18%. For optimal TAPAS performance, we suggest refining the threshold grid used to better align with the training data. In this case, perhaps 5% to 25%. It may be useful to assess the predicted subject-specific thresholds on some test set subjects to inform the threshold grid selected as well. This may require a few iterations of models where you:
+
+1. Run `tapas_data` or `tapas_data_par` with a specified threshold grid
+2. Fit the TAPAS model with `tapas_train`
+3. Assess the threshold grid in the training data
+4. Assess the threshold grid in the testing data
+5. Repeat as necessary until threshold grid is refined
+
+Once refined and TAPAS fits to your liking, we can use this model to predict a subject-specific thresholds, create a segmentation mask using this threshold, and create a segmentation mask using the group-threshold for a subjects not included in model training.
 
 # Load Testing Data
 

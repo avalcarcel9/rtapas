@@ -1,15 +1,15 @@
 #' @title TAPAS Model Training
-#' @description  This function trains the TAPAS model using all binded subject-level \code{tibble}s produced
-#' from the \code{\link{tapas_data}} function. The TAPAS model is fit and clamp data is calculated. The clamp data
+#' @description  This function trains the TAPAS model using all binded subject-level `tibble`s produced
+#' from the [tapas_data()] function. The TAPAS model is fit and clamp data is calculated. The clamp data
 #' contains the predicted threshold when using the 10th and 90th percentile volume from training data.
-#' @param data Data resulting from \code{\link{tapas_data}}. The \code{data} should be a \code{tibble} or
-#' \code{data.frame} containing binded subject data or a \code{list} object with subject data in each element.
+#' @param data Data resulting from [tapas_data()]. The `data` should be a `tibble` or
+#' `data.frame` containing binded subject data or a `list` object with subject data in each element.
 #' Data from these subjects will be used for model training.
 #' @param dsc_cutoff The Sørensen's–Dice coefficient (DSC) value to use as a cutoff for training inclusion.
 #' By default 0.03 is used. This must be a single value between 0 and 1. Only training subjects with a subject-specific
-#' threshold estimate resulting in Sørensen's–Dice coefficient (DSC) greater than or equal to the \code{dsc_cutoff}
+#' threshold estimate resulting in Sørensen's–Dice coefficient (DSC) greater than or equal to the `dsc_cutoff`
 #' will be included in training the TAPAS model.
-#' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
+#' @param verbose A `logical` argument to print messages. Set to `TRUE` by default.
 #' @export
 #' @importFrom dplyr arrange bind_rows filter group_by inner_join ungroup mutate row_number select slice summarize
 #' @importFrom gtools inv.logit logit
@@ -18,9 +18,9 @@
 #' @importFrom rlang .data
 #' @importFrom stats median quantile
 #' @importFrom tibble tibble is_tibble
-#' @return A \code{list} with the TAPAS model (\code{tapas_model}) of class
-#'   \code{gam}, the group-level threshold, a \code{tibble} with the clamp
-#'   information (\code{clamp_data}), and a \code{tibble} with the training
+#' @return A `list` with the TAPAS model (`tapas_model`) of class
+#'   `gam`, the group-level threshold, a `tibble` with the clamp
+#'   information (`clamp_data`), and a `tibble` with the training
 #'   data. The clamp information contains the TAPAS-predicted smallest and
 #'   largest threshold to be applied by using estimates related to the volume at
 #'   the 10th and 90th percentile.
@@ -98,6 +98,8 @@
 #' tapas_model$group_threshold
 #' # The lower and upper bound clamps to avoid extrapolation
 #' tapas_model$clamp_data
+#' # The training data for the TAPAS `mgcv::gam` function
+#' tapas_model$train_data
 #' }
 
 tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){

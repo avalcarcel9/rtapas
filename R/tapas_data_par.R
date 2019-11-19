@@ -1,5 +1,5 @@
 #' @title Generates The TAPAS Training Data in Parallel
-#' @description This function wraps \code{\link{tapas_data}} to run in parallel. This function creates
+#' @description This function wraps [tapas_data()] to run in parallel. This function creates
 #' the training vectors for all subjects from a probability map,
 #' a gold standard mask (normally a manual segmentation), and a brain mask. For a grid of thresholds provided
 #' and applied to the probability map the function calculates Sørensen's–Dice coefficient (DSC) between the automatic
@@ -7,36 +7,36 @@
 #' at each respective threshold.
 #' @param cores The number of cores to use. This argument controls at most how many child processes will
 #' be run simultaneously. The default is set to 1.
-#' @param thresholds A \code{vector} of thresholds to apply to the probability maps. The default
-#' \code{vector} applied is 0 to 1 by 0.01 increments. Threshold values must be
+#' @param thresholds A `vector` of thresholds to apply to the probability maps. The default
+#' `vector` applied is 0 to 1 by 0.01 increments. Threshold values must be
 #' between 0 and 1.
-#' @param pmap A \code{vector} of \code{character} file paths to probability map images or a
-#' \code{list} object with elements of class \code{nifti}.
-#' @param gold_standard A \code{vector} of \code{character} file paths to gold standard images (normally
-#' a manual segmentation) or a \code{list} object with elements of class \code{nifti}. The gold
+#' @param pmap A `vector` of `character` file paths to probability map images or a
+#' `list` object with elements of class `nifti`.
+#' @param gold_standard A `vector` of `character` file paths to gold standard images (normally
+#' a manual segmentation) or a `list` object with elements of class `nifti`. The gold
 #' standard segmentation is used to compare the thresholded probability map image using Sørensen's–Dice
 #' coefficient (DSC).
-#' @param mask A \code{vector} of \code{character} file paths to brain mask images or a \code{list} object
-#' with elements of class \code{nifti}.
+#' @param mask A `vector` of `character` file paths to brain mask images or a `list` object
+#' with elements of class `nifti`.
 #' @param k The minimum number of voxels for a cluster/component.
 #' Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 #' Sørensen's–Dice coefficient (DSC) calculation.
-#' @param subject_id A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
-#' provide an ID \code{vector}.
-#' @param ret A \code{logical} argument set to \code{TRUE} by default. Returns the \code{tibble} objects from the
-#' function as a \code{list} in the local R environment. If \code{FALSE} then \code{outfile} must be specified so subject data is
+#' @param subject_id A `vector` of subject IDs of class `character`. By default this is set to `NULL` but users must
+#' provide an ID `vector`.
+#' @param ret A `logical` argument set to `TRUE` by default. Returns the `tibble` objects from the
+#' function as a `list` in the local R environment. If `FALSE` then `outfile` must be specified so subject data is
 #' saved.
-#' @param outfile Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
-#' in the local R environment. To save each subject-level \code{tibble} as an R object
-#' specify a \code{vector} or \code{list} of file paths to save with either .rds or .RData extensions included.
-#' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
+#' @param outfile Is set to `NULL` by default which only returns the subject-level `tibble` as a list
+#' in the local R environment. To save each subject-level `tibble` as an R object
+#' specify a `vector` or `list` of file paths to save with either .rds or .RData extensions included.
+#' @param verbose A `logical` argument to print messages. Set to `TRUE` by default.
 #' @export
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach %dopar%
 #' @importFrom parallel makeCluster mclapply stopCluster
 #' @importFrom stringr str_detect
-#' @return A \code{list} with the subject-level \code{tibble} object in each element returned from \code{\link{tapas_data}} for each
-#' subject. \code{ret} must be \code{TRUE} to return objects locally. To save objects a \code{vector} of code{outfile}
+#' @return A `list` with the subject-level `tibble` object in each element returned from [tapas_data()] for each
+#' subject. `ret` must be `TRUE` to return objects locally. To save objects a `vector` of code{outfile}
 #' file paths must be provided.
 #' @examples \dontrun{
 #' # Data is provided in the rtapas package

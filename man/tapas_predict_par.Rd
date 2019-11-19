@@ -17,7 +17,7 @@ be run simultaneously. The default is set to 1.}
 \item{subject_id}{A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
 provide an ID.}
 
-\item{model}{The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
+\item{model}{The TAPAS model fit from \code{\link[=tapas_train]{tapas_train()}} of class \code{gam}. This model will be
 used to make subject-specific threshold predictions.}
 
 \item{clamp}{A \code{logical} object set to \code{TRUE} by default. This setting uses the clamped
@@ -42,12 +42,12 @@ specify a \code{list} or \code{vector} of file paths to save with either .rds or
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
 \value{
-A nested \code{list}. Each element in the list contains subject-level data returned from \code{\link{tapas_predict}}.
+A nested \code{list}. Each element in the list contains subject-level data returned from \code{\link[=tapas_predict]{tapas_predict()}}.
 }
 \description{
-This function wraps \code{\link{tapas_predict}} to run in parallel. This function takes
+This function wraps \code{\link[=tapas_predict]{tapas_predict()}} to run in parallel. This function takes
 probability maps across subjects and predicts the subject-specific threshold to apply based on the
-TAPAS model generated from \code{\link{tapas_train}}. The function will return or save a list of objects
+TAPAS model generated from \code{\link[=tapas_train]{tapas_train()}}. The function will return or save a list of objects
 for each subject including the TAPAS predicted subject-specific threshold, the lesion mask produced from
 applying this threshold, as well as the lesion mask produced from using the group threshold.
 }

@@ -7,7 +7,7 @@
 tapas_train(data, dsc_cutoff = 0.03, verbose = TRUE)
 }
 \arguments{
-\item{data}{Data resulting from \code{\link{tapas_data}}. The \code{data} should be a \code{tibble} or
+\item{data}{Data resulting from \code{\link[=tapas_data]{tapas_data()}}. The \code{data} should be a \code{tibble} or
 \code{data.frame} containing binded subject data or a \code{list} object with subject data in each element.
 Data from these subjects will be used for model training.}
 
@@ -20,15 +20,15 @@ will be included in training the TAPAS model.}
 }
 \value{
 A \code{list} with the TAPAS model (\code{tapas_model}) of class
-  \code{gam}, the group-level threshold, a \code{tibble} with the clamp
-  information (\code{clamp_data}), and a \code{tibble} with the training
-  data. The clamp information contains the TAPAS-predicted smallest and
-  largest threshold to be applied by using estimates related to the volume at
-  the 10th and 90th percentile.
+\code{gam}, the group-level threshold, a \code{tibble} with the clamp
+information (\code{clamp_data}), and a \code{tibble} with the training
+data. The clamp information contains the TAPAS-predicted smallest and
+largest threshold to be applied by using estimates related to the volume at
+the 10th and 90th percentile.
 }
 \description{
 This function trains the TAPAS model using all binded subject-level \code{tibble}s produced
-from the \code{\link{tapas_data}} function. The TAPAS model is fit and clamp data is calculated. The clamp data
+from the \code{\link[=tapas_data]{tapas_data()}} function. The TAPAS model is fit and clamp data is calculated. The clamp data
 contains the predicted threshold when using the 10th and 90th percentile volume from training data.
 }
 \examples{
@@ -106,5 +106,7 @@ summary(tapas_model$tapas_model)
 tapas_model$group_threshold
 # The lower and upper bound clamps to avoid extrapolation
 tapas_model$clamp_data
+# The training data for the TAPAS `mgcv::gam` function
+tapas_model$train_data
 }
 }

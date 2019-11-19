@@ -36,7 +36,7 @@ tapas_data(thresholds = seq(from = 0, to = 1, by = 0.01),
            pmap,
            gold_standard,
            mask,
-           k = 08,
+           k = 0,
            subject_id = NULL,
            verbose = TRUE)
 ```
@@ -68,7 +68,7 @@ tapas_data_par(cores = 1,
                pmap,
                gold_standard,
                mask,
-               k = 08,
+               k = 0,
                subject_id = NULL,
                ret = FALSE,
                outfile = NULL,
@@ -119,14 +119,13 @@ __Return__:
 
 A `list` with the TAPAS model (`tapas_model`) of class `gam`, the group-level threshold, a `tibble` with the clamp information (`clamp_data`), and a `tibble` with the training data. The clamp information contains the TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the 10th and 90th percentile.
 
-
 ### `tapas_predict`
 
 ```{r, eval = FALSE}
 tapas_predict(pmap, 
               model, 
               clamp = TRUE, 
-              k = 08, 
+              k = 0, 
               verbose = TRUE){
 ```
 
@@ -154,7 +153,7 @@ tapas_predict_par(cores = 1,
                   subject_id,
                   model,
                   clamp = TRUE,
-                  k = 08,
+                  k = 0,
                   ret = FALSE,
                   outfile = NULL,
                   verbose = TRUE)

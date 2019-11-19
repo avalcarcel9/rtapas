@@ -1,39 +1,39 @@
 #' @title TAPAS Prediction in Parallel
-#' @description This function wraps \code{\link{tapas_predict}} to run in parallel. This function takes
+#' @description This function wraps [tapas_predict()] to run in parallel. This function takes
 #' probability maps across subjects and predicts the subject-specific threshold to apply based on the
-#' TAPAS model generated from \code{\link{tapas_train}}. The function will return or save a list of objects
+#' TAPAS model generated from [tapas_train()]. The function will return or save a list of objects
 #' for each subject including the TAPAS predicted subject-specific threshold, the lesion mask produced from
 #' applying this threshold, as well as the lesion mask produced from using the group threshold.
 #' @param cores The number of cores to use. This argument controls at most how many child processes will
 #' be run simultaneously. The default is set to 1.
-#' @param pmap A \code{vector} of \code{character} file paths to probability map images or a
-#' \code{list} object with elements of class \code{nifti}.
-#' @param subject_id A \code{vector} of subject IDs of class \code{character}. By default this is set to \code{NULL} but users must
+#' @param pmap A `vector` of `character` file paths to probability map images or a
+#' `list` object with elements of class `nifti`.
+#' @param subject_id A `vector` of subject IDs of class `character`. By default this is set to `NULL` but users must
 #' provide an ID.
-#' @param model The TAPAS model fit from \code{\link{tapas_train}} of class \code{gam}. This model will be
+#' @param model The TAPAS model fit from [tapas_train()] of class `gam`. This model will be
 #' used to make subject-specific threshold predictions.
-#' @param clamp  A \code{logical} object set to \code{TRUE} by default. This setting uses the clamped
+#' @param clamp  A `logical` object set to `TRUE` by default. This setting uses the clamped
 #' subject-specific threshold prediction rather than the prediction fit by the
 #' TAPAS model. This only applies to volumes exceeding those at the 10th and 90th percentile
 #' calculated using the training data. Using the clamp data avoids extrapolation when the naive volume estimate
-#' falls in the tails of the TAPAS model. If \code{FALSE} then the TAPAS \code{model} predicted threshold
+#' falls in the tails of the TAPAS model. If `FALSE` then the TAPAS `model` predicted threshold
 #' will be used for segmentation rather than the clamped threshold.
 #' @param k The minimum number of voxels for a cluster/component.
 #' Segmentation clusters of size less than k are removed from the mask, volume estimation, and the
 #' Sørensen's–Dice coefficient (DSC) calculation.
-#' @param ret A \code{logical} argument set to \code{TRUE} by default. Returns a nested \code{list} of objects from the
-#' function to the local R environment. If \code{FALSE} then \code{outfile} must be specified so subject data is
+#' @param ret A `logical` argument set to `TRUE` by default. Returns a nested `list` of objects from the
+#' function to the local R environment. If `FALSE` then `outfile` must be specified so subject data is
 #' saved.
-#' @param outfile Is set to \code{NULL} by default which only returns the subject-level \code{tibble} as a list
-#' in the local R environment. To save each subject-level \code{tibble} as an R object
-#' specify a \code{list} or \code{vector} of file paths to save with either .rds or .RData extensions included.
-#' @param verbose A \code{logical} argument to print messages. Set to \code{TRUE} by default.
+#' @param outfile Is set to `NULL` by default which only returns the subject-level `tibble` as a list
+#' in the local R environment. To save each subject-level `tibble` as an R object
+#' specify a `list` or `vector` of file paths to save with either .rds or .RData extensions included.
+#' @param verbose A `logical` argument to print messages. Set to `TRUE` by default.
 #' @export
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach %dopar%
 #' @importFrom parallel makeCluster mclapply stopCluster
 #' @importFrom stringr str_detect
-#' @return A nested \code{list}. Each element in the list contains subject-level data returned from \code{\link{tapas_predict}}.
+#' @return A nested `list`. Each element in the list contains subject-level data returned from [tapas_predict()].
 #' @examples \dontrun{
 #' # Data is provided in the rtapas package as arrays. Below we will convert them to nifti objects.
 #' # Before we can implement the train_tapas function we have to generate the training data

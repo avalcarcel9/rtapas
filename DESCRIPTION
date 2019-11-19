@@ -43,3 +43,4 @@ VignetteBuilder: knitr
 ByteCompile: true
 RoxygenNote: 6.1.1
 Language: en-US
+Roxygen: list(markdown = TRUE)
