@@ -1,8 +1,10 @@
 AppVeyor
 binded
 DSC
+ggExtraPlot
 MIMoSA
 Neuroconductor
+png
 outfile
 RData
 rds
@@ -11,3 +13,4 @@ Sørensen
 Sørensen's
 tibble
 th
+

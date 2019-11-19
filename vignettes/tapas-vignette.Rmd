@@ -139,7 +139,7 @@ __Usage__:
 
 __Return__: 
 
-A `list` with the TAPAS model (`tapas_model`) of class `gam` and the a `tibble` with the clamp information (`clamp_data`). The clamp information contains the TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the 10th and 90th percentile.
+A `list` with the TAPAS model (`tapas_model`) of class `gam`, the group-level threshold, a `tibble` with the clamp information (`clamp_data`), and a `tibble` with the training data. The clamp information contains the TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the 10th and 90th percentile.
 
 ## `tapas_predict`
 
@@ -403,6 +403,8 @@ summary(tapas_model$tapas_model)
 tapas_model$group_threshold
 # The lower and upper bound clamps to avoid extrapolation
 tapas_model$clamp_data
+# The training data for the TAPAS `mgcv::gam` function
+tapas_model$train_data
 ```
 
 We can use this model to predict a subject-specific thresholds, create a segmentation mask using this threshold, and create a segmentation mask using the group-threshold for a subjects not included in model training.

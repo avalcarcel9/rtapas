@@ -19,10 +19,12 @@ will be included in training the TAPAS model.}
 \item{verbose}{A \code{logical} argument to print messages. Set to \code{TRUE} by default.}
 }
 \value{
-A \code{list} with the TAPAS model (\code{tapas_model}) of class \code{gam} and
-a \code{tibble} with the clamp information (\code{clamp_data}). The clamp information contains the
-TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the
-10th and 90th percentile.
+A \code{list} with the TAPAS model (\code{tapas_model}) of class
+  \code{gam}, the group-level threshold, a \code{tibble} with the clamp
+  information (\code{clamp_data}), and a \code{tibble} with the training
+  data. The clamp information contains the TAPAS-predicted smallest and
+  largest threshold to be applied by using estimates related to the volume at
+  the 10th and 90th percentile.
 }
 \description{
 This function trains the TAPAS model using all binded subject-level \code{tibble}s produced

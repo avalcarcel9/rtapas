@@ -18,10 +18,12 @@
 #' @importFrom rlang .data
 #' @importFrom stats median quantile
 #' @importFrom tibble tibble is_tibble
-#' @return A \code{list} with the TAPAS model (\code{tapas_model}) of class \code{gam} and
-#' a \code{tibble} with the clamp information (\code{clamp_data}). The clamp information contains the
-#' TAPAS-predicted smallest and largest threshold to be applied by using estimates related to the volume at the
-#' 10th and 90th percentile.
+#' @return A \code{list} with the TAPAS model (\code{tapas_model}) of class
+#'   \code{gam}, the group-level threshold, a \code{tibble} with the clamp
+#'   information (\code{clamp_data}), and a \code{tibble} with the training
+#'   data. The clamp information contains the TAPAS-predicted smallest and
+#'   largest threshold to be applied by using estimates related to the volume at
+#'   the 10th and 90th percentile.
 #' @examples \dontrun{
 #' # Data is provided in the rtapas package as arrays. Below we will convert them to nifti objects.
 #' # Before we can implement the train_tapas function we have to generate the training data
@@ -136,7 +138,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
   # Check if there are ties within the subject data
   subject_ties  = subject_thresholds %>%
-    dplyr::mutate(subject_n = n()) %>%
+    dplyr::mutate(subject_n = dplyr::n()) %>%
     dplyr::filter(subject_n > 1)  %>%
     dplyr::mutate(diff = row_id-dplyr::lag(row_id)) %>%
     dplyr::ungroup()
@@ -173,7 +175,7 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
 
   # Check if there are ties within the group data
   group_ties = group_threshold %>%
-    dplyr::mutate(group_n = n()) %>%
+    dplyr::mutate(group_n = dplyr::n()) %>%
     dplyr::filter(group_n > 1)  %>%
     dplyr::mutate(diff = row_id-dplyr::lag(row_id)) %>%
     dplyr::ungroup()
@@ -252,6 +254,9 @@ tapas_train <- function(data, dsc_cutoff = 0.03, verbose = TRUE){
                   bound = c('lower', 'upper')) %>%
     dplyr::select(.data$bound, .data$volume, .data$pred_threshold)
 
-  base::return(base::list(tapas_model = tapas_model, group_threshold = group_threshold$threshold, clamp_data = clamp_data))
+  base::return(base::list(tapas_model = tapas_model,
+                          group_threshold = group_threshold$threshold,
+                          clamp_data = clamp_data,
+                          train_data = data))
 
 }
