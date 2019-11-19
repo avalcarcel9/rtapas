@@ -447,7 +447,7 @@ dsc
 
 Thank you all for the time and I hope you enjoyed the training vignette. If you have comments, questions, or suggestions please feel free to contact me by submitting an issue.
 
-```{r, fig.align="center"}
+```{r, fig.align="center", echo = FALSE}
 knitr::include_graphics("../inst/end.jpg")
 ```
 
