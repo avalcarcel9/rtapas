@@ -20,11 +20,10 @@
 #' provide an ID.
 #' @param verbose A `logical` argument to print messages. Set to `TRUE` by default.
 #' @export
-#' @importFrom aliviateR dsc
 #' @importFrom dplyr bind_rows
 #' @importFrom magrittr "%>%"
 #' @importFrom methods as
-#' @importFrom neurobase check_nifti check_mask niftiarr
+#' @importFrom neurobase check_nifti check_mask niftiarr fast_dice
 #' @importFrom neuroim connComp3D
 #' @importFrom oro.nifti is.nifti
 #' @importFrom tibble tibble
@@ -87,7 +86,12 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
   pmap = c(pmap[mask == 1])
 
   # Obtain a matrix of 0/1 after threhsolding at each threshold value
-  pred_lesion = base::sapply(thresholds, function(x) {base::ifelse(pmap > x, 1, 0)})
+  # pred_lesion = base::sapply(thresholds, function(x) {base::ifelse(pmap > x, 1, 0)})
+  pred_lesion = base::sapply(thresholds, function(x) {
+    x = as.numeric(pmap > x)
+    x[is.na(x)] = 0
+    x
+  })
 
   # initialize a results tibble
   results = tibble::tibble(threshold = thresholds,
@@ -95,7 +99,7 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
                            volume =  thresholds,
                            subject_id = subject_id)
 
-  if(verbose == TRUE){
+  if (verbose == TRUE){
     base::message('# Obtaining threshold level information.')
   }
 
@@ -126,14 +130,25 @@ tapas_data <- function(thresholds = seq(from = 0, to = 1, by = 0.01),
     # Return temp_lmask to binary 0/1
     temp_lmask[temp_lmask > 0] = 1
 
+    if (requireNamespace("aliviateR", quietly = TRUE)) {
+      dice_value = aliviateR::dsc(gold_standard = gold_standard, comp_method = temp_lmask)
+    } else {
+      dice_value = neurobase::fast_dice(gold_standard,
+                                        temp_lmask,
+                                        verbose = verbose)
+    }
+
     results = tibble::tibble(threshold = thresholds[j],
-                             dsc = aliviateR::dsc(gold_standard = gold_standard, comp_method = temp_lmask),
+                             dsc = dice_value,
                              volume =  sum(temp_lmask),
                              subject_id = subject_id)
 
   }
 
-  results = base::lapply(1:length(thresholds), calc_dv, temp_lmask = mask, subject_id = subject_id) %>%
+  results = base::lapply(
+    1:length(thresholds),
+    calc_dv, temp_lmask = mask,
+    subject_id = subject_id) %>%
     dplyr::bind_rows()
 
   base::return(results)
