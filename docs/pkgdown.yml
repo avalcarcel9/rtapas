@@ -3,4 +3,7 @@ pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
   tapas-vignette: tapas-vignette.html
+urls:
+  reference: https://avalcarcel9.github.io/rtapas//reference
+  article: https://avalcarcel9.github.io/rtapas//articles
 

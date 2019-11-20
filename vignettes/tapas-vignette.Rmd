@@ -14,10 +14,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-<!-- TODO update vignette with package on neuroc -->
-<!-- TODO update vignette with link to pkgdown -->
-<!-- TODO compile to vignettes-->
-
 ```{r setup, include = FALSE}
 # Locally compile vignettes with eval set to TRUE
 # Other machines do not compile vignettes with eval set to FALSE
@@ -36,21 +32,28 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Overview <img src="https://github.com/avalcarcel9/rtapas/blob/master/inst/sticker.png" width = "150" align="right" />
+This package is documented using `pkgdown`. You can find the general `rtapas` `pkgdown` site [here]( https://avalcarcel9.github.io/rtapas/) and the tutorial/vignette [here](https://avalcarcel9.github.io/rtapas/articles/tapas-vignette.html). The GitHub tutorial/vignette is available [here](https://github.com/avalcarcel9/rtapas/blob/master/vignettes/tapas-vignette.md).
+
+# Overview <img src="../man/figures/logo.svg" align="right" alt="" width="120" />
 
 The `rtapas` package determines a subject-specific threshold to apply to multiple sclerosis lesion probability maps for automatic segmentation. This R package is based on the Thresholding Approach for Probability Map Automatic Segmentation (TAPAS) method. The methods are in progress for publication. This package creates the data structures necessary for training the TAPAS model. After training, the model can be used to predict subject-specific thresholds to use on probability maps for automatic lesion segmentation. Methods can be extended outside of multiple sclerosis lesion segmentation but have not been validated.
 
-# Installation
+## Installation
+
+To install the package from [Neuroconductor](www.neuroconductor.org), type:
+
+```{r, eval = FALSE}
+source("https://neuroconductor.org/neurocLite.R")
+neuro_install("rtapas")
+```
 
 To get the latest development version from GitHub:
 
 ```{r, eval = FALSE}
-# install.packages("remotes")
+# install.packages('remotes')
 library(remotes)
 remotes::install_github('avalcarcel9/rtapas')
 ```
-
-We are currently working to get the package on [Neuroconductor](www.neuroconductor.org).
 
 # Packages
 
@@ -448,7 +451,7 @@ dsc
 Thank you all for the time and I hope you enjoyed the training vignette. If you have comments, questions, or suggestions please feel free to contact me by submitting an issue.
 
 ```{r, fig.align="center", echo = FALSE}
-knitr::include_graphics("../inst/end.jpg")
+knitr::include_graphics("../man/figures/end.jpg")
 ```
 
 

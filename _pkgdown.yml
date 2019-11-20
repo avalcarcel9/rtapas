@@ -1,1 +1,49 @@
-destination: docs
+url: https://avalcarcel9.github.io/rtapas/
+
+reference:
+  - title: "Generating TAPAS Training Data"
+    desc: >
+      These functions create the training data for TAPAS.
+    contents:
+      - starts_with("tapas_data")
+  - title: "Training the TAPAS Model"
+    desc: >
+      This function trains the TAPAS model from the training data.
+    contents:
+      - tapas_train
+  - title: "QA TAPAS Model"
+    desc: >
+      This function helps create scatter plots with marginal histograms
+      (we call this plot a scattergram) to help assess the threshold grid
+      and fit of the TAPAS model.
+    contents:
+      - make_scattergram
+  - title: "Apply TAPAS Model"
+    desc: >
+      These functions apply the TAPAS model fit to new subjects to
+      determine a subject-specific threshold and create segmentation masks.
+    contents:
+      - starts_with("tapas_predict")
+  - title: "Data"
+    desc: >
+      The data contained in this package contains 3D arrays for 15
+      synthetic gold standard segmentations (`gs#`), 15 probability
+      maps (`pmap#`), and a single brain mask (`brain_mask`) that
+      can be used for all 30 images. The `#` value noted can be any
+      number 1-15. Package data is set to `Lazy Data: true` and will
+      therefore be automatically loaded with the package. We use 10
+      subjects for training the TAPAS model and then evaluate the
+      model using 5 subjects excluded from training in this tutorial.
+      The gold standard segmentations and probability maps consist of
+      a single slice with voxel values and a second slice where all
+      voxels are equal to 0. The brain mask contains a brain mask
+      value in both slices. These are saved as arrays which we will
+      convert to `nifti` objects. The authors would like to re-iterate
+      that all data available in the package and used throughout this
+      vignette are synthetic and created by the authors simply for
+      demonstration of the package usage. The data is meant to
+      mimic a simple set of real data.
+    contents:
+      - brain_mask
+      - starts_with("gs")
+      - starts_with("pmap")
