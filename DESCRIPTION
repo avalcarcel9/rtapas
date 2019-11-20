@@ -1,7 +1,7 @@
 Package: rtapas
 Title: TAPAS: A thresholding approach for probability map automatic segmentation
     automatic segmentation
-Version: 0.0.3
+Version: 0.1.0
 Authors@R: person(given = "Alessandra", family = "Valcarcel", email = "alval@pennmedicine.upenn.edu", role = c("aut","cre"))
 Maintainer: Alessandra Valcarcel <alval@pennmedicine.upenn.edu>
 Description: Trains and makes predictions using the TAPAS
@@ -13,7 +13,6 @@ BugReports: https://github.com/avalcarcel9/rtapas/issues
 LazyData: true
 Depends: R (>= 2.10)
 Imports: 
-    aliviateR (>= 0.0.2),
     doParallel (>= 1.0.14),
     dplyr (>= 0.7.5.9000),
     foreach (>= 1.4.4),
@@ -31,6 +30,7 @@ Imports:
     stringr (>= 1.3.0),
     tibble (>= 1.7.0)
 Suggests:
+    aliviateR (>= 0.0.2),
     covr,
     knitr,
     remotes,
